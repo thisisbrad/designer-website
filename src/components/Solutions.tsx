@@ -30,9 +30,34 @@ const inputCls =
 const labelCls =
   "mb-2 block font-mono text-[11px] tracking-[0.2em] text-muted uppercase";
 
+type FormStatus = "idle" | "sending" | "sent" | "error";
+
 export default function Solutions() {
   const ref = useSectionReveal<HTMLElement>();
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<FormStatus>("idle");
+
+  const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (status === "sending") return;
+
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/audit-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+      setStatus("sent");
+      form.reset();
+    } catch (err) {
+      console.error("Lead submit failed:", err);
+      setStatus("error");
+    }
+  };
 
   return (
     <section
@@ -262,10 +287,7 @@ export default function Solutions() {
           <form
             aria-label="Request your free website audit"
             className="rounded-2xl border border-paper/10 bg-ink/60 p-8 backdrop-blur-md md:p-10"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSent(true);
-            }}
+            onSubmit={submitLead}
           >
             <div className="grid gap-7 sm:grid-cols-2">
               <div>
@@ -328,12 +350,18 @@ export default function Solutions() {
 
             <div className="mt-9 flex flex-wrap items-center gap-5">
               <MagneticButton type="submit">
-                Get my free audit
+                {status === "sending" ? "Sending…" : "Get my free audit"}
                 <span aria-hidden>↗</span>
               </MagneticButton>
-              {sent && (
+              {status === "sent" && (
                 <p role="status" className="text-sm text-accent">
                   Thanks — your audit lands in your inbox within 48 hours.
+                </p>
+              )}
+              {status === "error" && (
+                <p role="status" className="text-sm text-[#ffb36b]">
+                  Something went wrong — email me instead at
+                  hello@beltowski.studio.
                 </p>
               )}
             </div>
