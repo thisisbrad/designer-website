@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
+import { gsap } from "@/lib/gsap";
+import { useIsomorphicLayoutEffect } from "@/lib/utils";
 import { solutions } from "@/data/solutions";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
 import AnimatedText from "./AnimatedText";
@@ -34,7 +36,67 @@ type FormStatus = "idle" | "sending" | "sent" | "error";
 
 export default function Solutions() {
   const ref = useSectionReveal<HTMLElement>();
+  const bandRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<FormStatus>("idle");
+
+  // One-shot entrance for copy and form; scroll-scrubbed parallax for the
+  // portrait and glow, so the scene has depth while the section stays compact.
+  useIsomorphicLayoutEffect(() => {
+    const band = bandRef.current;
+    if (!band) return;
+
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: { trigger: band, start: "top 70%", once: true },
+        defaults: { ease: "power3.out" },
+      });
+      tl.fromTo(
+        band.querySelectorAll("[data-band-copy] > *"),
+        { y: 44, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, stagger: 0.08 },
+        0
+      ).fromTo(
+        band.querySelector("[data-band-form]"),
+        { x: 48, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1 },
+        0.2
+      );
+
+      // The portrait starts sunk below the band's bottom edge (clipped by
+      // overflow-hidden) and rises flush as you scroll — no gap ever shows.
+      gsap.fromTo(
+        band.querySelector("[data-band-portrait]"),
+        { yPercent: 18 },
+        {
+          yPercent: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: band,
+            start: "top 90%",
+            end: "center 60%",
+            scrub: 0.6,
+          },
+        }
+      );
+
+      gsap.fromTo(
+        band.querySelector("[data-band-glow]"),
+        { opacity: 0.35 },
+        {
+          opacity: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: band,
+            start: "top bottom",
+            end: "center center",
+            scrub: true,
+          },
+        }
+      );
+    });
+    return () => mm.revert();
+  }, []);
 
   const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -166,20 +228,25 @@ export default function Solutions() {
           the cards above, and the glow is clipped so it can't wash upward. */}
       <div
         id="audit"
-        data-reveal
-        className="relative mt-16 scroll-mt-20 overflow-hidden border-b border-accent/10 md:mt-20"
+        ref={bandRef}
+        className="relative mt-16 scroll-mt-16 overflow-hidden border-b border-accent/10 md:mt-20"
       >
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/[0.07] to-ink-2"
-        />
-        <div
-          aria-hidden
-          className="absolute top-[15%] left-1/4 h-[75%] w-1/2 rounded-full bg-accent/10 blur-[160px] motion-safe:animate-glow-breathe"
-        />
+        {/* Focus treatment: rising tint, breathing glow and an edge vignette
+            that pulls the eye to the center while the band owns the viewport */}
+        <div aria-hidden data-band-glow className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/[0.08] to-ink-2" />
+          <div className="absolute top-[15%] left-1/4 h-[75%] w-1/2 rounded-full bg-accent/10 blur-[160px] motion-safe:animate-glow-breathe" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(ellipse 75% 65% at 50% 45%, transparent 45%, rgba(5,5,4,0.5) 100%)",
+            }}
+          />
+        </div>
 
         <div className="relative mx-auto grid max-w-[1400px] items-center gap-14 px-6 py-16 md:px-10 md:py-24 lg:grid-cols-2 lg:gap-14 xl:grid-cols-[1fr_auto_1fr]">
-          <div>
+          <div data-band-copy>
             <p className="mb-5 flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-accent uppercase">
               <span
                 aria-hidden
@@ -250,10 +317,13 @@ export default function Solutions() {
           {/* Duotone owner portrait, centered between copy and form and
               anchored to the band's bottom edge (the negative margin cancels
               the container's bottom padding). */}
-          <div className="relative hidden self-end justify-self-center xl:block xl:-mb-24">
+          <div
+            data-band-portrait
+            className="relative hidden self-end justify-self-center will-change-transform xl:block xl:-mb-24"
+          >
             <div
               aria-hidden
-              className="absolute bottom-0 left-1/2 h-[85%] w-[115%] -translate-x-1/2 rounded-full bg-accent/15 blur-[110px]"
+              className="absolute bottom-0 left-1/2 h-[90%] w-[120%] -translate-x-1/2 rounded-full bg-accent/20 blur-[120px]"
             />
 
             {/* Subtle particles orbiting the portrait */}
@@ -280,13 +350,14 @@ export default function Solutions() {
               width={512}
               height={512}
               priority={false}
-              className="relative w-[440px] select-none 2xl:w-[500px]"
+              className="relative w-[480px] select-none 2xl:w-[560px]"
             />
           </div>
 
           <form
             aria-label="Request your free website audit"
-            className="rounded-2xl border border-paper/10 bg-ink/60 p-8 backdrop-blur-md md:p-10"
+            data-band-form
+            className="rounded-2xl border border-accent/20 bg-ink/70 p-8 shadow-[0_0_90px_rgba(215,251,68,0.07)] backdrop-blur-md md:p-10"
             onSubmit={submitLead}
           >
             <div className="grid gap-7 sm:grid-cols-2">
