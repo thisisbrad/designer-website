@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { OWNER_NAME, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,9 +23,61 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Beltowski® — Web Design, SEO & AI Solutions",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Beltowski® — Web Design, SEO & AI Solutions",
+    template: "%s — Beltowski®",
+  },
   description:
     "Independent designer and developer building fast, search-optimized websites and practical AI solutions that help businesses get found, convert and grow.",
+};
+
+/** Site-wide entity graph: the business (local search), its owner and the site. */
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfessionalService",
+      "@id": `${SITE_URL}/#business`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      email: SITE_EMAIL,
+      description:
+        "Web design, SEO marketing and AI solutions for businesses — fast, search-optimized websites, local search, and AI assistants that book clients.",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Florida",
+        addressCountry: "US",
+      },
+      areaServed: "Worldwide (remote)",
+      founder: { "@id": `${SITE_URL}/#owner` },
+      knowsAbout: [
+        "Web design",
+        "Frontend development",
+        "SEO marketing",
+        "Local SEO",
+        "AI assistants",
+        "Conversion optimization",
+      ],
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#owner`,
+      name: OWNER_NAME,
+      url: SITE_URL,
+      email: SITE_EMAIL,
+      jobTitle: "Designer, developer & AI consultant",
+      worksFor: { "@id": `${SITE_URL}/#business` },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      publisher: { "@id": `${SITE_URL}/#business` },
+      inLanguage: "en",
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -33,6 +86,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${grotesk.variable} ${mono.variable}`}>
       <body className="bg-ink font-body text-paper antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[110] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:text-ink"

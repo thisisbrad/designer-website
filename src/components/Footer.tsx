@@ -11,7 +11,7 @@ export default function Footer() {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      timeZone: "Europe/Warsaw",
+      timeZone: "America/New_York",
     });
     const update = () => setTime(fmt.format(new Date()));
     update();
@@ -24,11 +24,11 @@ export default function Footer() {
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-5 px-6 py-10 font-mono text-[11px] tracking-[0.2em] text-muted uppercase md:flex-row md:px-10">
         <p>© 2026 Beltowski Studio</p>
         <p>
-          Warsaw —{" "}
+          Florida —{" "}
           <time suppressHydrationWarning className="tabular-nums">
             {time || "··:··:··"}
           </time>{" "}
-          CET
+          ET
         </p>
         <p>Designed &amp; built by hand</p>
         <button

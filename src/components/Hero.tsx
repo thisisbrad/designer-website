@@ -99,7 +99,7 @@ export default function Hero() {
         data-hero-fade
         className="relative z-10 mx-auto flex w-full max-w-[1400px] items-end justify-between px-6 pb-8 font-mono text-[11px] tracking-[0.25em] text-muted uppercase md:px-10"
       >
-        <span>Warsaw / Remote</span>
+        <span>Florida / Remote</span>
         <span aria-hidden className="motion-safe:animate-pulse-dot">
           Scroll ↓
         </span>

@@ -87,7 +87,7 @@ export default function About() {
                 </span>
               </div>
               <p className="absolute bottom-5 left-5 font-mono text-[11px] tracking-[0.25em] text-paper/50 uppercase">
-                Studio portrait — Warsaw, 2026
+                Studio portrait — Florida, 2026
               </p>
             </div>
           </div>

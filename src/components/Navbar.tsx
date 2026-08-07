@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { scrollToSection, scrollToTop } from "./SmoothScroll";
 
@@ -8,14 +10,16 @@ const links = [
   { href: "#solutions", label: "The Plan" },
   { href: "#about", label: "About" },
   { href: "#services", label: "Services" },
-  { href: "#process", label: "Process" },
   { href: "#experiments", label: "AI in Action" },
+  { href: "/blog", label: "Blog" },
   { href: "#contact", label: "Contact" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -41,6 +45,59 @@ export default function Navbar() {
     scrollToSection(href);
   };
 
+  /** Anchor links smooth-scroll on the homepage and route back to it elsewhere. */
+  const NavLink = ({
+    href,
+    className,
+    tabIndex,
+    style,
+    children,
+  }: {
+    href: string;
+    className?: string;
+    tabIndex?: number;
+    style?: React.CSSProperties;
+    children: React.ReactNode;
+  }) => {
+    if (href.startsWith("/")) {
+      return (
+        <Link
+          href={href}
+          onClick={() => setOpen(false)}
+          className={className}
+          tabIndex={tabIndex}
+          style={style}
+        >
+          {children}
+        </Link>
+      );
+    }
+    if (onHome) {
+      return (
+        <a
+          href={href}
+          onClick={(e) => go(e, href)}
+          className={className}
+          tabIndex={tabIndex}
+          style={style}
+        >
+          {children}
+        </a>
+      );
+    }
+    return (
+      <a
+        href={`/${href}`}
+        onClick={() => setOpen(false)}
+        className={className}
+        tabIndex={tabIndex}
+        style={style}
+      >
+        {children}
+      </a>
+    );
+  };
+
   return (
     <header
       className={cn(
@@ -54,24 +111,33 @@ export default function Navbar() {
         aria-label="Primary"
         className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-[72px] md:px-10"
       >
-        <a
-          href="#top"
-          onClick={(e) => {
-            e.preventDefault();
-            setOpen(false);
-            scrollToTop();
-          }}
-          className="font-display text-lg font-semibold tracking-tight"
-        >
-          beltowski<span className="text-accent">®</span>
-        </a>
+        {onHome ? (
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen(false);
+              scrollToTop();
+            }}
+            className="font-display text-lg font-semibold tracking-tight"
+          >
+            beltowski<span className="text-accent">®</span>
+          </a>
+        ) : (
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="font-display text-lg font-semibold tracking-tight"
+          >
+            beltowski<span className="text-accent">®</span>
+          </Link>
+        )}
 
         <ul className="hidden items-center gap-8 lg:flex">
           {links.map((link) => (
             <li key={link.href}>
-              <a
+              <NavLink
                 href={link.href}
-                onClick={(e) => go(e, link.href)}
                 className="group relative text-[13px] tracking-[0.18em] text-muted uppercase transition-colors hover:text-paper"
               >
                 {link.label}
@@ -79,7 +145,7 @@ export default function Navbar() {
                   aria-hidden
                   className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-300 group-hover:scale-x-100"
                 />
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>
@@ -126,9 +192,8 @@ export default function Navbar() {
         <ul className="flex h-full flex-col justify-center gap-2 px-6">
           {links.map((link, i) => (
             <li key={link.href}>
-              <a
+              <NavLink
                 href={link.href}
-                onClick={(e) => go(e, link.href)}
                 tabIndex={open ? 0 : -1}
                 style={{ transitionDelay: open ? `${100 + i * 50}ms` : "0ms" }}
                 className={cn(
@@ -140,7 +205,7 @@ export default function Navbar() {
                   0{i + 1}
                 </span>
                 {link.label}
-              </a>
+              </NavLink>
             </li>
           ))}
         </ul>

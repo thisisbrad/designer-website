@@ -125,10 +125,10 @@ export default function Contact() {
               Budget
             </label>
             <select id="contact-budget" name="budget" className={inputCls}>
-              <option className="bg-ink">€5k — €10k</option>
-              <option className="bg-ink">€10k — €25k</option>
-              <option className="bg-ink">€25k — €50k</option>
-              <option className="bg-ink">€50k+</option>
+              <option className="bg-ink">$5k — $10k</option>
+              <option className="bg-ink">$10k — $25k</option>
+              <option className="bg-ink">$25k — $50k</option>
+              <option className="bg-ink">$50k+</option>
             </select>
           </div>
 
