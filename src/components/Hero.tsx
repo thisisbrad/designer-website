@@ -89,8 +89,8 @@ export default function Hero() {
             See the Plan
             <span aria-hidden>↗</span>
           </MagneticButton>
-          <MagneticButton href="#contact" variant="outline" onClick={go("#contact")}>
-            Contact Me
+          <MagneticButton href="#audit" variant="outline" onClick={go("#audit")}>
+            Get a Free Audit
           </MagneticButton>
         </div>
       </div>

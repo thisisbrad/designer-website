@@ -1,87 +1,285 @@
 "use client";
 
+import { useState } from "react";
 import { solutions } from "@/data/solutions";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
-import SectionHeading from "./SectionHeading";
+import AnimatedText from "./AnimatedText";
 import MagneticButton from "./MagneticButton";
-import { scrollToSection } from "./SmoothScroll";
+
+const dotGrid: React.CSSProperties = {
+  backgroundImage: "radial-gradient(rgba(242,239,232,0.12) 1px, transparent 1px)",
+  backgroundSize: "48px 48px",
+  maskImage: "radial-gradient(ellipse 90% 70% at 50% 25%, black, transparent 75%)",
+  WebkitMaskImage:
+    "radial-gradient(ellipse 90% 70% at 50% 25%, black, transparent 75%)",
+};
+
+const auditChecks = [
+  "Search visibility & keyword gaps",
+  "Speed & Core Web Vitals",
+  "Conversion blockers & quick wins",
+  "Where AI could save you hours",
+];
+
+const inputCls =
+  "w-full border-b border-paper/15 bg-transparent py-3 text-base text-paper transition-colors placeholder:text-muted/40 focus:border-accent focus:outline-none";
+
+const labelCls =
+  "mb-2 block font-mono text-[11px] tracking-[0.2em] text-muted uppercase";
 
 export default function Solutions() {
   const ref = useSectionReveal<HTMLElement>();
+  const [sent, setSent] = useState(false);
 
   return (
     <section
       id="solutions"
       ref={ref}
       aria-labelledby="solutions-heading"
-      className="mx-auto max-w-[1400px] px-6 pt-28 pb-24 md:px-10 md:pt-40 md:pb-32"
+      className="relative overflow-hidden"
     >
-      <SectionHeading
-        id="solutions-heading"
-        eyebrow="01 — The plan"
-        title="A straight line from search to sale"
-        description="No retainers for vague brand awareness. One plan with three moving parts — each one measurable, each one built to compound."
-      />
+      {/* Ambient backdrop — echoes the hero without a second WebGL canvas */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute -top-[15%] left-1/2 h-[60vh] w-[85vw] -translate-x-1/2 rounded-full bg-accent/[0.06] blur-[160px]" />
+        <div
+          className="absolute inset-0 opacity-30 motion-safe:animate-drift"
+          style={dotGrid}
+        />
+      </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        {solutions.map((solution) => (
-          <article
-            key={solution.index}
-            data-reveal
-            data-cursor="hover"
-            aria-label={solution.phase}
-            className="group flex flex-col rounded-2xl border border-line bg-ink-2 p-8 transition-colors duration-500 hover:border-accent/40"
-          >
-            <p className="flex items-baseline justify-between font-mono text-xs tracking-[0.25em] uppercase">
-              <span className="text-muted">Phase {solution.index}</span>
-              <span className="text-accent">{solution.phase}</span>
+      <div className="relative mx-auto max-w-[1400px] px-6 pt-28 md:px-10 md:pt-40">
+        <p className="mb-6 flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-muted uppercase">
+          <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+          01 — The plan
+        </p>
+
+        <h2
+          id="solutions-heading"
+          className="max-w-[16ch] font-display text-[clamp(2.5rem,6vw,5.5rem)] leading-[1.05] font-medium tracking-tight"
+        >
+          <AnimatedText className="block">A straight line from</AnimatedText>
+          <AnimatedText className="block text-accent">search to sale.</AnimatedText>
+        </h2>
+
+        <p data-reveal className="mt-7 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+          No retainers for vague brand awareness. One plan with three moving
+          parts — each one measurable, each one built to compound.
+        </p>
+
+        <div className="mt-16 grid gap-4 md:mt-20 lg:grid-cols-3">
+          {solutions.map((solution) => (
+            <article key={solution.index} data-reveal aria-label={solution.phase}>
+              <div
+                data-cursor="hover"
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-2/80 p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40"
+              >
+                <div
+                  aria-hidden
+                  className="absolute -top-[30%] -right-[20%] size-[75%] rounded-full bg-accent/10 opacity-0 blur-[100px] transition-opacity duration-700 group-hover:opacity-100"
+                />
+                <span
+                  aria-hidden
+                  className="absolute -top-7 right-3 font-display text-[8rem] leading-none font-semibold text-paper/[0.04] select-none transition-colors duration-700 group-hover:text-accent/10"
+                >
+                  {solution.index}
+                </span>
+
+                <p className="relative flex items-baseline justify-between font-mono text-xs tracking-[0.25em] uppercase">
+                  <span className="text-muted">Phase {solution.index}</span>
+                  <span className="text-accent">{solution.phase}</span>
+                </p>
+
+                <h3 className="relative mt-6 font-display text-3xl font-medium tracking-tight">
+                  {solution.title}
+                </h3>
+
+                <p className="relative mt-4 leading-relaxed text-muted">
+                  {solution.description}
+                </p>
+
+                <ul
+                  className="relative mt-8 flex flex-col border-t border-line"
+                  aria-label={`${solution.phase} deliverables`}
+                >
+                  {solution.deliverables.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-3 border-b border-line py-3 text-sm text-paper/80"
+                    >
+                      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-accent" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="relative mt-auto pt-8 font-mono text-[11px] leading-relaxed tracking-[0.2em] text-muted uppercase">
+                  {solution.outcome}
+                </p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      {/* Full-bleed lead capture band — the conversion moment of the page.
+          The tint rises out of the page color so there is no hard seam with
+          the cards above, and the glow is clipped so it can't wash upward. */}
+      <div
+        id="audit"
+        data-reveal
+        className="relative mt-16 scroll-mt-20 overflow-hidden border-b border-accent/10 md:mt-20"
+      >
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/[0.07] to-ink-2"
+        />
+        <div
+          aria-hidden
+          className="absolute top-[15%] left-1/4 h-[75%] w-1/2 rounded-full bg-accent/10 blur-[160px] motion-safe:animate-glow-breathe"
+        />
+
+        <div className="relative mx-auto grid max-w-[1400px] items-center gap-14 px-6 py-16 md:px-10 md:py-24 lg:grid-cols-2 lg:gap-20">
+          <div>
+            <p className="mb-5 flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-accent uppercase">
+              <span aria-hidden className="size-1.5 animate-pulse-dot rounded-full bg-accent" />
+              Free — no strings attached
             </p>
 
-            <h3 className="mt-6 font-display text-3xl font-medium tracking-tight">
-              {solution.title}
-            </h3>
-
-            <p className="mt-4 leading-relaxed text-muted">{solution.description}</p>
-
-            <ul
-              className="mt-8 flex flex-col border-t border-line"
-              aria-label={`${solution.phase} deliverables`}
+            <AnimatedText
+              as="p"
+              className="font-display text-3xl leading-[1.1] font-medium tracking-tight text-balance md:text-5xl"
             >
-              {solution.deliverables.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-3 border-b border-line py-3 text-sm text-paper/80"
-                >
+              Get a free 15-point audit of your website.
+            </AnimatedText>
+
+            <p className="mt-5 max-w-xl leading-relaxed text-muted md:text-lg">
+              I&apos;ll record a short video walking through exactly what&apos;s
+              holding your site back — and what I&apos;d fix first. Yours to
+              keep, whoever you build with.
+            </p>
+
+            <ul className="mt-8 flex flex-col gap-3" aria-label="What the audit covers">
+              {auditChecks.map((item) => (
+                <li key={item} className="flex items-center gap-3 text-paper/85">
                   <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-accent" />
                   {item}
                 </li>
               ))}
             </ul>
 
-            <p className="mt-auto pt-8 font-mono text-[11px] leading-relaxed tracking-[0.2em] text-muted uppercase">
-              {solution.outcome}
-            </p>
-          </article>
-        ))}
-      </div>
+            {/* Placeholder portrait — swap the inner div for an <Image> once a real photo exists */}
+            <div className="mt-10 flex items-center gap-4">
+              <div className="relative size-14 shrink-0">
+                <div className="absolute inset-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-ink-2">
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 flex items-center justify-center font-display text-xl font-semibold text-accent/90"
+                  >
+                    B
+                  </span>
+                </div>
+                <span
+                  aria-hidden
+                  className="absolute right-0 bottom-0 size-3.5 rounded-full border-2 border-ink bg-accent motion-safe:animate-pulse-dot"
+                />
+              </div>
+              <div>
+                <p className="font-display text-base font-medium">Bart Beltowski</p>
+                <p className="mt-1 font-mono text-[11px] leading-relaxed tracking-[0.15em] text-muted uppercase">
+                  Every audit recorded personally — never an automated report
+                </p>
+              </div>
+            </div>
 
-      <div
-        data-reveal
-        className="mt-20 flex flex-col items-center gap-6 text-center md:mt-24"
-      >
-        <p className="max-w-[26ch] font-display text-3xl font-medium tracking-tight text-balance md:text-4xl">
-          Want to know where your site stands today?
-        </p>
-        <MagneticButton
-          href="#contact"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("#contact");
-          }}
-        >
-          Get a free audit
-          <span aria-hidden>↗</span>
-        </MagneticButton>
+            <p className="mt-8 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
+              48h turnaround · No sales call · Video walkthrough
+            </p>
+          </div>
+
+          <form
+            aria-label="Request your free website audit"
+            className="rounded-2xl border border-paper/10 bg-ink/60 p-8 backdrop-blur-md md:p-10"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setSent(true);
+            }}
+          >
+            <div className="grid gap-7 sm:grid-cols-2">
+              <div>
+                <label htmlFor="audit-name" className={labelCls}>
+                  Name
+                </label>
+                <input
+                  id="audit-name"
+                  name="name"
+                  type="text"
+                  required
+                  autoComplete="name"
+                  placeholder="Jane Appleseed"
+                  className={inputCls}
+                />
+              </div>
+              <div>
+                <label htmlFor="audit-email" className={labelCls}>
+                  Email
+                </label>
+                <input
+                  id="audit-email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  placeholder="jane@business.com"
+                  className={inputCls}
+                />
+              </div>
+            </div>
+
+            <div className="mt-7">
+              <label htmlFor="audit-url" className={labelCls}>
+                Your website
+              </label>
+              <input
+                id="audit-url"
+                name="website"
+                type="url"
+                required
+                inputMode="url"
+                autoComplete="url"
+                placeholder="https://yourbusiness.com"
+                className={inputCls}
+              />
+            </div>
+
+            <div className="mt-7">
+              <label htmlFor="audit-goal" className={labelCls}>
+                Biggest goal right now
+              </label>
+              <select id="audit-goal" name="goal" className={inputCls}>
+                <option className="bg-ink">More traffic from search</option>
+                <option className="bg-ink">More enquiries & sales</option>
+                <option className="bg-ink">Automate work with AI</option>
+                <option className="bg-ink">All of the above</option>
+              </select>
+            </div>
+
+            <div className="mt-9 flex flex-wrap items-center gap-5">
+              <MagneticButton type="submit">
+                Get my free audit
+                <span aria-hidden>↗</span>
+              </MagneticButton>
+              {sent && (
+                <p role="status" className="text-sm text-accent">
+                  Thanks — your audit lands in your inbox within 48 hours.
+                </p>
+              )}
+            </div>
+
+            <p className="mt-6 font-mono text-[10px] tracking-[0.15em] text-muted/70 uppercase">
+              No spam, no list — just the audit.
+            </p>
+          </form>
+        </div>
       </div>
     </section>
   );

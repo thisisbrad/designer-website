@@ -13,6 +13,7 @@
   --animate-drift: drift 6s linear infinite;
   --animate-eq: eq 1.1s ease-in-out infinite alternate;
   --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+  --animate-glow-breathe: glow-breathe 9s ease-in-out infinite alternate;
 
   @keyframes marquee {
     to {
@@ -44,6 +45,16 @@
     }
     50% {
       opacity: 0.35;
+    }
+  }
+  @keyframes glow-breathe {
+    from {
+      opacity: 0.55;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.05);
     }
   }
 }
