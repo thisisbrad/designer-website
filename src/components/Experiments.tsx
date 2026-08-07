@@ -3,23 +3,59 @@
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
 import SectionHeading from "./SectionHeading";
 
-type Experiment = {
+type UseCase = {
   title: string;
-  type: string;
-  year: string;
+  industry: string;
+  description: string;
   visual: "orbit" | "marquee" | "dots" | "eq" | "bloom" | "cross";
 };
 
-const experiments: Experiment[] = [
-  { title: "RankLens", type: "SEO audit engine", year: "2026", visual: "orbit" },
-  { title: "Query Stream", type: "Live search ticker", year: "2025", visual: "marquee" },
-  { title: "Entity Graph", type: "Knowledge-graph viz", year: "2025", visual: "dots" },
-  { title: "Voicebox", type: "AI voice agent", year: "2024", visual: "eq" },
-  { title: "Embedding Bloom", type: "Vector-space visual", year: "2024", visual: "bloom" },
-  { title: "Heat Grid", type: "CRO heatmap prototype", year: "2023", visual: "cross" },
+const useCases: UseCase[] = [
+  {
+    title: "After-hours booking bot",
+    industry: "HVAC & Home Services",
+    description:
+      "Answers every call and late-night chat, quotes common jobs and books the service call straight into your calendar — emergencies dispatched first.",
+    visual: "orbit",
+  },
+  {
+    title: "Quote-chaser",
+    industry: "Painters & Contractors",
+    description:
+      "Captures quote requests, qualifies the job and follows up politely until the estimate turns into a booked project — no lead left to go cold.",
+    visual: "marquee",
+  },
+  {
+    title: "Patient recall engine",
+    industry: "Medical & Dental",
+    description:
+      "Reminds patients of checkups, fills cancelled slots from a waitlist and quietly wins back the ones who drifted away.",
+    visual: "eq",
+  },
+  {
+    title: "Front-desk copilot",
+    industry: "Salons & Clinics",
+    description:
+      "Handles reschedules, waitlists and FAQs by text around the clock — fewer no-shows without a single extra hire.",
+    visual: "dots",
+  },
+  {
+    title: "Intake assistant",
+    industry: "Law & Professional Services",
+    description:
+      "Screens new enquiries, gathers the details that matter and schedules the consultation — before your competitors even reply.",
+    visual: "cross",
+  },
+  {
+    title: "Review & referral loop",
+    industry: "Local Business",
+    description:
+      "Asks happy customers for a review at exactly the right moment and routes referrals straight into your pipeline.",
+    visual: "bloom",
+  },
 ];
 
-function Visual({ kind }: { kind: Experiment["visual"] }) {
+function Visual({ kind }: { kind: UseCase["visual"] }) {
   switch (kind) {
     case "orbit":
       return (
@@ -33,8 +69,8 @@ function Visual({ kind }: { kind: Experiment["visual"] }) {
       return (
         <div className="w-full overflow-hidden">
           <div className="flex w-max whitespace-nowrap font-display text-4xl font-semibold tracking-tight text-paper/20 motion-safe:animate-marquee">
-            <span className="pr-6">SEARCH — RANK — CONVERT —&nbsp;</span>
-            <span className="pr-6">SEARCH — RANK — CONVERT —&nbsp;</span>
+            <span className="pr-6">QUOTE — FOLLOW UP — BOOKED —&nbsp;</span>
+            <span className="pr-6">QUOTE — FOLLOW UP — BOOKED —&nbsp;</span>
           </div>
         </div>
       );
@@ -94,24 +130,29 @@ export default function Experiments() {
     >
       <SectionHeading
         id="experiments-heading"
-        eyebrow="05 — Lab"
-        title="Selected experiments"
-        description="AI agents, SEO tooling and interface prototypes — the playground that keeps client work ahead of the curve."
+        eyebrow="05 — AI in action"
+        title="AI that earns its keep"
+        description="Real assistants and automations built for real businesses — booking clients, chasing leads and keeping customers coming back while you do the work."
       />
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {experiments.map((exp) => (
-          <li key={exp.title} data-reveal data-cursor="hover">
-            <div className="group flex aspect-square flex-col overflow-hidden rounded-2xl border border-line bg-ink-2 transition-colors duration-500 hover:border-accent/40">
-              <div className="flex flex-1 items-center justify-center overflow-hidden p-8 transition-transform duration-700 group-hover:scale-105">
-                <Visual kind={exp.visual} />
+        {useCases.map((useCase) => (
+          <li key={useCase.title} data-reveal data-cursor="hover">
+            <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-2 transition-colors duration-500 hover:border-accent/40">
+              <div className="flex h-44 items-center justify-center overflow-hidden border-b border-line p-6">
+                <div className="flex size-full items-center justify-center transition-transform duration-700 group-hover:scale-105">
+                  <Visual kind={useCase.visual} />
+                </div>
               </div>
-              <div className="flex items-baseline justify-between border-t border-line px-5 py-4">
-                <h3 className="font-display text-lg font-medium tracking-tight">
-                  {exp.title}
+              <div className="flex flex-1 flex-col gap-3 p-6">
+                <p className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
+                  {useCase.industry}
+                </p>
+                <h3 className="font-display text-xl font-medium tracking-tight">
+                  {useCase.title}
                 </h3>
-                <p className="font-mono text-[11px] tracking-[0.15em] text-muted uppercase">
-                  {exp.type} · {exp.year}
+                <p className="text-sm leading-relaxed text-muted">
+                  {useCase.description}
                 </p>
               </div>
             </div>

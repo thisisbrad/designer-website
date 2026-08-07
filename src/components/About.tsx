@@ -94,7 +94,7 @@ export default function About() {
 
           <div className="flex flex-col gap-6 text-lg leading-relaxed text-muted lg:col-span-6 lg:col-start-7">
             <p data-reveal>
-              I&apos;m <span className="text-paper">Bart Beltowski</span> — an
+              I&apos;m <span className="text-paper">Brad Beltowski</span> — an
               independent designer and developer with nine years of practice
               building websites that don&apos;t just look premium, they perform.
               I&apos;ve worked with startups, agencies and local businesses,

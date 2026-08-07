@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { solutions } from "@/data/solutions";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
 import AnimatedText from "./AnimatedText";
 import MagneticButton from "./MagneticButton";
 
 const dotGrid: React.CSSProperties = {
-  backgroundImage: "radial-gradient(rgba(242,239,232,0.12) 1px, transparent 1px)",
+  backgroundImage:
+    "radial-gradient(rgba(242,239,232,0.12) 1px, transparent 1px)",
   backgroundSize: "48px 48px",
-  maskImage: "radial-gradient(ellipse 90% 70% at 50% 25%, black, transparent 75%)",
+  maskImage:
+    "radial-gradient(ellipse 90% 70% at 50% 25%, black, transparent 75%)",
   WebkitMaskImage:
     "radial-gradient(ellipse 90% 70% at 50% 25%, black, transparent 75%)",
 };
@@ -58,17 +61,26 @@ export default function Solutions() {
           className="max-w-[16ch] font-display text-[clamp(2.5rem,6vw,5.5rem)] leading-[1.05] font-medium tracking-tight"
         >
           <AnimatedText className="block">A straight line from</AnimatedText>
-          <AnimatedText className="block text-accent">search to sale.</AnimatedText>
+          <AnimatedText className="block text-accent">
+            search to sale.
+          </AnimatedText>
         </h2>
 
-        <p data-reveal className="mt-7 max-w-xl text-base leading-relaxed text-muted md:text-lg">
+        <p
+          data-reveal
+          className="mt-7 max-w-xl text-base leading-relaxed text-muted md:text-lg"
+        >
           No retainers for vague brand awareness. One plan with three moving
           parts — each one measurable, each one built to compound.
         </p>
 
         <div className="mt-16 grid gap-4 md:mt-20 lg:grid-cols-3">
           {solutions.map((solution) => (
-            <article key={solution.index} data-reveal aria-label={solution.phase}>
+            <article
+              key={solution.index}
+              data-reveal
+              aria-label={solution.phase}
+            >
               <div
                 data-cursor="hover"
                 className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-2/80 p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40"
@@ -106,7 +118,10 @@ export default function Solutions() {
                       key={item}
                       className="flex items-center gap-3 border-b border-line py-3 text-sm text-paper/80"
                     >
-                      <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-accent" />
+                      <span
+                        aria-hidden
+                        className="size-1.5 shrink-0 rounded-full bg-accent"
+                      />
                       {item}
                     </li>
                   ))}
@@ -138,45 +153,54 @@ export default function Solutions() {
           className="absolute top-[15%] left-1/4 h-[75%] w-1/2 rounded-full bg-accent/10 blur-[160px] motion-safe:animate-glow-breathe"
         />
 
-        <div className="relative mx-auto grid max-w-[1400px] items-center gap-14 px-6 py-16 md:px-10 md:py-24 lg:grid-cols-2 lg:gap-20">
+        <div className="relative mx-auto grid max-w-[1400px] items-center gap-14 px-6 py-16 md:px-10 md:py-24 lg:grid-cols-2 lg:gap-14 xl:grid-cols-[1fr_auto_1fr]">
           <div>
             <p className="mb-5 flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-accent uppercase">
-              <span aria-hidden className="size-1.5 animate-pulse-dot rounded-full bg-accent" />
+              <span
+                aria-hidden
+                className="size-1.5 animate-pulse-dot rounded-full bg-accent"
+              />
               Free — no strings attached
             </p>
 
             <AnimatedText
               as="p"
-              className="font-display text-3xl leading-[1.1] font-medium tracking-tight text-balance md:text-5xl"
+              className="font-display text-3xl leading-[1.1] font-medium tracking-tight text-balance md:text-4xl"
             >
               Get a free 15-point audit of your website.
             </AnimatedText>
 
-            <p className="mt-5 max-w-xl leading-relaxed text-muted md:text-lg">
+            <p className="mt-5 max-w-xl leading-relaxed text-muted">
               I&apos;ll record a short video walking through exactly what&apos;s
               holding your site back — and what I&apos;d fix first. Yours to
               keep, whoever you build with.
             </p>
 
-            <ul className="mt-8 flex flex-col gap-3" aria-label="What the audit covers">
+            <ul
+              className="mt-8 flex flex-col gap-3"
+              aria-label="What the audit covers"
+            >
               {auditChecks.map((item) => (
                 <li key={item} className="flex items-center gap-3 text-paper/85">
-                  <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-accent" />
+                  <span
+                    aria-hidden
+                    className="size-1.5 shrink-0 rounded-full bg-accent"
+                  />
                   {item}
                 </li>
               ))}
             </ul>
 
-            {/* Placeholder portrait — swap the inner div for an <Image> once a real photo exists */}
             <div className="mt-10 flex items-center gap-4">
               <div className="relative size-14 shrink-0">
                 <div className="absolute inset-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-ink-2">
-                  <span
-                    aria-hidden
-                    className="absolute inset-0 flex items-center justify-center font-display text-xl font-semibold text-accent/90"
-                  >
-                    B
-                  </span>
+                  <Image
+                    src="/portrait-face.png"
+                    alt=""
+                    width={56}
+                    height={56}
+                    className="size-full object-cover"
+                  />
                 </div>
                 <span
                   aria-hidden
@@ -184,7 +208,9 @@ export default function Solutions() {
                 />
               </div>
               <div>
-                <p className="font-display text-base font-medium">Bart Beltowski</p>
+                <p className="font-display text-base font-medium">
+                  Brad Beltowski
+                </p>
                 <p className="mt-1 font-mono text-[11px] leading-relaxed tracking-[0.15em] text-muted uppercase">
                   Every audit recorded personally — never an automated report
                 </p>
@@ -194,6 +220,43 @@ export default function Solutions() {
             <p className="mt-8 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               48h turnaround · No sales call · Video walkthrough
             </p>
+          </div>
+
+          {/* Duotone owner portrait, centered between copy and form and
+              anchored to the band's bottom edge (the negative margin cancels
+              the container's bottom padding). */}
+          <div className="relative hidden self-end justify-self-center xl:block xl:-mb-24">
+            <div
+              aria-hidden
+              className="absolute bottom-0 left-1/2 h-[85%] w-[115%] -translate-x-1/2 rounded-full bg-accent/15 blur-[110px]"
+            />
+
+            {/* Subtle particles orbiting the portrait */}
+            <div aria-hidden className="absolute inset-0">
+              <span className="absolute top-[8%] left-[6%] size-1.5 rounded-full bg-accent/80 motion-safe:animate-float-y" />
+              <span
+                className="absolute top-[24%] right-[2%] size-1 rounded-full bg-paper/60 motion-safe:animate-float-y"
+                style={{ animationDelay: "-2.2s", animationDuration: "7s" }}
+              />
+              <span
+                className="absolute top-[55%] left-[-4%] size-2.5 rounded-full bg-accent/40 blur-[2px] motion-safe:animate-float-y"
+                style={{ animationDelay: "-4s", animationDuration: "8s" }}
+              />
+              <span className="absolute top-[12%] right-[14%] size-6 rounded-full border border-dashed border-accent/40 motion-safe:animate-rotate-slow" />
+              <span
+                className="absolute right-[-5%] bottom-[18%] size-1.5 rounded-full bg-accent/60 motion-safe:animate-float-y"
+                style={{ animationDelay: "-1.4s" }}
+              />
+            </div>
+
+            <Image
+              src="/portrait-duotone.png"
+              alt="Brad Beltowski"
+              width={512}
+              height={512}
+              priority={false}
+              className="relative w-[440px] select-none 2xl:w-[500px]"
+            />
           </div>
 
           <form
