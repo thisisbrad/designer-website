@@ -48,7 +48,7 @@ export default function Hero() {
       aria-label="Introduction"
       className="relative flex min-h-svh flex-col overflow-hidden"
     >
-      <ThreeScene className="pointer-events-none absolute inset-y-0 right-0 w-full opacity-70 lg:w-3/5" />
+      <ThreeScene className="pointer-events-none absolute inset-y-0 right-0 w-full opacity-80 lg:w-3/5" />
       <div
         aria-hidden
         className="absolute inset-0 bg-gradient-to-r from-ink via-ink/55 to-transparent"
