@@ -7,9 +7,9 @@ import { prefersReducedMotion } from "@/lib/utils";
 
 let lenis: Lenis | null = null;
 
-export function scrollToSection(selector: string) {
+export function scrollToSection(selector: string, offset = -64) {
   if (lenis) {
-    lenis.scrollTo(selector, { offset: -64, duration: 1.4 });
+    lenis.scrollTo(selector, { offset, duration: 1.4 });
   } else {
     document
       .querySelector(selector)

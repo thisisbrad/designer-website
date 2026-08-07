@@ -1,3 +1,5 @@
+import { slugify, stripMarkup } from "@/lib/seo";
+
 export type PostSection = {
   heading?: string;
   paragraphs: string[];
@@ -16,13 +18,24 @@ export type PostCta = {
 export type Post = {
   slug: string;
   title: string;
+  /** Keyword-front-loaded <title>; keep under ~50 chars so the brand
+   *  template still fits inside Google's ~60-char cut-off. */
+  metaTitle?: string;
+  /** On-page standfirst — can run long, it isn't the snippet. */
   description: string;
+  /** Search snippet, kept under 155 chars so it isn't truncated. */
+  metaDescription: string;
   category: string;
-  date: string; // ISO date, used for datePublished
+  date: string; // ISO, datePublished
+  updated?: string; // ISO, dateModified
   readTime: string;
   keywords: string[];
+  /** Snippet-friendly summary shown above the article and marked speakable. */
+  takeaways: string[];
   sections: PostSection[];
-  faq?: PostFaq[];
+  faq: PostFaq[];
+  /** Slugs of sibling posts — the cluster's internal link graph. */
+  related: string[];
   cta: PostCta;
 };
 
@@ -30,10 +43,14 @@ export const posts: Post[] = [
   {
     slug: "local-seo-map-pack",
     title: "How local businesses actually win the Google map pack",
+    metaTitle: "How to Rank in the Google Map Pack",
     description:
       "The three pinned map results take most of the clicks for local searches. Here is what Google actually weighs — and the profile, review and location-page work that moves you into them.",
+    metaDescription:
+      "The map pack takes most local clicks. What Google actually weighs, and the profile, review and location-page work that moves you into the top three.",
     category: "Local SEO",
     date: "2026-08-04",
+    updated: "2026-08-07",
     readTime: "8 min read",
     keywords: [
       "local SEO",
@@ -41,6 +58,12 @@ export const posts: Post[] = [
       "Google Business Profile",
       "local search ranking",
       "reviews strategy",
+      "local pack ranking factors",
+    ],
+    takeaways: [
+      "Google ranks the map pack on three things: relevance, distance and prominence — you can only influence two of them.",
+      "A complete Google Business Profile with fresh photos and steady, recent reviews moves the needle faster than anything on your website.",
+      "Location pages earn rankings when each one is genuinely useful; templated town-swap pages no longer work.",
     ],
     sections: [
       {
@@ -67,14 +90,14 @@ export const posts: Post[] = [
         heading: "Reviews are a ranking factor — and a conversion engine",
         paragraphs: [
           "Review count, velocity and recency all feed prominence. A business collecting four fresh reviews a month will steadily pass one sitting on a hundred old ones. And replies matter: responding to every review — including the rough ones — signals an active, accountable business to both Google and the humans reading.",
-          "The trick is asking at the moment of delight: right after the job is done and the customer is happy. That timing is exactly what an automated follow-up (or an AI assistant) does reliably and a busy owner doesn't.",
+          "The trick is asking at the moment of delight: right after the job is done and the customer is happy. That timing is exactly what an automated follow-up does reliably and a busy owner doesn't — it's one of the highest-return jobs to hand to [an AI assistant](/blog/ai-assistants-that-book-clients).",
         ],
       },
       {
         heading: "Location and service pages that don't feel like spam",
         paragraphs: [
           "If you serve multiple towns, each deserves one genuinely useful page: the services you offer there, local jobs you've completed, area-specific pricing or response times, and a map. What doesn't work anymore is the old trick of one template repeated forty times with the town name swapped.",
-          "Pair every page with matching schema markup — a LocalBusiness or Service entity with the right areaServed — so machines can read what humans see.",
+          "Pair every page with matching [schema markup](/blog/schema-markup-plain-english) — a LocalBusiness or Service entity with the right areaServed — so machines can read what humans see.",
         ],
       },
       {
@@ -82,6 +105,12 @@ export const posts: Post[] = [
         paragraphs: [
           "Your name, address and phone number should be identical everywhere they appear — site, profile, directories, socials. Inconsistencies read as uncertainty about who you are, and uncertainty suppresses prominence.",
           "A citation cleanup is boring, finite work: fix the big directories once, then stop worrying. It's a foundation, not an ongoing tactic.",
+        ],
+      },
+      {
+        heading: "Don't let a slow site undo the work",
+        paragraphs: [
+          "Map pack listings send people to your website, and most of them arrive on a phone with poor signal. If the page takes five seconds to appear, the ranking you fought for turns into a back-tap. Local visibility and [page speed](/blog/core-web-vitals-for-business-owners) are the same project, not two.",
         ],
       },
       {
@@ -107,6 +136,16 @@ export const posts: Post[] = [
         answer:
           "As a one-time cleanup, yes: consistent name, address and phone data across major directories removes doubt about your business identity. As a monthly service you keep paying for, generally no.",
       },
+      {
+        question: "How many Google reviews do I need to rank?",
+        answer:
+          "There is no threshold — what matters is being competitive with the businesses currently in the pack, and collecting reviews steadily rather than in bursts. A consistent few per month beats a one-off push.",
+      },
+    ],
+    related: [
+      "schema-markup-plain-english",
+      "ai-assistants-that-book-clients",
+      "website-audit-checklist",
     ],
     cta: {
       hook: "Not showing up in the map pack?",
@@ -117,10 +156,14 @@ export const posts: Post[] = [
   {
     slug: "schema-markup-plain-english",
     title: "Schema markup in plain English — and why Google rewards it",
+    metaTitle: "Schema Markup in Plain English",
     description:
       "Structured data is how you label your business, services and FAQs so machines understand them. A plain-English guide to JSON-LD, the schema types local businesses need, and the mistakes to avoid.",
+    metaDescription:
+      "A plain-English guide to structured data: what JSON-LD does, the schema types a local business needs, and the mistakes that get sites penalised.",
     category: "Technical SEO",
     date: "2026-07-21",
+    updated: "2026-08-07",
     readTime: "7 min read",
     keywords: [
       "schema markup",
@@ -129,6 +172,11 @@ export const posts: Post[] = [
       "LocalBusiness schema",
       "rich results",
       "semantic HTML",
+    ],
+    takeaways: [
+      "Schema markup is a shared vocabulary that tells search engines what your pages mean, not just what they say.",
+      "JSON-LD is the format to use, and a local business needs only a handful of types done well.",
+      "Only mark up what's visibly on the page — inventing reviews or ratings is the fastest route to a penalty.",
     ],
     sections: [
       {
@@ -141,7 +189,7 @@ export const posts: Post[] = [
         heading: "What structured data actually does",
         paragraphs: [
           "Two things. First, eligibility: FAQ dropdowns, review stars, breadcrumbs and business panels in search results are drawn from structured data — no markup, no rich result. Second, disambiguation: it connects your pages into one unambiguous entity, so Google knows your homepage, your profile and your blog all describe the same business.",
-          "Neither is a magic ranking switch. But richer results earn more clicks at the same position, and a clearly-understood business gets surfaced more confidently for relevant searches — especially local ones.",
+          "Neither is a magic ranking switch. But richer results earn more clicks at the same position, and a clearly-understood business gets surfaced more confidently for relevant searches — especially [local ones](/blog/local-seo-map-pack).",
         ],
       },
       {
@@ -172,6 +220,12 @@ export const posts: Post[] = [
         ],
       },
       {
+        heading: "Structured data is how AI answers find you",
+        paragraphs: [
+          "Assistants and AI search summaries lean on the same machine-readable signals. A business whose services, areas and answers are explicitly labelled is far likelier to be quoted correctly than one whose details live only inside paragraphs — which makes schema an investment in the next decade of search, not just this one.",
+        ],
+      },
+      {
         heading: "The mistakes that get sites in trouble",
         paragraphs: [
           "Schema describes what's visibly on the page — nothing more. Marking up reviews that appear nowhere, five-star ratings you can't show, or services you don't offer is the fast route to a manual penalty.",
@@ -185,6 +239,28 @@ export const posts: Post[] = [
         ],
       },
     ],
+    faq: [
+      {
+        question: "Does schema markup improve rankings directly?",
+        answer:
+          "Not as a direct ranking factor. It makes pages eligible for rich results and helps search engines understand your business confidently, which improves click-through and how often you're surfaced for relevant queries.",
+      },
+      {
+        question: "Which schema format should I use?",
+        answer:
+          "JSON-LD. Google explicitly recommends it, it sits separately from your visible markup, and it's the easiest format to generate automatically and keep accurate.",
+      },
+      {
+        question: "Can bad schema markup hurt my site?",
+        answer:
+          "Yes. Marking up content that isn't visible on the page — fake reviews, ratings or offers — can trigger a manual action. Conflicting duplicate markup from multiple plugins also confuses search engines.",
+      },
+    ],
+    related: [
+      "local-seo-map-pack",
+      "core-web-vitals-for-business-owners",
+      "website-audit-checklist",
+    ],
     cta: {
       hook: "Does Google actually understand your site?",
       copy: "The free audit includes a schema and semantic-HTML check — what's marked up, what's missing, and which rich results you're leaving unclaimed.",
@@ -194,10 +270,14 @@ export const posts: Post[] = [
   {
     slug: "ai-assistants-that-book-clients",
     title: "AI assistants that book clients — not just chat",
+    metaTitle: "AI Booking Assistants for Business",
     description:
       "Most website chatbots answer questions and lose the lead anyway. The difference between a toy and a booking assistant: calendar integration, qualification, speed-to-lead and a clean human handoff.",
+    metaDescription:
+      "Most chatbots lose the lead anyway. What separates a toy from an assistant that books real appointments: qualification, calendars and speed-to-lead.",
     category: "AI Solutions",
     date: "2026-07-02",
+    updated: "2026-08-07",
     readTime: "6 min read",
     keywords: [
       "AI chatbot for business",
@@ -206,6 +286,11 @@ export const posts: Post[] = [
       "speed to lead",
       "AI for HVAC",
       "AI receptionist",
+    ],
+    takeaways: [
+      "A chatbot answers questions; a booking assistant completes the transaction your business runs on.",
+      "Qualifying before booking is the difference between more appointments and better ones.",
+      "Speed-to-lead is the structural advantage: an assistant is always there in the first five minutes.",
     ],
     sections: [
       {
@@ -243,11 +328,39 @@ export const posts: Post[] = [
         ],
       },
       {
+        heading: "The quiet win: reviews and repeat work",
+        paragraphs: [
+          "Booking is the headline, but the same automation closes the loop after the job: a thank-you, a review request timed to the moment of delight, a reminder when a service is due again. Those review requests feed straight back into [your local search ranking](/blog/local-seo-map-pack), which is why booking assistants and SEO compound rather than compete.",
+        ],
+      },
+      {
         heading: "Measure it like a channel",
         paragraphs: [
           "Judge the assistant the way you'd judge an employee: conversations handled, appointments booked, show rate, revenue attributed. If a review-and-referral loop runs through it too, count those. When the numbers are visible, the question stops being “is AI worth it” and becomes “what else should it handle.”",
         ],
       },
+    ],
+    faq: [
+      {
+        question: "Will an AI assistant annoy my customers?",
+        answer:
+          "Only if it's designed to trap them. A well-built assistant states what it is, answers fast, and hands off to a human on request or whenever it's unsure — with the conversation transcript attached so nobody repeats themselves.",
+      },
+      {
+        question: "How long does it take to deploy an AI booking assistant?",
+        answer:
+          "A useful one is a small project rather than a widget install — typically two to four weeks, most of it spent wiring your calendar, service rules and CRM rather than the AI itself.",
+      },
+      {
+        question: "What happens with emergencies or unusual requests?",
+        answer:
+          "You define the escalation rules. Emergency keywords route straight to your phone, unusual requests hand off to a human, and everything else books itself.",
+      },
+    ],
+    related: [
+      "local-seo-map-pack",
+      "website-audit-checklist",
+      "core-web-vitals-for-business-owners",
     ],
     cta: {
       hook: "How many leads leaked away while you were on a job?",
@@ -258,10 +371,14 @@ export const posts: Post[] = [
   {
     slug: "core-web-vitals-for-business-owners",
     title: "Core Web Vitals, minus the jargon",
+    metaTitle: "Core Web Vitals, Minus the Jargon",
     description:
       "Google grades your site on three real-experience numbers — loading, responsiveness and visual stability. What LCP, INP and CLS mean in business terms, and the fixes that usually matter.",
+    metaDescription:
+      "What LCP, INP and CLS actually mean in business terms — and the handful of fixes that get most business websites back into the green.",
     category: "Performance",
     date: "2026-06-10",
+    updated: "2026-08-07",
     readTime: "6 min read",
     keywords: [
       "Core Web Vitals",
@@ -270,6 +387,11 @@ export const posts: Post[] = [
       "INP",
       "CLS",
       "website performance for business",
+    ],
+    takeaways: [
+      "Core Web Vitals measure loading (LCP), responsiveness (INP) and visual stability (CLS) from your real visitors' devices.",
+      "The conversion cost of a slow site is bigger and more immediate than the ranking cost.",
+      "Most business sites fail on the same handful of causes — oversized images, bloated page builders and cheap hosting.",
     ],
     sections: [
       {
@@ -291,7 +413,7 @@ export const posts: Post[] = [
         heading: "Speed converts before it ranks",
         paragraphs: [
           "The ranking effect of vitals is real but modest — a tiebreaker among similar results. The conversion effect is blunt: every added second of load time measurably increases abandonment, on mobile especially. A slow site pays for traffic and then wastes it.",
-          "That's why I treat performance as conversion work first and SEO second. The rankings follow the experience.",
+          "That's why I treat performance as conversion work first and SEO second. The rankings follow the experience — and if you're winning [local searches](/blog/local-seo-map-pack), the traffic arriving on phones is exactly the traffic a slow site loses.",
         ],
       },
       {
@@ -304,9 +426,31 @@ export const posts: Post[] = [
       {
         heading: "Check your site today",
         paragraphs: [
-          "Put your address into PageSpeed Insights. The top section — “what real users experience” — is the one that matters; it's the same field data Google uses. If it's green, move on to more productive work. If it's not, you now have a prioritized list, and it's the first thing I look at in every audit.",
+          "Put your address into PageSpeed Insights. The top section — “what real users experience” — is the one that matters; it's the same field data Google uses. If it's green, move on to more productive work. If it's not, you now have a prioritized list, and it's the first thing I look at in [every audit](/blog/website-audit-checklist).",
         ],
       },
+    ],
+    faq: [
+      {
+        question: "What is a good Core Web Vitals score?",
+        answer:
+          "Largest Contentful Paint under 2.5 seconds, Interaction to Next Paint under 200 milliseconds, and Cumulative Layout Shift under 0.1 — measured on real visitor devices, not in a lab test.",
+      },
+      {
+        question: "Do Core Web Vitals really affect Google rankings?",
+        answer:
+          "Yes, but modestly — they act as a tiebreaker between results of similar relevance. The larger business impact is on conversion, since slow pages lose visitors before they ever convert.",
+      },
+      {
+        question: "Do I need a new website to pass Core Web Vitals?",
+        answer:
+          "Usually not. Most failures trace to oversized images, excess scripts and slow hosting, all of which can be fixed on your existing site in a focused cleanup.",
+      },
+    ],
+    related: [
+      "website-audit-checklist",
+      "schema-markup-plain-english",
+      "local-seo-map-pack",
     ],
     cta: {
       hook: "Is your site failing its vitals right now?",
@@ -317,10 +461,14 @@ export const posts: Post[] = [
   {
     slug: "website-audit-checklist",
     title: "The 15-point audit I run on every business website",
+    metaTitle: "The 15-Point Website Audit Checklist",
     description:
       "Search visibility, speed, conversion and AI opportunity — the exact checklist behind the free audit, and why each point ends up costing businesses leads when it fails.",
+    metaDescription:
+      "The exact 15 checks I run on every business website — search visibility, speed, conversion and AI opportunity — and why each one costs you leads.",
     category: "Conversion",
     date: "2026-05-18",
+    updated: "2026-08-07",
     readTime: "7 min read",
     keywords: [
       "website audit",
@@ -328,6 +476,11 @@ export const posts: Post[] = [
       "conversion audit",
       "small business website",
       "free website audit",
+    ],
+    takeaways: [
+      "Fifteen checks across four areas: search visibility, speed, conversion and AI opportunity.",
+      "Most leaking sites fail the same points — unclear messaging, buried calls to action and forms nobody receives.",
+      "Run it yourself with the list below, or have it recorded against your site for free.",
     ],
     sections: [
       {
@@ -339,7 +492,7 @@ export const posts: Post[] = [
       {
         heading: "Search visibility (points 1–5)",
         paragraphs: [
-          "Can you be found by people who don't know your name yet?",
+          "Can you be found by people who don't know your name yet? Points 3 and 4 have their own deep dives — [schema markup](/blog/schema-markup-plain-english) and [the map pack](/blog/local-seo-map-pack).",
         ],
         list: [
           "1. Indexing — are your important pages actually in Google, and are junk pages kept out?",
@@ -351,7 +504,9 @@ export const posts: Post[] = [
       },
       {
         heading: "Speed & stability (points 6–9)",
-        paragraphs: ["Does the site feel instant on a normal phone?"],
+        paragraphs: [
+          "Does the site feel instant on a normal phone? If point 6 fails, start with [the Core Web Vitals guide](/blog/core-web-vitals-for-business-owners).",
+        ],
         list: [
           "6. Core Web Vitals — passing in real-user data, not just lab tests?",
           "7. Images — sized and compressed, or camera-roll originals?",
@@ -371,7 +526,9 @@ export const posts: Post[] = [
       },
       {
         heading: "AI opportunity (points 14–15)",
-        paragraphs: ["What's being done by hand that shouldn't be?"],
+        paragraphs: [
+          "What's being done by hand that shouldn't be? Both points are covered in detail in [AI assistants that book clients](/blog/ai-assistants-that-book-clients).",
+        ],
         list: [
           "14. Response coverage — what happens to enquiries at night and weekends, and how fast is the reply?",
           "15. Automatable busywork — follow-ups, review requests, reminders, FAQs an assistant could carry.",
@@ -384,6 +541,28 @@ export const posts: Post[] = [
         ],
       },
     ],
+    faq: [
+      {
+        question: "How long does the free website audit take?",
+        answer:
+          "It lands in your inbox within 48 hours of your request, as a short recorded video walking through your actual site rather than an automated PDF.",
+      },
+      {
+        question: "Is there a sales call attached to the audit?",
+        answer:
+          "No. The audit is yours to keep and act on however you like, whether you build with me or not.",
+      },
+      {
+        question: "Can I run this checklist myself?",
+        answer:
+          "Absolutely — every point above is checkable with free tools like Google Search Console, PageSpeed Insights and your own phone. The audit just saves you the afternoon and adds prioritization.",
+      },
+    ],
+    related: [
+      "local-seo-map-pack",
+      "core-web-vitals-for-business-owners",
+      "schema-markup-plain-english",
+    ],
     cta: {
       hook: "Want the 15 points scored for you?",
       copy: "Free, recorded personally against your site, in your inbox within 48 hours — with the top three fixes ranked by impact. No sales call attached.",
@@ -394,4 +573,43 @@ export const posts: Post[] = [
 
 export function getPost(slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
+}
+
+export function getRelated(post: Post): Post[] {
+  return post.related
+    .map((slug) => getPost(slug))
+    .filter((p): p is Post => Boolean(p));
+}
+
+/** Publish-order neighbours, for prev/next links that keep the archive crawlable. */
+export function getNeighbours(slug: string) {
+  const ordered = [...posts].sort((a, b) => b.date.localeCompare(a.date));
+  const i = ordered.findIndex((p) => p.slug === slug);
+  return {
+    newer: i > 0 ? ordered[i - 1] : undefined,
+    older: i >= 0 && i < ordered.length - 1 ? ordered[i + 1] : undefined,
+  };
+}
+
+/** Headings become the table of contents and the in-page anchor targets. */
+export function getHeadings(post: Post) {
+  return post.sections
+    .filter((section) => Boolean(section.heading))
+    .map((section) => ({
+      text: section.heading as string,
+      id: slugify(section.heading as string),
+    }));
+}
+
+export function getWordCount(post: Post) {
+  const body = post.sections
+    .flatMap((section) => [
+      section.heading ?? "",
+      ...section.paragraphs,
+      ...(section.list ?? []),
+    ])
+    .concat(post.takeaways)
+    .concat(post.faq.flatMap((f) => [f.question, f.answer]))
+    .join(" ");
+  return stripMarkup(body).split(/\s+/).filter(Boolean).length;
 }

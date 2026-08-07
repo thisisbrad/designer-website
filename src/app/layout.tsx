@@ -22,14 +22,55 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
+const SITE_DESCRIPTION =
+  "Independent designer and developer building fast, search-optimized websites and practical AI solutions that help businesses get found, convert and grow.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Beltowski® — Web Design, SEO & AI Solutions",
     template: "%s — Beltowski®",
   },
-  description:
-    "Independent designer and developer building fast, search-optimized websites and practical AI solutions that help businesses get found, convert and grow.",
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: OWNER_NAME, url: SITE_URL }],
+  creator: OWNER_NAME,
+  publisher: SITE_NAME,
+  alternates: {
+    canonical: "/",
+    types: { "application/rss+xml": "/feed.xml" },
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: "Beltowski® — Web Design, SEO & AI Solutions",
+    description: SITE_DESCRIPTION,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Beltowski® — Web Design, SEO & AI Solutions",
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  formatDetection: { telephone: false },
+  category: "technology",
+};
+
+export const viewport = {
+  themeColor: "#0a0a0b",
+  colorScheme: "dark" as const,
 };
 
 /** Site-wide entity graph: the business (local search), its owner and the site. */
@@ -44,21 +85,51 @@ const organizationJsonLd = {
       email: SITE_EMAIL,
       description:
         "Web design, SEO marketing and AI solutions for businesses — fast, search-optimized websites, local search, and AI assistants that book clients.",
+      image: `${SITE_URL}/logo.png`,
+      logo: {
+        "@type": "ImageObject",
+        "@id": `${SITE_URL}/#logo`,
+        url: `${SITE_URL}/logo.png`,
+        width: 512,
+        height: 512,
+        caption: SITE_NAME,
+      },
       address: {
         "@type": "PostalAddress",
-        addressLocality: "Florida",
+        addressRegion: "FL",
         addressCountry: "US",
       },
-      areaServed: "Worldwide (remote)",
+      areaServed: [
+        { "@type": "State", name: "Florida" },
+        { "@type": "Country", name: "United States" },
+      ],
+      availableLanguage: "English",
+      priceRange: "$$",
       founder: { "@id": `${SITE_URL}/#owner` },
       knowsAbout: [
         "Web design",
         "Frontend development",
-        "SEO marketing",
+        "Search engine optimization",
         "Local SEO",
+        "Schema markup",
+        "Core Web Vitals",
         "AI assistants",
-        "Conversion optimization",
+        "Conversion rate optimization",
       ],
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Services",
+        itemListElement: [
+          "Web design",
+          "Frontend development",
+          "SEO marketing",
+          "AI solutions",
+          "Analytics & CRO",
+        ].map((name) => ({
+          "@type": "Offer",
+          itemOffered: { "@type": "Service", name },
+        })),
+      },
     },
     {
       "@type": "Person",
@@ -66,7 +137,17 @@ const organizationJsonLd = {
       name: OWNER_NAME,
       url: SITE_URL,
       email: SITE_EMAIL,
+      image: `${SITE_URL}/portrait-face.png`,
       jobTitle: "Designer, developer & AI consultant",
+      description:
+        "Nine years building websites that get found and convert — technical SEO, conversion design and AI assistants for startups, agencies and local businesses.",
+      knowsAbout: [
+        "Local SEO",
+        "Schema markup",
+        "Core Web Vitals",
+        "AI assistants",
+        "Conversion design",
+      ],
       worksFor: { "@id": `${SITE_URL}/#business` },
     },
     {
@@ -74,8 +155,9 @@ const organizationJsonLd = {
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
       name: SITE_NAME,
+      description: SITE_DESCRIPTION,
       publisher: { "@id": `${SITE_URL}/#business` },
-      inLanguage: "en",
+      inLanguage: "en-US",
     },
   ],
 };

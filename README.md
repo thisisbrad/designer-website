@@ -8,9 +8,100 @@ Tailwind CSS, GSAP and React Three Fiber.
 
 ```bash
 npm install
-npm run dev     # http://localhost:3000
-npm run build   # production build
+npm run dev        # http://localhost:3000
+npm run build      # production build
+npm run seo:check  # audits the running site (see SEO below)
 ```
+
+## SEO
+
+Everything below is generated from one source of truth — `src/data/posts.ts`
+and `src/lib/site.ts` — so metadata, schema, the sitemap and the feed can't
+drift apart.
+
+### Structured data
+
+A single JSON-LD entity graph, keyed by `@id` so nodes reference each other
+instead of repeating themselves:
+
+| Node                  | Where          | Purpose                                                 |
+| --------------------- | -------------- | ------------------------------------------------------- |
+| `ProfessionalService` | every page     | The business: logo, address, `areaServed`, service catalog — the local-search entity. |
+| `Person`              | every page     | Brad as author/founder, linked from every article.       |
+| `WebSite`             | every page     | Ties the pages into one site entity.                     |
+| `CollectionPage`+`Blog` | `/blog`      | Wraps an `ItemList` of every post in publish order.      |
+| `BlogPosting`         | each post      | `headline`, `image`, `datePublished`/`dateModified`, `wordCount`, `timeRequired`, `speakable`. |
+| `BreadcrumbList`      | blog pages     | Powers breadcrumb display in results.                    |
+| `FAQPage`             | each post      | Every post carries genuine Q&As, also read by AI answers. |
+
+Validate changes with Google's Rich Results Test and the schema.org
+validator; `npm run seo:check` catches missing nodes before you get there.
+
+### On-page
+
+- **Distinct meta vs on-page text.** `metaTitle` (short, keyword-first) and
+  `metaDescription` (≤155 chars) drive the SERP snippet; the longer `title`
+  and `description` are the on-page headline and standfirst. Titles get
+  `%s — Beltowski®` appended by the layout template.
+- **Semantic HTML** — one `h1`, `h2`-per-section with slugified anchor IDs,
+  real `article`/`section`/`nav`/`aside`/`time` elements, `dl` for FAQs.
+- **Key takeaways** block at the top of each post, marked `data-speakable`
+  and targeted by the `speakable` schema — written to be snippet-liftable.
+- **Table of contents** — sticky sidebar on large screens, `<details>` on
+  mobile, both linking to the same heading anchors.
+- **E-E-A-T signals** — author byline, portrait, credentials box, published
+  and updated dates on every post.
+
+### Internal linking
+
+The posts form a deliberate hub-and-spoke cluster rather than a flat list:
+
+- `website-audit-checklist` is the **hub** — its checklist points link out to
+  the deep dive for each topic.
+- The other four are **spokes**: each links back to the hub, plus one or two
+  siblings, from inside the body copy where the reference is genuinely
+  useful (`[label](/blog/slug)` syntax, rendered by `components/RichText`).
+- Every post also carries three `related` posts and prev/next navigation, so
+  no article is more than one click from the rest of the cluster.
+
+The checker fails the build-adjacent audit if any post drops below three
+outbound internal links.
+
+### Open Graph & social
+
+`opengraph-image.tsx` routes generate real 1200×630 PNGs at build time via
+`next/og` — one per post (title, category and read time on the brand
+background), plus cards for `/blog` and the homepage. Twitter falls back to
+the same images with `summary_large_image`. No external font fetch, so
+builds work offline.
+
+### Discovery
+
+- `sitemap.xml` — all routes with `lastModified` from post dates.
+- `robots.txt` — allows everything except `/api/`, points at the sitemap.
+- `feed.xml` — static RSS 2.0 feed, linked from `<head>` and the blog index.
+- `icon.png` / `apple-icon.png` / `logo.png` — generated from the wordmark;
+  `logo.png` is the `ImageObject` in the publisher schema.
+
+### Adding a post
+
+Append an entry to `posts` in `src/data/posts.ts`. Everything else — routing,
+metadata, JSON-LD, OG image, sitemap entry, feed item, related links — is
+derived. Fill in `related` on the new post *and* add its slug to the posts it
+should be reachable from, so the cluster stays two-way. Then:
+
+```bash
+npm run dev
+npm run seo:check   # or SEO_CHECK_URL=http://localhost:3001 npm run seo:check
+```
+
+### Before going live
+
+1. Set `NEXT_PUBLIC_SITE_URL` to the real origin (defaults to
+   `https://beltowski.studio`) — canonicals, schema and the feed all read it.
+2. Submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools.
+3. Create/claim the Google Business Profile — the `ProfessionalService`
+   schema supports it but doesn't replace it for map-pack visibility.
 
 ## Lead capture (the audit form)
 
