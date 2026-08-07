@@ -8,8 +8,8 @@ import SectionHeading from "./SectionHeading";
 const stats = [
   { value: 9, suffix: "", label: "Years of practice" },
   { value: 72, suffix: "+", label: "Projects shipped" },
-  { value: 14, suffix: "", label: "Design awards" },
-  { value: 11, suffix: "", label: "Countries served" },
+  { value: 214, suffix: "%", label: "Avg. organic traffic lift" },
+  { value: 26, suffix: "", label: "AI solutions launched" },
 ];
 
 export default function About() {
@@ -49,7 +49,7 @@ export default function About() {
       <SectionHeading
         id="about-heading"
         eyebrow="02 — About"
-        title="Design-minded developer. Development-minded designer."
+        title="Design-minded developer. Growth-minded partner."
       />
 
       <div className="grid gap-12 lg:grid-cols-12">
@@ -80,23 +80,23 @@ export default function About() {
           <p data-reveal>
             I&apos;m <span className="text-paper">Bart Beltowski</span> — an
             independent designer and developer with nine years of practice
-            across brand, product and the strange, wonderful space between
-            them. I&apos;ve worked with agencies, startups and global teams,
-            usually as the person who takes an idea from moodboard to main
-            branch.
+            building websites that don&apos;t just look premium, they perform.
+            I&apos;ve worked with startups, agencies and local businesses,
+            usually as the person who takes an idea from first sketch to the
+            first page of Google.
           </p>
           <p data-reveal>
-            My work sits where brand, interface and engineering meet: design
-            systems that survive contact with production, interfaces with
-            honest hierarchy, and motion that earns its place instead of
-            decorating it. I design in the browser early, because the medium
-            is the only honest prototype.
+            My work sits where design, engineering and search meet: fast,
+            accessible sites with honest hierarchy, technical SEO baked into
+            the architecture instead of bolted on, and AI assistants and
+            automations that actually ship to production — not demos that die
+            in a slide deck.
           </p>
           <p data-reveal>
-            Beyond client work I run a steady practice of creative coding —
-            shaders, type experiments, interaction studies — that keeps the
-            commercial work sharp. The lab feeds the studio; the studio funds
-            the lab.
+            Beyond client work I run a steady practice of experiments — AI
+            agents, SEO tooling, interaction studies — that keeps the
+            commercial work ahead of the curve. The lab feeds the studio; the
+            studio funds the lab.
           </p>
         </div>
       </div>

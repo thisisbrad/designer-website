@@ -11,12 +11,12 @@ type Experiment = {
 };
 
 const experiments: Experiment[] = [
-  { title: "Orbital", type: "Three.js study", year: "2026", visual: "orbit" },
-  { title: "Kinetic Type", type: "GSAP typography", year: "2025", visual: "marquee" },
-  { title: "Particle Drift", type: "Canvas sketch", year: "2025", visual: "dots" },
-  { title: "Waveform", type: "Audio-reactive visual", year: "2024", visual: "eq" },
-  { title: "Bloom Shader", type: "GLSL fragment", year: "2024", visual: "bloom" },
-  { title: "Magnetic Grid", type: "Interaction prototype", year: "2023", visual: "cross" },
+  { title: "RankLens", type: "SEO audit engine", year: "2026", visual: "orbit" },
+  { title: "Query Stream", type: "Live search ticker", year: "2025", visual: "marquee" },
+  { title: "Entity Graph", type: "Knowledge-graph viz", year: "2025", visual: "dots" },
+  { title: "Voicebox", type: "AI voice agent", year: "2024", visual: "eq" },
+  { title: "Embedding Bloom", type: "Vector-space visual", year: "2024", visual: "bloom" },
+  { title: "Heat Grid", type: "CRO heatmap prototype", year: "2023", visual: "cross" },
 ];
 
 function Visual({ kind }: { kind: Experiment["visual"] }) {
@@ -33,8 +33,8 @@ function Visual({ kind }: { kind: Experiment["visual"] }) {
       return (
         <div className="w-full overflow-hidden">
           <div className="flex w-max whitespace-nowrap font-display text-4xl font-semibold tracking-tight text-paper/20 motion-safe:animate-marquee">
-            <span className="pr-6">MOTION — TYPE — RHYTHM —&nbsp;</span>
-            <span className="pr-6">MOTION — TYPE — RHYTHM —&nbsp;</span>
+            <span className="pr-6">SEARCH — RANK — CONVERT —&nbsp;</span>
+            <span className="pr-6">SEARCH — RANK — CONVERT —&nbsp;</span>
           </div>
         </div>
       );
@@ -96,7 +96,7 @@ export default function Experiments() {
         id="experiments-heading"
         eyebrow="05 — Lab"
         title="Selected experiments"
-        description="Creative coding, shaders and interaction prototypes — the playground that keeps client work sharp."
+        description="AI agents, SEO tooling and interface prototypes — the playground that keeps client work ahead of the curve."
       />
 
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

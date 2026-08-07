@@ -44,8 +44,8 @@ export default function Contact() {
       <div className="mt-16 grid gap-16 lg:grid-cols-12">
         <div className="lg:col-span-5" data-reveal>
           <p className="max-w-md text-lg leading-relaxed text-muted">
-            Tell me about your project — scope, timeline, ambition. I read
-            everything personally and reply within 48 hours.
+            Tell me about your project — a new site, an SEO push or an AI
+            build. I read everything personally and reply within 48 hours.
           </p>
           <a
             href="mailto:hello@beltowski.studio"

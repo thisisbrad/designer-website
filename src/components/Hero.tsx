@@ -59,7 +59,7 @@ export default function Hero() {
           data-hero-fade
           className="mb-8 font-mono text-xs tracking-[0.3em] text-muted uppercase"
         >
-          Independent designer &amp; developer
+          Websites · SEO · AI solutions
         </p>
 
         <h1 className="max-w-[16ch] font-display text-[clamp(2.6rem,7vw,6.75rem)] leading-[1.04] font-medium tracking-tight">
@@ -74,14 +74,14 @@ export default function Hero() {
             delay={INTRO_DELAY + 0.24}
             className="block text-accent"
           >
-            motion &amp; strategy.
+            search &amp; AI.
           </AnimatedText>
         </h1>
 
         <p data-hero-fade className="mt-8 max-w-xl text-lg leading-relaxed text-muted">
-          I build websites, interfaces, brands and interactive experiences for
-          studios and founders who care about craft — from first moodboard to
-          main branch.
+          I build fast, search-optimized websites and practical AI solutions
+          for businesses that want to be found, convert more visitors and
+          automate the busywork.
         </p>
 
         <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">

@@ -22,9 +22,9 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Beltowski® — Designer & Developer",
+  title: "Beltowski® — Web Design, SEO & AI Solutions",
   description:
-    "Independent designer and developer crafting websites, interfaces, brands and interactive experiences with code, motion and strategy.",
+    "Independent designer and developer building fast, search-optimized websites and practical AI solutions that help businesses get found, convert and grow.",
 };
 
 export default function RootLayout({

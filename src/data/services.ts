@@ -9,7 +9,7 @@ export const services: Service[] = [
     index: "01",
     title: "Web Design",
     description:
-      "Editorial, conversion-aware layouts that make brands feel inevitable — designed in the browser, not just in Figma.",
+      "Editorial, conversion-aware layouts that make businesses feel inevitable — designed in the browser, not just in Figma.",
   },
   {
     index: "02",
@@ -25,20 +25,20 @@ export const services: Service[] = [
   },
   {
     index: "04",
-    title: "Brand Systems",
+    title: "SEO Marketing",
     description:
-      "Identity, typography and voice translated into living digital systems that hold together at every breakpoint.",
+      "Technical audits, site architecture, content strategy and local search — rankings earned with engineering, not tricks.",
   },
   {
     index: "05",
-    title: "Motion Design",
+    title: "AI Solutions",
     description:
-      "Choreographed interactions and transitions that guide attention and give products a sense of weight.",
+      "Custom assistants, chat concierges and automations built on modern AI models — integrated into your site and workflows, not bolted on.",
   },
   {
     index: "06",
-    title: "Interactive Experiences",
+    title: "Analytics & CRO",
     description:
-      "WebGL, shaders and creative tech for launches and campaigns people remember — and share.",
+      "Clean measurement, honest dashboards and A/B-tested improvements that turn traffic into revenue.",
   },
 ];

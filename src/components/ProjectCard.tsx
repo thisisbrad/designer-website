@@ -2,10 +2,16 @@
 
 import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
-import { hasFinePointer, prefersReducedMotion } from "@/lib/utils";
+import { cn, hasFinePointer, prefersReducedMotion } from "@/lib/utils";
 import type { Project } from "@/data/projects";
 
-export default function ProjectCard({ project }: { project: Project }) {
+export default function ProjectCard({
+  project,
+  flip = false,
+}: {
+  project: Project;
+  flip?: boolean;
+}) {
   const visualRef = useRef<HTMLDivElement>(null);
 
   const hover = (scale: number) => () => {
@@ -17,16 +23,17 @@ export default function ProjectCard({ project }: { project: Project }) {
     <article
       data-card
       aria-label={project.title}
-      className="w-full shrink-0 lg:w-[64vw] xl:w-[56vw]"
+      className="grid items-center gap-8 lg:grid-cols-12 lg:gap-14"
     >
-      <div className="group" data-cursor="hover">
+      <div className={cn("lg:col-span-7", flip && "lg:order-2")}>
         <div
-          className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-line"
+          className="group relative aspect-[16/10] overflow-hidden rounded-2xl border border-line"
+          data-cursor="hover"
           onMouseEnter={hover(1.05)}
           onMouseLeave={hover(1)}
         >
-          {/* Parallax layer bleeds horizontally so the scrubbed drift never shows edges */}
-          <div data-parallax className="absolute inset-y-0 -inset-x-[12%]">
+          {/* Parallax layer bleeds vertically so the scrubbed drift never shows edges */}
+          <div data-parallax className="absolute inset-x-0 -inset-y-[12%]">
             <div
               ref={visualRef}
               className="absolute inset-0 will-change-transform"
@@ -41,11 +48,11 @@ export default function ProjectCard({ project }: { project: Project }) {
               />
               <span
                 aria-hidden
-                className="absolute right-[6%] bottom-[-8%] font-display text-[24vw] leading-none font-semibold text-paper/[0.06] select-none lg:text-[15vw]"
+                className="absolute right-[6%] bottom-[2%] font-display text-[24vw] leading-none font-semibold text-paper/[0.06] select-none lg:text-[13vw]"
               >
                 {project.index}
               </span>
-              <span className="absolute top-[8%] left-[14%] font-mono text-[11px] tracking-[0.3em] text-paper/40 uppercase">
+              <span className="absolute top-[16%] left-[8%] font-mono text-[11px] tracking-[0.3em] text-paper/40 uppercase">
                 {project.slug}.case
               </span>
             </div>
@@ -57,19 +64,29 @@ export default function ProjectCard({ project }: { project: Project }) {
             </span>
           </div>
         </div>
+      </div>
 
-        <div className="mt-6 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-          <h3 className="font-display text-3xl font-medium tracking-tight md:text-4xl">
-            {project.title}
-          </h3>
-          <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
-            {project.category} · {project.year}
+      <div className={cn("lg:col-span-5", flip && "lg:order-1")}>
+        <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
+          {project.index} — {project.category} · {project.year}
+        </p>
+
+        <h3 className="mt-4 font-display text-3xl font-medium tracking-tight md:text-4xl">
+          {project.title}
+        </h3>
+
+        <p className="mt-4 max-w-xl leading-relaxed text-muted">{project.summary}</p>
+
+        <div className="mt-8 flex items-baseline gap-4 border-t border-line pt-6">
+          <p className="font-display text-5xl font-medium tracking-tight text-accent">
+            {project.metric.value}
+          </p>
+          <p className="max-w-[18ch] font-mono text-[11px] leading-relaxed tracking-[0.15em] text-muted uppercase">
+            {project.metric.label}
           </p>
         </div>
 
-        <p className="mt-3 max-w-xl leading-relaxed text-muted">{project.summary}</p>
-
-        <ul className="mt-5 flex flex-wrap items-center gap-2" aria-label="Project tags">
+        <ul className="mt-6 flex flex-wrap items-center gap-2" aria-label="Project tags">
           <li className="rounded-full bg-accent/10 px-3.5 py-1.5 font-mono text-[11px] tracking-wider text-accent uppercase">
             {project.role}
           </li>

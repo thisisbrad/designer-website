@@ -11,36 +11,36 @@ const steps = [
     n: "01",
     title: "Discover",
     description:
-      "Workshops, audits and competitive teardowns. We define what success looks like before anything gets designed.",
-    meta: "Strategy · Research · Scope",
+      "Workshops, analytics deep-dives and a full SEO audit. We define what success looks like — and which searches should find you — before anything gets designed.",
+    meta: "Strategy · SEO Audit · Scope",
   },
   {
     n: "02",
     title: "Design",
     description:
-      "Moodboards to motion studies to high-fidelity screens — designed in systems and reviewed in the browser early.",
-    meta: "Direction · UI · Prototype",
+      "Wireframes to high-fidelity screens, with content and keyword strategy built into the layout from the start — designed in systems and reviewed in the browser early.",
+    meta: "Direction · UI · Content",
   },
   {
     n: "03",
     title: "Build",
     description:
-      "Production code from day one. Clean components, real content, with performance and accessibility budgets enforced.",
-    meta: "Next.js · CMS · QA",
+      "Production code from day one. Clean components, semantic markup and structured data, with performance and accessibility budgets enforced.",
+    meta: "Next.js · CMS · Schema",
   },
   {
     n: "04",
-    title: "Refine",
+    title: "Optimize",
     description:
-      "Motion pass, microinteractions, copy polish and cross-device testing — the last ten percent that makes it feel premium.",
-    meta: "Motion · Polish · Testing",
+      "Technical SEO pass, Core Web Vitals tuning, copy polish and conversion testing — the last ten percent that compounds long after launch.",
+    meta: "SEO · Vitals · CRO",
   },
   {
     n: "05",
     title: "Launch",
     description:
-      "Zero-drama deploys, analytics wired, handover docs and a thirty-day support window after go-live.",
-    meta: "Deploy · Measure · Support",
+      "Zero-drama deploys with analytics and Search Console wired, then ongoing reporting, experiments and AI automations as you grow.",
+    meta: "Deploy · Measure · Grow",
   },
 ];
 
