@@ -85,8 +85,8 @@ export default function Hero() {
         </p>
 
         <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
-          <MagneticButton href="#work" onClick={go("#work")}>
-            View Work
+          <MagneticButton href="#solutions" onClick={go("#solutions")}>
+            See the Plan
             <span aria-hidden>↗</span>
           </MagneticButton>
           <MagneticButton href="#contact" variant="outline" onClick={go("#contact")}>

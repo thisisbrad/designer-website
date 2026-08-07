@@ -7,9 +7,9 @@ import SectionHeading from "./SectionHeading";
 
 const stats = [
   { value: 9, suffix: "", label: "Years of practice" },
-  { value: 72, suffix: "+", label: "Projects shipped" },
-  { value: 214, suffix: "%", label: "Avg. organic traffic lift" },
-  { value: 26, suffix: "", label: "AI solutions launched" },
+  { value: 100, suffix: "%", label: "Of the work done by me" },
+  { value: 48, suffix: "h", label: "Max reply time" },
+  { value: 24, suffix: "/7", label: "AI assistant coverage" },
 ];
 
 export default function About() {

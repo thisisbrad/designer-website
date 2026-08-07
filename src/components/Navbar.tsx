@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { scrollToSection, scrollToTop } from "./SmoothScroll";
 
 const links = [
-  { href: "#work", label: "Work" },
+  { href: "#solutions", label: "The Plan" },
   { href: "#about", label: "About" },
   { href: "#services", label: "Services" },
   { href: "#process", label: "Process" },
