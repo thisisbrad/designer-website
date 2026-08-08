@@ -138,7 +138,8 @@ const organizationJsonLd = {
       "@type": "Person",
       "@id": `${SITE_URL}/#owner`,
       name: OWNER_NAME,
-      url: SITE_URL,
+      // /about is this entity's canonical page — the one that evidences it.
+      url: `${SITE_URL}/about`,
       email: SITE_EMAIL,
       image: `${SITE_URL}/portrait-face.png`,
       jobTitle: "Designer, developer & AI consultant",

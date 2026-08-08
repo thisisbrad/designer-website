@@ -1,26 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import AnimatedText from "./AnimatedText";
-import MagneticButton from "./MagneticButton";
+import ContactForm from "./ContactForm";
+import { socials } from "@/data/contact";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
-
-const socials = [
-  { label: "Twitter / X", href: "https://x.com" },
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "LinkedIn", href: "https://linkedin.com" },
-  { label: "GitHub", href: "https://github.com" },
-];
-
-const inputCls =
-  "w-full border-b border-line bg-transparent py-3 text-lg text-paper transition-colors placeholder:text-muted/50 focus:border-accent focus:outline-none";
-
-const labelCls =
-  "mb-2 block font-mono text-xs tracking-[0.2em] text-muted uppercase";
 
 export default function Contact() {
   const ref = useSectionReveal<HTMLElement>();
-  const [sent, setSent] = useState(false);
 
   return (
     <section
@@ -79,85 +66,15 @@ export default function Contact() {
             <span aria-hidden className="size-1.5 animate-pulse-dot rounded-full bg-accent" />
             Currently booking Q3 2026
           </p>
+
+          <p className="mt-6 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
+            <Link href="/contact" className="transition-colors hover:text-accent">
+              Full contact details ↗
+            </Link>
+          </p>
         </div>
 
-        <form
-          className="flex flex-col gap-8 lg:col-span-6 lg:col-start-7"
-          data-reveal
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-          }}
-        >
-          <div className="grid gap-8 sm:grid-cols-2">
-            <div>
-              <label htmlFor="contact-name" className={labelCls}>
-                Name
-              </label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                placeholder="Jane Appleseed"
-                className={inputCls}
-              />
-            </div>
-            <div>
-              <label htmlFor="contact-email" className={labelCls}>
-                Email
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                placeholder="jane@studio.com"
-                className={inputCls}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="contact-budget" className={labelCls}>
-              Budget
-            </label>
-            <select id="contact-budget" name="budget" className={inputCls}>
-              <option className="bg-ink">$5k — $10k</option>
-              <option className="bg-ink">$10k — $25k</option>
-              <option className="bg-ink">$25k — $50k</option>
-              <option className="bg-ink">$50k+</option>
-            </select>
-          </div>
-
-          <div>
-            <label htmlFor="contact-message" className={labelCls}>
-              Project details
-            </label>
-            <textarea
-              id="contact-message"
-              name="message"
-              required
-              rows={5}
-              placeholder="What are we building, and when does it need to exist?"
-              className={inputCls}
-            />
-          </div>
-
-          <div className="flex items-center gap-6">
-            <MagneticButton type="submit">
-              Send inquiry
-              <span aria-hidden>↗</span>
-            </MagneticButton>
-            {sent && (
-              <p role="status" className="text-sm text-accent">
-                Thanks — your message is on its way.
-              </p>
-            )}
-          </div>
-        </form>
+        <ContactForm idPrefix="home" className="lg:col-span-6 lg:col-start-7" />
       </div>
     </section>
   );

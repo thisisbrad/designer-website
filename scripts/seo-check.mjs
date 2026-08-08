@@ -9,6 +9,8 @@ const BASE = process.env.SEO_CHECK_URL ?? "http://localhost:3000";
 
 const PAGES = [
   "/",
+  "/about",
+  "/contact",
   "/services",
   "/services/web-design",
   "/services/frontend-development",
@@ -214,6 +216,43 @@ for (const page of PAGES) {
     );
     if (siblings.size < 3) fail(page, "fewer than 3 sibling service links");
     if (cluster.size < 1) fail(page, "no links into the blog cluster");
+  }
+
+  // --- entity pages: these carry the E-E-A-T signals ---
+  if (page === "/about") {
+    const about = nodes.find((n) => n["@type"] === "AboutPage");
+    if (!about) fail(page, "no AboutPage node");
+    else if (!about.mainEntity) fail(page, "AboutPage missing mainEntity");
+    const person = nodes.find((n) => n["@type"] === "Person");
+    if (!person) fail(page, "no Person node");
+    else {
+      for (const prop of ["name", "jobTitle", "image", "knowsAbout"]) {
+        if (!person[prop]) fail(page, `Person missing ${prop}`);
+      }
+      console.log(`  person: ${person.knowsAbout?.length ?? 0} topics`);
+    }
+  }
+
+  if (page === "/contact") {
+    const contact = nodes.find((n) => n["@type"] === "ContactPage");
+    if (!contact) fail(page, "no ContactPage node");
+    else if (contact.mainEntity?.["@type"] !== "ContactPoint")
+      fail(page, "ContactPage missing a ContactPoint");
+    else if (!contact.mainEntity.email)
+      fail(page, "ContactPoint missing email");
+    if (!nodes.some((n) => n["@type"] === "FAQPage"))
+      fail(page, "no FAQPage node");
+    if (!/<form[\s>]/.test(html)) fail(page, "no contact form rendered");
+  }
+
+  if (page === "/about" || page === "/contact") {
+    if (!nodes.some((n) => n["@type"] === "BreadcrumbList"))
+      fail(page, "no BreadcrumbList node");
+    const out = new Set(
+      [...html.matchAll(/href="(\/services\/[a-z0-9-]+)"/g)].map((m) => m[1])
+    );
+    console.log(`  internal links out: ${out.size} services`);
+    if (out.size < 3) fail(page, "fewer than 3 service links");
   }
 
   if (page === "/services") {

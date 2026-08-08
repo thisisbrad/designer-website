@@ -21,6 +21,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    {
+      url: `${SITE_URL}/contact`,
+      changeFrequency: "yearly",
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/about`,
+      changeFrequency: "yearly",
+      priority: 0.7,
+    },
     // Service pages outrank the blog: they're the pages meant to convert.
     ...services.map((service) => ({
       url: `${SITE_URL}/services/${service.slug}`,

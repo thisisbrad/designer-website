@@ -10,9 +10,10 @@ import { scrollToTop } from "./SmoothScroll";
 /** Sitewide links so every page — blog posts included — reaches the money pages. */
 const explore = [
   { href: "/services", label: "All services" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
   { href: "/blog", label: "Blog" },
   { href: "/#solutions", label: "The plan" },
-  { href: "/#about", label: "About" },
   { href: "/#experiments", label: "AI in action" },
 ];
 
