@@ -53,12 +53,12 @@ export default function Hero() {
       aria-label="Introduction"
       className="relative flex min-h-svh flex-col overflow-hidden"
     >
-      {/* Base layer: a CSS approximation of the lantern glow. It stands in on
-          phones, and on desktop it sits under the canvas so there is no pop
-          when the scene finishes mounting. */}
+      {/* Phones don't mount the WebGL scene, so approximate the lantern glow in
+          CSS for them. Hidden from md up, where it would stack on top of the
+          canvas's own light and blow out the area around the tower. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_38%_at_70%_38%,rgba(215,251,68,0.09),transparent_72%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_38%_at_70%_38%,rgba(215,251,68,0.09),transparent_72%)] md:hidden"
       />
       {showScene && (
         <ThreeScene className="pointer-events-none absolute inset-0 opacity-80" />

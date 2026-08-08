@@ -109,7 +109,7 @@ export default function Navbar() {
     >
       <nav
         aria-label="Primary"
-        className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-[72px] md:px-10"
+        className="relative z-50 mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-[72px] md:px-10"
       >
         {onHome ? (
           <a
@@ -181,15 +181,18 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile overlay menu */}
+      {/* Mobile overlay menu. Full-bleed rather than offset by the header
+          height: the header is transparent while open, so anything it doesn't
+          cover shows the page underneath. The nav above sits at z-50 to stay
+          legible and clickable on top of this. */}
       <div
         id="mobile-menu"
         className={cn(
-          "fixed inset-0 top-16 z-40 bg-ink transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-40 bg-ink transition-opacity duration-300 lg:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0"
         )}
       >
-        <ul className="flex h-full flex-col justify-center gap-2 px-6">
+        <ul className="flex h-full flex-col justify-center gap-2 px-6 pt-16">
           {links.map((link, i) => (
             <li key={link.href}>
               <NavLink
