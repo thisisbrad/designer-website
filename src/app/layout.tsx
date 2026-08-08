@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { services } from "@/data/services";
 import { OWNER_NAME, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const inter = Inter({
@@ -119,15 +120,17 @@ const organizationJsonLd = {
       hasOfferCatalog: {
         "@type": "OfferCatalog",
         name: "Services",
-        itemListElement: [
-          "Web design",
-          "Frontend development",
-          "SEO marketing",
-          "AI solutions",
-          "Analytics & CRO",
-        ].map((name) => ({
+        url: `${SITE_URL}/services`,
+        itemListElement: services.map((service) => ({
           "@type": "Offer",
-          itemOffered: { "@type": "Service", name },
+          itemOffered: {
+            "@type": "Service",
+            "@id": `${SITE_URL}/services/${service.slug}#service`,
+            name: service.title,
+            serviceType: service.category,
+            description: service.description,
+            url: `${SITE_URL}/services/${service.slug}`,
+          },
         })),
       },
     },

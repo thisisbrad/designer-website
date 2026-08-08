@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { services } from "@/data/services";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
 import SectionHeading from "./SectionHeading";
@@ -24,7 +25,11 @@ export default function Services() {
       <ul className="border-t border-line">
         {services.map((service) => (
           <li key={service.index} data-reveal className="group border-b border-line">
-            <div className="grid gap-2 py-8 md:grid-cols-12 md:items-baseline md:gap-6 md:py-10">
+            <Link
+              href={`/services/${service.slug}`}
+              data-cursor="hover"
+              className="grid gap-2 py-8 md:grid-cols-12 md:items-baseline md:gap-6 md:py-10"
+            >
               <span className="font-mono text-xs text-muted md:col-span-1">
                 ({service.index})
               </span>
@@ -40,10 +45,20 @@ export default function Services() {
               >
                 →
               </span>
-            </div>
+            </Link>
           </li>
         ))}
       </ul>
+
+      <p className="mt-10 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
+        <Link
+          href="/services"
+          data-cursor="hover"
+          className="transition-colors hover:text-accent"
+        >
+          Compare all six services ↗
+        </Link>
+      </p>
     </section>
   );
 }

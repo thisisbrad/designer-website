@@ -9,6 +9,13 @@ const BASE = process.env.SEO_CHECK_URL ?? "http://localhost:3000";
 
 const PAGES = [
   "/",
+  "/services",
+  "/services/web-design",
+  "/services/frontend-development",
+  "/services/ui-ux-design",
+  "/services/seo-marketing",
+  "/services/ai-solutions",
+  "/services/analytics-cro",
   "/blog",
   "/blog/local-seo-map-pack",
   "/blog/schema-markup-plain-english",
@@ -117,6 +124,51 @@ for (const page of PAGES) {
     internal.delete(page);
     console.log(`  internal links out: ${internal.size}`);
     if (internal.size < 3) fail(page, "fewer than 3 internal links");
+  }
+
+  // --- service-specific ---
+  if (page.startsWith("/services/")) {
+    const service = nodes.find((n) => n["@type"] === "Service");
+    if (!service) fail(page, "no Service node");
+    else {
+      for (const prop of [
+        "name",
+        "description",
+        "provider",
+        "areaServed",
+        "offers",
+        "hasOfferCatalog",
+      ]) {
+        if (!service[prop]) fail(page, `Service missing ${prop}`);
+      }
+      console.log(
+        `  service: ${service.hasOfferCatalog?.itemListElement?.length ?? 0} deliverables, from $${service.offers?.price}`
+      );
+    }
+    if (!nodes.some((n) => n["@type"] === "FAQPage"))
+      fail(page, "no FAQPage node");
+    if (!nodes.some((n) => n["@type"] === "BreadcrumbList"))
+      fail(page, "no BreadcrumbList node");
+
+    // links out to sibling services and the supporting blog cluster
+    const siblings = new Set(
+      [...html.matchAll(/href="(\/services\/[a-z0-9-]+)"/g)].map((m) => m[1])
+    );
+    siblings.delete(page);
+    const cluster = new Set(
+      [...html.matchAll(/href="(\/blog\/[a-z0-9-]+)"/g)].map((m) => m[1])
+    );
+    console.log(
+      `  internal links out: ${siblings.size} services, ${cluster.size} posts`
+    );
+    if (siblings.size < 3) fail(page, "fewer than 3 sibling service links");
+    if (cluster.size < 1) fail(page, "no links into the blog cluster");
+  }
+
+  if (page === "/services") {
+    const list = nodes.find((n) => n["@type"] === "CollectionPage")?.mainEntity;
+    if (!list?.itemListElement?.length) fail(page, "no ItemList of services");
+    else console.log(`  hub: ${list.itemListElement.length} services listed`);
   }
 
   const org = nodes.find(
