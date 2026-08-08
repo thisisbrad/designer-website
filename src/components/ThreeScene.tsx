@@ -112,6 +112,12 @@ const ROCKS: {
   { p: [0.18, -0.42, 0.6], s: [0.52, 0.3, 0.48], r: [0.8, 0.3, 0.2], c: C.rock },
   { p: [-0.34, -0.5, -0.38], s: [0.58, 0.36, 0.52], r: [0.3, 1.7, 0.5], c: C.rock },
   { p: [-0.15, -0.55, 0.45], s: [0.4, 0.26, 0.38], r: [1.1, 0.9, 0.6], c: C.rockDark },
+  // Base slabs sealing the cluster's underside: tops sit just above the
+  // highest local water level and their footprint extends past every
+  // chunk, so foam-lit water can never show through gaps or under
+  // overhangs — the sea surface just clips across their outer slopes.
+  { p: [-0.35, -0.56, 0.4], s: [1.35, 0.38, 1.15], r: [0.1, 1.3, 0.08], c: C.rockDark },
+  { p: [0.45, -0.58, -0.15], s: [1.3, 0.36, 1.1], r: [0.12, 4.2, -0.06], c: C.rockDark },
 ];
 
 /* Faceted sea: a jittered grid displaced on the CPU each frame. Flat
@@ -129,28 +135,41 @@ const OCEAN = {
   fadeSpan: 3.4, // distance over which the far edge fades to black
 };
 
-/* One swell per cycle rolls in from the front-left, breaks on the rocks
-   and throws spray up the tower base. Timing is fractions of the cycle. */
-const SWELL = {
-  period: 5.4,
-  hit: 0.52, // moment the swell reaches the rocks
-  sx: -3.8,
-  sz: 2.1,
+/* One wave per cycle: a crest ridge spawns below the frame edge, rolls
+   in, rears up and steepens as it shoals, whitecaps, crashes on the
+   rocks (spray + foam washing around the base), then a backwash ring
+   reflects the energy off the rock while the sea settles. The crash is
+   big; the lighthouse never moves. Timing values are cycle fractions. */
+const WAVE = {
+  period: 7,
+  hit: 0.56, // moment the crest reaches the rocks
+  sx: -6.5,
+  sz: 2.6,
   ix: -0.55,
   iz: 0.6,
-  sigma: 0.8,
-  amp: 0.15,
+  amp: 0.15, // open-water crest height; shoaling scales it to ~0.39
+  wash: 0.92, // foam and backwash are gone by here
 };
+// travel direction (unit vector in xz), precomputed once
+const WLEN = Math.hypot(WAVE.ix - WAVE.sx, WAVE.iz - WAVE.sz);
+const WUX = (WAVE.ix - WAVE.sx) / WLEN;
+const WUZ = (WAVE.iz - WAVE.sz) / WLEN;
 
-const SPRAY_COUNT = 36;
-const SPRAY_ORIGIN = { x: -0.55, y: -0.5, z: 0.65 };
+/* Swell and backwash die out inside the rock cluster's footprint — a
+   rising waterline against the rock faces reads as the bases surfacing
+   and floating. The wave breaks at this line; foam and spray carry the
+   energy from there. */
+const SHELTER = { x: 0, z: 0.2, inner: 0.7, outer: 1.35 };
+
+const SPRAY_COUNT = 44;
+const SPRAY_ORIGIN = { x: -0.55, y: -0.42, z: 0.65 };
 const SPRAY_GRAVITY = -3.6;
 const SPRAY_WINDOW = 1.6; // seconds of airtime after the hit
 
 function Ocean({ reduced }: { reduced: boolean }) {
   const sprayRef = useRef<THREE.Points>(null);
 
-  const { geo, base, phase } = useMemo(() => {
+  const { geo, base, phase, fade } = useMemo(() => {
     const geo = new THREE.PlaneGeometry(
       OCEAN.width,
       OCEAN.depth,
@@ -165,23 +184,27 @@ function Ocean({ reduced }: { reduced: boolean }) {
     const farZ = OCEAN.frontZ - OCEAN.depth;
     const colors = new Float32Array(pos.count * 3);
     const phase = new Float32Array(pos.count);
+    const fade = new Float32Array(pos.count);
     for (let i = 0; i < pos.count; i++) {
       // irregular grid so the facets don't read as a lattice
       pos.setX(i, pos.getX(i) + (Math.random() - 0.5) * cellX * 0.7);
       pos.setZ(i, pos.getZ(i) + (Math.random() - 0.5) * cellZ * 0.7);
       phase[i] = Math.random() * Math.PI * 2;
-      const fade = THREE.MathUtils.clamp(
+      fade[i] = THREE.MathUtils.clamp(
         (pos.getZ(i) - farZ) / OCEAN.fadeSpan,
         0,
         1
       );
-      colors[i * 3] = fade;
-      colors[i * 3 + 1] = fade;
-      colors[i * 3 + 2] = fade;
+      colors[i * 3] = fade[i];
+      colors[i * 3 + 1] = fade[i];
+      colors[i * 3 + 2] = fade[i];
     }
-    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const colorAttr = new THREE.BufferAttribute(colors, 3);
+    colorAttr.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute("color", colorAttr);
+    pos.setUsage(THREE.DynamicDrawUsage);
     const base = new Float32Array(pos.array as Float32Array);
-    return { geo, base, phase };
+    return { geo, base, phase, fade };
   }, []);
 
   const sprayState = useMemo(() => {
@@ -192,10 +215,10 @@ function Ocean({ reduced }: { reduced: boolean }) {
       positions[i * 3] = SPRAY_ORIGIN.x;
       positions[i * 3 + 1] = -1; // parked underwater until the hit
       positions[i * 3 + 2] = SPRAY_ORIGIN.z;
-      velocity[i * 3] = 0.25 + Math.random() * 0.85; // toward the tower
-      velocity[i * 3 + 1] = 1.1 + Math.random() * 1.15;
-      velocity[i * 3 + 2] = (Math.random() - 0.5) * 0.9;
-      delay[i] = Math.random() * 0.22;
+      velocity[i * 3] = 0.3 + Math.random() * 0.95; // toward the tower
+      velocity[i * 3 + 1] = 1.25 + Math.random() * 1.35;
+      velocity[i * 3 + 2] = (Math.random() - 0.5) * 1.05;
+      delay[i] = Math.random() * 0.24;
     }
     return { positions, velocity, delay };
   }, []);
@@ -208,17 +231,53 @@ function Ocean({ reduced }: { reduced: boolean }) {
   );
 
   const displace = (t: number) => {
+    const smooth = THREE.MathUtils.smoothstep;
+    const clamp = THREE.MathUtils.clamp;
     const pos = geo.attributes.position as THREE.BufferAttribute;
+    const col = geo.attributes.color as THREE.BufferAttribute;
     const arr = pos.array as Float32Array;
-    const tau = (t % SWELL.period) / SWELL.period;
-    const reach = Math.min(tau / SWELL.hit, 1);
-    const cx = SWELL.sx + (SWELL.ix - SWELL.sx) * reach;
-    const cz = SWELL.sz + (SWELL.iz - SWELL.sz) * reach;
+    const colArr = col.array as Float32Array;
+    const tau = (t % WAVE.period) / WAVE.period;
+
+    // Crest center: travels in, then slides slightly past on impact momentum.
+    const travel = Math.min(tau / WAVE.hit, 1) * WLEN;
+    const overshoot = smooth(tau, WAVE.hit, WAVE.hit + 0.08) * 0.55;
+    const cx = WAVE.sx + WUX * (travel + overshoot);
+    const cz = WAVE.sz + WUZ * (travel + overshoot);
+
+    // Rise offscreen, rear up while shoaling, collapse fast on the rocks.
+    const shoal = 1 + 1.6 * smooth(tau, 0.42, WAVE.hit);
     const amp =
-      SWELL.amp *
-      THREE.MathUtils.smoothstep(tau, 0.05, 0.4) *
-      (1 - THREE.MathUtils.smoothstep(tau, SWELL.hit, SWELL.hit + 0.22));
-    const inv2Sig = 1 / (2 * SWELL.sigma * SWELL.sigma);
+      WAVE.amp *
+      smooth(tau, 0.06, 0.22) *
+      shoal *
+      (1 - smooth(tau, WAVE.hit, WAVE.hit + 0.09));
+    // The front face steepens as the wave rears; the back stays long.
+    const sigFront = 0.62 - 0.27 * smooth(tau, 0.42, WAVE.hit);
+    const invFront = 1 / (2 * sigFront * sigFront);
+    const invBack = 1 / (2 * 0.95 * 0.95);
+    const invAcross = 1 / (2 * 2.0 * 2.0);
+
+    // Whitecap while rearing; foam washes around the rocks after the hit.
+    const crestFoam =
+      smooth(tau, 0.4, 0.52) *
+      (1 - smooth(tau, WAVE.hit + 0.03, WAVE.hit + 0.12));
+    const washFoam =
+      smooth(tau, WAVE.hit, WAVE.hit + 0.04) *
+      (1 - smooth(tau, WAVE.hit + 0.2, WAVE.wash));
+    // Grows fast so the bright phase wraps the visible side of the rocks
+    // instead of hiding behind them.
+    const washR = 0.8 + 1.4 * smooth(tau, WAVE.hit, WAVE.hit + 0.16);
+    const washX = WAVE.ix - 0.1; // wash disc sits toward the camera side
+    const washZ = WAVE.iz + 0.4;
+    // Backwash: the rock throws the wave's energy back out as a ring.
+    const ringT = tau - (WAVE.hit + 0.04);
+    const ringAmp =
+      ringT > 0 ? 0.055 * (1 - smooth(tau, WAVE.hit + 0.04, WAVE.wash)) : 0;
+    const ringR = ringT * WAVE.period * 1.35;
+
+    const hasRidge = amp > 0.001;
+    const foaming = crestFoam > 0.001 || washFoam > 0.001;
     for (let i = 0; i < phase.length; i++) {
       const x = base[i * 3];
       const z = base[i * 3 + 2];
@@ -226,14 +285,71 @@ function Ocean({ reduced }: { reduced: boolean }) {
         Math.sin(x * 0.9 + t * 1.1 + phase[i]) * 0.035 +
         Math.sin(z * 1.7 - t * 0.8 + phase[i] * 1.7) * 0.03 +
         Math.sin(t * 1.5 + phase[i]) * 0.02;
-      if (amp > 0.001) {
-        const dx = x - cx;
-        const dz = z - cz;
-        y += amp * Math.exp(-(dx * dx + dz * dz) * inv2Sig);
+
+      let ridge = 0;
+      if (hasRidge || ringAmp > 0) {
+        const dxr = x - SHELTER.x;
+        const dzr = z - SHELTER.z;
+        const shelter = smooth(
+          Math.sqrt(dxr * dxr + dzr * dzr),
+          SHELTER.inner,
+          SHELTER.outer
+        );
+        if (hasRidge && shelter > 0) {
+          const px = x - cx;
+          const pz = z - cz;
+          const s = px * WUX + pz * WUZ; // ahead of the crest when positive
+          const q = px * -WUZ + pz * WUX; // along the crest line
+          ridge =
+            amp *
+            shelter *
+            Math.exp(-s * s * (s > 0 ? invFront : invBack)) *
+            Math.exp(-q * q * invAcross);
+          y += ridge;
+        }
+        if (ringAmp > 0 && shelter > 0) {
+          const dx = x - WAVE.ix;
+          const dz = z - WAVE.iz;
+          const dr = Math.sqrt(dx * dx + dz * dz) - ringR;
+          y += ringAmp * shelter * Math.exp(-dr * dr * 8);
+        }
       }
+
+      let foam = 0;
+      if (foaming) {
+        if (crestFoam > 0.001) {
+          foam += crestFoam * clamp((ridge - 0.1) / 0.14, 0, 1);
+        }
+        if (washFoam > 0.001) {
+          const dx = x - washX;
+          const dz = z - washZ;
+          const edge = clamp(
+            (washR - Math.sqrt(dx * dx + dz * dz)) / 0.5,
+            0,
+            1
+          );
+          foam += washFoam * edge;
+        }
+        foam =
+          Math.min(foam, 1) *
+          (0.7 + 0.3 * Math.sin(phase[i] * 4.7 + t * 2.4));
+        y += foam * 0.035; // churned water sits a touch higher
+      }
+
+      // Lean displaced water toward travel so the crest face tilts forward.
+      arr[i * 3] = x + WUX * ridge * 0.55;
       arr[i * 3 + 1] = y;
+      arr[i * 3 + 2] = z + WUZ * ridge * 0.55;
+
+      // Per-channel multipliers so full foam lands on paper white — the
+      // ratio of C.star to C.water in linear space. Calm water keeps the
+      // plain depth fade.
+      colArr[i * 3] = fade[i] * (1 + foam * 35.8);
+      colArr[i * 3 + 1] = fade[i] * (1 + foam * 20.8);
+      colArr[i * 3 + 2] = fade[i] * (1 + foam * 8.3);
     }
     pos.needsUpdate = true;
+    col.needsUpdate = true;
   };
 
   // Static (but still wavy) sea when motion is reduced.
@@ -248,8 +364,8 @@ function Ocean({ reduced }: { reduced: boolean }) {
 
     const points = sprayRef.current;
     if (!points) return;
-    const tau = (t % SWELL.period) / SWELL.period;
-    const sprayT = (tau - SWELL.hit) * SWELL.period;
+    const tau = (t % WAVE.period) / WAVE.period;
+    const sprayT = (tau - WAVE.hit) * WAVE.period;
     const attr = points.geometry.attributes.position as THREE.BufferAttribute;
     const arr = attr.array as Float32Array;
     const { velocity, delay } = sprayState;
@@ -296,7 +412,7 @@ function Ocean({ reduced }: { reduced: boolean }) {
             />
           </bufferGeometry>
           <pointsMaterial
-            size={0.035}
+            size={0.038}
             color={C.star}
             transparent
             opacity={0}
