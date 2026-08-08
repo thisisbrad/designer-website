@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { posts } from "@/data/posts";
 import { services } from "@/data/services";
+import { locationServices } from "@/data/locations";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -25,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_URL}/services/${service.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    // City pages sit just under their parent service.
+    ...locationServices.map((item) => ({
+      url: `${SITE_URL}/services/${item.service}/${item.location}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
     })),
     {
       url: `${SITE_URL}/blog`,

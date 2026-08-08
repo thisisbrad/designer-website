@@ -16,6 +16,9 @@ const PAGES = [
   "/services/seo-marketing",
   "/services/ai-solutions",
   "/services/analytics-cro",
+  "/services/web-design/orlando",
+  "/services/seo-marketing/orlando",
+  "/services/ai-solutions/orlando",
   "/blog",
   "/blog/local-seo-map-pack",
   "/blog/schema-markup-plain-english",
@@ -126,8 +129,56 @@ for (const page of PAGES) {
     if (internal.size < 3) fail(page, "fewer than 3 internal links");
   }
 
+  // --- location pages: /services/<service>/<city> ---
+  const isLocation = /^\/services\/[a-z0-9-]+\/[a-z0-9-]+$/.test(page);
+  if (isLocation) {
+    const service = nodes.find((n) => n["@type"] === "Service");
+    if (!service) fail(page, "no Service node");
+    else {
+      const areas = [].concat(service.areaServed ?? []);
+      if (!areas.some((a) => a["@type"] === "City"))
+        fail(page, "areaServed missing City");
+      if (!areas.some((a) => a["@type"] === "GeoCircle"))
+        fail(page, "areaServed missing GeoCircle");
+      if (!service.isSimilarTo)
+        fail(page, "no isSimilarTo link to the parent service");
+      console.log(`  areaServed: ${areas.length} nodes`);
+    }
+    if (!nodes.some((n) => n["@type"] === "FAQPage"))
+      fail(page, "no FAQPage node");
+
+    const crumbs = nodes.find((n) => n["@type"] === "BreadcrumbList");
+    if (crumbs?.itemListElement?.length !== 4)
+      fail(page, "breadcrumb trail should be Home / Services / Service / City");
+
+    // must link up to its parent service and out to siblings + the blog
+    const parent = page.split("/").slice(0, 3).join("/");
+    const html_links = new Set(
+      [...html.matchAll(/href="(\/services\/[a-z0-9-]+(?:\/[a-z0-9-]+)?)"/g)].map(
+        (m) => m[1]
+      )
+    );
+    if (!html_links.has(parent)) fail(page, `no link up to ${parent}`);
+    const cluster = new Set(
+      [...html.matchAll(/href="(\/blog\/[a-z0-9-]+)"/g)].map((m) => m[1])
+    );
+    console.log(
+      `  internal links out: ${html_links.size} services, ${cluster.size} posts`
+    );
+    if (cluster.size < 1) fail(page, "no links into the blog cluster");
+
+    // thin-content guard: local pages must say something local
+    const words = html
+      .replace(/<script[\s\S]*?<\/script>/g, "")
+      .replace(/<[^>]+>/g, " ")
+      .split(/\s+/)
+      .filter(Boolean).length;
+    console.log(`  ~${words} words`);
+    if (words < 700) fail(page, "under 700 words — reads as a doorway page");
+  }
+
   // --- service-specific ---
-  if (page.startsWith("/services/")) {
+  if (page.startsWith("/services/") && !isLocation) {
     const service = nodes.find((n) => n["@type"] === "Service");
     if (!service) fail(page, "no Service node");
     else {

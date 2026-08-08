@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { services } from "@/data/services";
+import { getService, services } from "@/data/services";
+import { getLocation, locationServices } from "@/data/locations";
 import { SITE_EMAIL } from "@/lib/site";
 import { scrollToTop } from "./SmoothScroll";
 
@@ -13,6 +14,12 @@ const explore = [
   { href: "/#solutions", label: "The plan" },
   { href: "/#about", label: "About" },
   { href: "/#experiments", label: "AI in action" },
+];
+
+/** Crawler-facing files. Plain anchors — Next would try to prefetch a Link. */
+const feeds = [
+  { href: "/sitemap.xml", label: "Sitemap" },
+  { href: "/feed.xml", label: "RSS feed" },
 ];
 
 export default function Footer() {
@@ -71,6 +78,29 @@ export default function Footer() {
               </li>
             ))}
           </ul>
+
+          {/* City pages, so local variants are reachable from every page */}
+          <h3 className="mt-10 font-mono text-[11px] tracking-[0.25em] text-muted uppercase">
+            Local
+          </h3>
+          <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+            {locationServices.map((item) => {
+              const service = getService(item.service);
+              const location = getLocation(item.location);
+              if (!service || !location) return null;
+              return (
+                <li key={`${item.service}-${item.location}`}>
+                  <Link
+                    href={`/services/${item.service}/${item.location}`}
+                    data-cursor="hover"
+                    className="text-sm text-paper/70 transition-colors hover:text-accent"
+                  >
+                    {location.city} {service.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
         <div className="md:col-span-3">
@@ -87,6 +117,17 @@ export default function Footer() {
                 >
                   {link.label}
                 </Link>
+              </li>
+            ))}
+            {feeds.map((feed) => (
+              <li key={feed.href}>
+                <a
+                  href={feed.href}
+                  data-cursor="hover"
+                  className="text-sm text-muted transition-colors hover:text-accent"
+                >
+                  {feed.label} ↗
+                </a>
               </li>
             ))}
           </ul>

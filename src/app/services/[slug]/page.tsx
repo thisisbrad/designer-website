@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import MagneticButton from "@/components/MagneticButton";
 import RichText from "@/components/RichText";
 import { getRelatedServices, getService, services } from "@/data/services";
+import { getLocationsForService } from "@/data/locations";
 import { getPost } from "@/data/posts";
 import { SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 import { absoluteUrl, stripMarkup } from "@/lib/seo";
@@ -62,6 +63,7 @@ export default async function ServicePage({
 
   const url = absoluteUrl(`/services/${service.slug}`);
   const related = getRelatedServices(service);
+  const cities = getLocationsForService(service.slug);
   const reading = service.reading
     .map((postSlug) => getPost(postSlug))
     .filter((post) => post !== undefined);
@@ -448,6 +450,49 @@ export default async function ServicePage({
             ))}
           </dl>
         </section>
+
+        {/* ---------- Local variants ---------- */}
+        {cities.length > 0 && (
+          <section
+            aria-labelledby="cities-heading"
+            className="mt-24 border-t border-line pt-16 md:mt-32 md:pt-20"
+          >
+            <p className="mb-5 font-mono text-[11px] tracking-[0.25em] text-muted uppercase">
+              Local
+            </p>
+            <h2
+              id="cities-heading"
+              className="max-w-[20ch] font-display text-3xl font-medium tracking-tight text-balance md:text-5xl"
+            >
+              {service.title} where you are
+            </h2>
+            <p className="mt-6 max-w-2xl leading-relaxed text-muted">
+              Some markets differ enough to be worth their own page. I work with
+              clients across the US either way.
+            </p>
+            <ul className="mt-10 flex flex-wrap gap-4">
+              {cities.map((city) => (
+                <li key={city.slug}>
+                  <Link
+                    href={`/services/${service.slug}/${city.slug}`}
+                    data-cursor="hover"
+                    className="group flex items-center gap-4 rounded-2xl border border-line bg-ink-2 px-7 py-5 transition-colors duration-500 hover:border-accent/40"
+                  >
+                    <span className="font-display text-xl font-medium tracking-tight transition-colors duration-300 group-hover:text-accent">
+                      {service.title} in {city.city}
+                    </span>
+                    <span
+                      aria-hidden
+                      className="text-accent transition-transform duration-300 group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* ---------- Conversion hook ---------- */}
         <aside className="relative mt-20 overflow-hidden rounded-2xl border border-accent/25 p-8 md:mt-24 md:p-12">
