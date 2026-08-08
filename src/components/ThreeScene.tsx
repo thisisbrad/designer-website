@@ -112,12 +112,10 @@ const ROCKS: {
   { p: [0.18, -0.42, 0.6], s: [0.52, 0.3, 0.48], r: [0.8, 0.3, 0.2], c: C.rock },
   { p: [-0.34, -0.5, -0.38], s: [0.58, 0.36, 0.52], r: [0.3, 1.7, 0.5], c: C.rock },
   { p: [-0.15, -0.55, 0.45], s: [0.4, 0.26, 0.38], r: [1.1, 0.9, 0.6], c: C.rockDark },
-  // Base slabs sealing the cluster's underside: tops sit just above the
-  // highest local water level and their footprint extends past every
-  // chunk, so foam-lit water can never show through gaps or under
-  // overhangs — the sea surface just clips across their outer slopes.
-  { p: [-0.35, -0.56, 0.4], s: [1.35, 0.38, 1.15], r: [0.1, 1.3, 0.08], c: C.rockDark },
-  { p: [0.45, -0.58, -0.15], s: [1.3, 0.36, 1.1], r: [0.12, 4.2, -0.06], c: C.rockDark },
+  // Plinth sealing the cluster's underside: its top sits just above the
+  // highest local water level, so foam-lit water can never show through
+  // the gaps and overhangs between the chunks above.
+  { p: [0, -0.52, 0.15], s: [1.22, 0.3, 1.08], r: [0.15, 2.6, 0.05], c: C.rockDark },
 ];
 
 /* Faceted sea: a jittered grid displaced on the CPU each frame. Flat

@@ -55,12 +55,11 @@ export default function AnimatedText({
   const Component = Tag as "span";
 
   return (
-    <Component
-      ref={ref as React.Ref<HTMLSpanElement>}
-      id={id}
-      className={className}
-      aria-label={children}
-    >
+    <Component ref={ref as React.Ref<HTMLSpanElement>} id={id} className={className}>
+      {/* The words below are split into spans for the stagger and hidden from
+          assistive tech, so carry the real string here. aria-label on a bare
+          span/p is invalid ARIA — it has no role to label. */}
+      <span className="sr-only">{children}</span>
       {words.map((word, i) => (
         <span
           key={i}

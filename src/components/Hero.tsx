@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import dynamic from "next/dynamic";
 import { gsap } from "@/lib/gsap";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { INTRO_DELAY, useIsomorphicLayoutEffect } from "@/lib/utils";
 import AnimatedText from "./AnimatedText";
 import MagneticButton from "./MagneticButton";
@@ -12,6 +13,10 @@ const ThreeScene = dynamic(() => import("./ThreeScene"), { ssr: false });
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null);
+  /* The WebGL scene costs ~2.6s of main-thread blocking on a throttled phone,
+     for a canvas the scrim below covers most of anyway. Phones get the CSS
+     approximation instead; tablets and up get the real thing. */
+  const showScene = useMediaQuery("(min-width: 768px)");
 
   useIsomorphicLayoutEffect(() => {
     const el = ref.current;
@@ -48,7 +53,16 @@ export default function Hero() {
       aria-label="Introduction"
       className="relative flex min-h-svh flex-col overflow-hidden"
     >
-      <ThreeScene className="pointer-events-none absolute inset-0 opacity-80" />
+      {/* Base layer: a CSS approximation of the lantern glow. It stands in on
+          phones, and on desktop it sits under the canvas so there is no pop
+          when the scene finishes mounting. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(55%_38%_at_70%_38%,rgba(215,251,68,0.09),transparent_72%)]"
+      />
+      {showScene && (
+        <ThreeScene className="pointer-events-none absolute inset-0 opacity-80" />
+      )}
       {/* Legibility scrim over the text column, then a vignette so the
           beam fades into the edges instead of hitting a hard canvas cut. */}
       <div
