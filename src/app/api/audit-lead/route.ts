@@ -38,7 +38,12 @@ function parseLead(body: unknown): Lead | null {
   return lead;
 }
 
-/** Leads always land here as a local backup, whether or not email works. */
+/** Serverless filesystems are read-only and ephemeral, so the disk backup
+ *  only makes sense when running on a real machine. Hosted deployments rely
+ *  on email, with the log line below as the recoverable fallback. */
+const CAN_WRITE_DISK = !process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME;
+
+/** Local backup, written before any email is attempted. */
 async function saveToDisk(lead: Lead & { receivedAt: string }) {
   const dir = path.join(process.cwd(), "var");
   await mkdir(dir, { recursive: true });
@@ -103,15 +108,24 @@ export async function POST(request: Request) {
   const stamped = { ...lead, receivedAt: new Date().toISOString() };
 
   // Disk first so a lead is never lost to an email hiccup.
-  try {
-    await saveToDisk(stamped);
-  } catch (err) {
-    console.error("Failed to write lead backup:", err);
+  let backedUp = false;
+  if (CAN_WRITE_DISK) {
+    try {
+      await saveToDisk(stamped);
+      backedUp = true;
+    } catch (err) {
+      console.error("Failed to write lead backup:", err);
+    }
   }
 
   const email = await sendEmail(stamped);
   if (!email.sent) {
-    console.warn(`Lead saved but not emailed (${email.reason}):`, stamped);
+    // Loud and structured: on a hosted deploy this log line is the only
+    // remaining copy of the lead, so it must be greppable.
+    console.error(
+      `LEAD_NOT_EMAILED reason=${email.reason} backedUpToDisk=${backedUp}`,
+      JSON.stringify(stamped)
+    );
   }
 
   return NextResponse.json({ ok: true });
