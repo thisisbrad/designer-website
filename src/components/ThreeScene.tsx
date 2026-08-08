@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 /* Low-poly lighthouse in the site's night palette: navy-slate rock and
    tower, warm gold beam and lantern (from the brand reference art), paper
-   starfield. All motion derives from two shared clocks — the beam rig's
-   rotation and the lantern pulse — so light, halo and beams never drift
-   apart. */
+   starfield, faceted sea. All motion derives from shared clocks — the
+   beam rig's rotation, the lantern pulse and the sea's swell cycle — so
+   light, halo, beams and spray never drift apart. */
 
 const C = {
   tower: "#2c3347",
@@ -23,26 +23,60 @@ const C = {
   glow: "#ffd9a0",
   ring: "#c9a86a",
   star: "#f2efe8",
-  water: "#3d4a63",
+  water: "#2b3853",
 } as const;
 
-/** Alpha gradient along the beam: hot at the lantern, gone at the tip. */
-function makeBeamTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1;
-  canvas.height = 256;
-  const ctx = canvas.getContext("2d")!;
-  const g = ctx.createLinearGradient(0, 0, 0, 256);
-  g.addColorStop(0, "rgba(255,255,255,0.95)");
-  g.addColorStop(0.25, "rgba(255,255,255,0.5)");
-  g.addColorStop(0.65, "rgba(255,255,255,0.12)");
-  g.addColorStop(0.88, "rgba(255,255,255,0)");
-  g.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = g;
-  ctx.fillRect(0, 0, 1, 256);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.needsUpdate = true;
-  return tex;
+/* Beam alpha lives in a shader: a lengthwise falloff (hot at the lantern,
+   gone before the tip) multiplied by a view-angle falloff that dims
+   surfaces seen edge-on. The angle term is load-bearing — without it the
+   cone's silhouette and open end read as bright rings whenever the sweep
+   points toward or away from the camera. */
+const BEAM_VERTEX = /* glsl */ `
+  varying float vAlong;
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vAlong = 1.0 - uv.y; // 0 at the apex/lantern, 1 at the open end
+    vNormal = normalMatrix * normal;
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = -mvPosition.xyz;
+    gl_Position = projectionMatrix * mvPosition;
+  }
+`;
+
+const BEAM_FRAGMENT = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uOpacity;
+  uniform float uAnglePower;
+
+  varying float vAlong;
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    float fade = pow(1.0 - clamp(vAlong, 0.0, 1.0), 1.55);
+    float facing = pow(abs(dot(normalize(vNormal), normalize(vViewDir))), uAnglePower);
+    gl_FragColor = vec4(uColor, uOpacity * fade * facing);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }
+`;
+
+function makeBeamMaterial(color: string, opacity: number, anglePower: number) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uColor: { value: new THREE.Color(color) },
+      uOpacity: { value: opacity },
+      uAnglePower: { value: anglePower },
+    },
+    vertexShader: BEAM_VERTEX,
+    fragmentShader: BEAM_FRAGMENT,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+  });
 }
 
 /** Soft radial halo for the lantern. */
@@ -80,36 +114,228 @@ const ROCKS: {
   { p: [-0.15, -0.55, 0.45], s: [0.4, 0.26, 0.38], r: [1.1, 0.9, 0.6], c: C.rockDark },
 ];
 
-const WATER_LINES: { p: [number, number, number]; w: number }[] = [
-  { p: [-1.5, -0.62, 0.4], w: 1.6 },
-  { p: [1.55, -0.72, 0.2], w: 2.1 },
-  { p: [-1.1, -0.86, 0.6], w: 1.1 },
-  { p: [1.0, -0.95, 0.5], w: 1.4 },
-];
+/* Faceted sea: a jittered grid displaced on the CPU each frame. Flat
+   shading derives face normals in-shader from screen-space derivatives,
+   so vertex normals never need recomputing. Sized/positioned so the
+   front edge stays below the frustum and the far edge dissolves into
+   the dark (via vertex colors) before its geometric end. */
+const OCEAN = {
+  width: 26,
+  depth: 8,
+  cols: 72,
+  rows: 26,
+  level: -0.62, // waterline, in lighthouse-cluster coordinates
+  frontZ: 1.5,
+  fadeSpan: 3.4, // distance over which the far edge fades to black
+};
+
+/* One swell per cycle rolls in from the front-left, breaks on the rocks
+   and throws spray up the tower base. Timing is fractions of the cycle. */
+const SWELL = {
+  period: 5.4,
+  hit: 0.52, // moment the swell reaches the rocks
+  sx: -3.8,
+  sz: 2.1,
+  ix: -0.55,
+  iz: 0.6,
+  sigma: 0.8,
+  amp: 0.15,
+};
+
+const SPRAY_COUNT = 36;
+const SPRAY_ORIGIN = { x: -0.55, y: -0.5, z: 0.65 };
+const SPRAY_GRAVITY = -3.6;
+const SPRAY_WINDOW = 1.6; // seconds of airtime after the hit
+
+function Ocean({ reduced }: { reduced: boolean }) {
+  const sprayRef = useRef<THREE.Points>(null);
+
+  const { geo, base, phase } = useMemo(() => {
+    const geo = new THREE.PlaneGeometry(
+      OCEAN.width,
+      OCEAN.depth,
+      OCEAN.cols,
+      OCEAN.rows
+    );
+    geo.rotateX(-Math.PI / 2);
+    geo.translate(0, 0, OCEAN.frontZ - OCEAN.depth / 2);
+    const pos = geo.attributes.position as THREE.BufferAttribute;
+    const cellX = OCEAN.width / OCEAN.cols;
+    const cellZ = OCEAN.depth / OCEAN.rows;
+    const farZ = OCEAN.frontZ - OCEAN.depth;
+    const colors = new Float32Array(pos.count * 3);
+    const phase = new Float32Array(pos.count);
+    for (let i = 0; i < pos.count; i++) {
+      // irregular grid so the facets don't read as a lattice
+      pos.setX(i, pos.getX(i) + (Math.random() - 0.5) * cellX * 0.7);
+      pos.setZ(i, pos.getZ(i) + (Math.random() - 0.5) * cellZ * 0.7);
+      phase[i] = Math.random() * Math.PI * 2;
+      const fade = THREE.MathUtils.clamp(
+        (pos.getZ(i) - farZ) / OCEAN.fadeSpan,
+        0,
+        1
+      );
+      colors[i * 3] = fade;
+      colors[i * 3 + 1] = fade;
+      colors[i * 3 + 2] = fade;
+    }
+    geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const base = new Float32Array(pos.array as Float32Array);
+    return { geo, base, phase };
+  }, []);
+
+  const sprayState = useMemo(() => {
+    const positions = new Float32Array(SPRAY_COUNT * 3);
+    const velocity = new Float32Array(SPRAY_COUNT * 3);
+    const delay = new Float32Array(SPRAY_COUNT);
+    for (let i = 0; i < SPRAY_COUNT; i++) {
+      positions[i * 3] = SPRAY_ORIGIN.x;
+      positions[i * 3 + 1] = -1; // parked underwater until the hit
+      positions[i * 3 + 2] = SPRAY_ORIGIN.z;
+      velocity[i * 3] = 0.25 + Math.random() * 0.85; // toward the tower
+      velocity[i * 3 + 1] = 1.1 + Math.random() * 1.15;
+      velocity[i * 3 + 2] = (Math.random() - 0.5) * 0.9;
+      delay[i] = Math.random() * 0.22;
+    }
+    return { positions, velocity, delay };
+  }, []);
+
+  useEffect(
+    () => () => {
+      geo.dispose();
+    },
+    [geo]
+  );
+
+  const displace = (t: number) => {
+    const pos = geo.attributes.position as THREE.BufferAttribute;
+    const arr = pos.array as Float32Array;
+    const tau = (t % SWELL.period) / SWELL.period;
+    const reach = Math.min(tau / SWELL.hit, 1);
+    const cx = SWELL.sx + (SWELL.ix - SWELL.sx) * reach;
+    const cz = SWELL.sz + (SWELL.iz - SWELL.sz) * reach;
+    const amp =
+      SWELL.amp *
+      THREE.MathUtils.smoothstep(tau, 0.05, 0.4) *
+      (1 - THREE.MathUtils.smoothstep(tau, SWELL.hit, SWELL.hit + 0.22));
+    const inv2Sig = 1 / (2 * SWELL.sigma * SWELL.sigma);
+    for (let i = 0; i < phase.length; i++) {
+      const x = base[i * 3];
+      const z = base[i * 3 + 2];
+      let y =
+        Math.sin(x * 0.9 + t * 1.1 + phase[i]) * 0.035 +
+        Math.sin(z * 1.7 - t * 0.8 + phase[i] * 1.7) * 0.03 +
+        Math.sin(t * 1.5 + phase[i]) * 0.02;
+      if (amp > 0.001) {
+        const dx = x - cx;
+        const dz = z - cz;
+        y += amp * Math.exp(-(dx * dx + dz * dz) * inv2Sig);
+      }
+      arr[i * 3 + 1] = y;
+    }
+    pos.needsUpdate = true;
+  };
+
+  // Static (but still wavy) sea when motion is reduced.
+  useEffect(() => {
+    displace(0);
+  }, [geo]);
+
+  useFrame(({ clock }) => {
+    if (reduced) return;
+    const t = clock.elapsedTime;
+    displace(t);
+
+    const points = sprayRef.current;
+    if (!points) return;
+    const tau = (t % SWELL.period) / SWELL.period;
+    const sprayT = (tau - SWELL.hit) * SWELL.period;
+    const attr = points.geometry.attributes.position as THREE.BufferAttribute;
+    const arr = attr.array as Float32Array;
+    const { velocity, delay } = sprayState;
+    const active = sprayT > 0 && sprayT < SPRAY_WINDOW;
+    for (let i = 0; i < SPRAY_COUNT; i++) {
+      const tt = active ? sprayT - delay[i] : -1;
+      if (tt <= 0) {
+        arr[i * 3] = SPRAY_ORIGIN.x;
+        arr[i * 3 + 1] = -1;
+        arr[i * 3 + 2] = SPRAY_ORIGIN.z;
+        continue;
+      }
+      const y =
+        SPRAY_ORIGIN.y + velocity[i * 3 + 1] * tt + 0.5 * SPRAY_GRAVITY * tt * tt;
+      arr[i * 3] = SPRAY_ORIGIN.x + velocity[i * 3] * tt;
+      // droplets that fall back below the surface stay hidden
+      arr[i * 3 + 1] = y < -0.75 ? -1 : y;
+      arr[i * 3 + 2] = SPRAY_ORIGIN.z + velocity[i * 3 + 2] * tt;
+    }
+    attr.needsUpdate = true;
+    const mat = points.material as THREE.PointsMaterial;
+    mat.opacity = active
+      ? 0.85 * Math.pow(1 - sprayT / SPRAY_WINDOW, 1.4)
+      : 0;
+  });
+
+  return (
+    <group>
+      <mesh geometry={geo} position={[0, OCEAN.level, 0]}>
+        <meshStandardMaterial
+          color={C.water}
+          flatShading
+          vertexColors
+          roughness={0.55}
+          metalness={0.2}
+        />
+      </mesh>
+      {!reduced && (
+        <points ref={sprayRef} frustumCulled={false} renderOrder={5}>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              args={[sprayState.positions, 3]}
+            />
+          </bufferGeometry>
+          <pointsMaterial
+            size={0.035}
+            color={C.star}
+            transparent
+            opacity={0}
+            sizeAttenuation
+            depthWrite={false}
+          />
+        </points>
+      )}
+    </group>
+  );
+}
 
 const LANTERN_Y = 2.42;
 
 function Beams({ reduced }: { reduced: boolean }) {
   const rig = useRef<THREE.Group>(null);
-  const beamTex = useMemo(makeBeamTexture, []);
+  // Long enough to cross the full-bleed hero; the shader fade and the CSS
+  // vignette finish the beam off before its geometric tip.
   const beamGeo = useMemo(() => {
-    const geo = new THREE.ConeGeometry(0.6, 7.5, 24, 1, true);
-    geo.translate(0, -3.75, 0); // apex at the lantern
+    const geo = new THREE.ConeGeometry(0.8, 10, 32, 1, true);
+    geo.translate(0, -5, 0); // apex at the lantern
     return geo;
   }, []);
   const coreGeo = useMemo(() => {
-    const geo = new THREE.ConeGeometry(0.2, 5.5, 16, 1, true);
-    geo.translate(0, -2.75, 0);
+    const geo = new THREE.ConeGeometry(0.3, 8, 24, 1, true);
+    geo.translate(0, -4, 0);
     return geo;
   }, []);
+  const beamMat = useMemo(() => makeBeamMaterial(C.beam, 0.34, 1.9), []);
+  const coreMat = useMemo(() => makeBeamMaterial(C.beamCore, 0.5, 1.35), []);
 
   useEffect(
     () => () => {
-      beamTex.dispose();
       beamGeo.dispose();
       coreGeo.dispose();
+      beamMat.dispose();
+      coreMat.dispose();
     },
-    [beamTex, beamGeo, coreGeo]
+    [beamGeo, coreGeo, beamMat, coreMat]
   );
 
   useFrame((_, delta) => {
@@ -118,28 +344,12 @@ function Beams({ reduced }: { reduced: boolean }) {
     g.rotation.y += delta * 0.22;
   });
 
-  const beamMat = (opacity: number, color: string) => (
-    <meshBasicMaterial
-      color={color}
-      alphaMap={beamTex}
-      transparent
-      opacity={opacity}
-      blending={THREE.AdditiveBlending}
-      side={THREE.DoubleSide}
-      depthWrite={false}
-    />
-  );
-
   return (
     <group ref={rig} position={[0, LANTERN_Y, 0]} rotation={[0, 0.5, 0]}>
       {[Math.PI / 2, -Math.PI / 2].map((rz, i) => (
         <group key={i} rotation={[0, 0, rz]}>
-          <mesh geometry={beamGeo} renderOrder={10}>
-            {beamMat(0.3, C.beam)}
-          </mesh>
-          <mesh geometry={coreGeo} renderOrder={11}>
-            {beamMat(0.45, C.beamCore)}
-          </mesh>
+          <mesh geometry={beamGeo} material={beamMat} renderOrder={10} />
+          <mesh geometry={coreGeo} material={coreMat} renderOrder={11} />
         </group>
       ))}
     </group>
@@ -274,19 +484,6 @@ function Rocks() {
   );
 }
 
-function WaterLines() {
-  return (
-    <group>
-      {WATER_LINES.map((line, i) => (
-        <mesh key={i} position={line.p}>
-          <boxGeometry args={[line.w, 0.012, 0.012]} />
-          <meshStandardMaterial color={C.water} transparent opacity={0.35} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
 function Stars({ reduced }: { reduced: boolean }) {
   const points = useRef<THREE.Points>(null);
   const positions = useMemo(() => {
@@ -326,29 +523,17 @@ function Stars({ reduced }: { reduced: boolean }) {
 }
 
 function Scene({ reduced }: { reduced: boolean }) {
-  const sway = useRef<THREE.Group>(null);
-  const pointer = useRef({ x: 0, y: 0 });
+  const viewport = useThree((state) => state.viewport);
 
-  // The canvas sits behind the content with pointer-events disabled,
-  // so track the pointer on the window instead of via R3F events.
-  useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      pointer.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      pointer.current.y = -((e.clientY / window.innerHeight) * 2 - 1);
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    return () => window.removeEventListener("pointermove", onMove);
-  }, []);
-
-  useFrame(() => {
-    const g = sway.current;
-    if (!g || reduced) return;
-    g.rotation.y = THREE.MathUtils.lerp(g.rotation.y, pointer.current.x * 0.1, 0.03);
-    g.rotation.x = THREE.MathUtils.lerp(g.rotation.x, -pointer.current.y * 0.04, 0.03);
-  });
+  // The canvas is full-bleed so the beam can sweep the entire hero; keep
+  // the tower ~70% across on wide screens and centered on portrait.
+  // Offsets are camera-relative (the camera sits at x = 0.2).
+  const shiftX =
+    0.2 +
+    viewport.width * THREE.MathUtils.clamp((viewport.aspect - 1) * 0.4, 0, 0.2);
 
   return (
-    <group ref={sway} position={[0.35, 0, 0]}>
+    <group position={[shiftX, 0, 0]}>
       <ambientLight intensity={0.3} color="#aab4d4" />
       <directionalLight position={[3.5, 5, 4]} intensity={0.7} color="#cfd8ff" />
 
@@ -365,7 +550,7 @@ function Scene({ reduced }: { reduced: boolean }) {
         <Tower />
         <Lantern reduced={reduced} />
         <Beams reduced={reduced} />
-        <WaterLines />
+        <Ocean reduced={reduced} />
       </group>
     </group>
   );

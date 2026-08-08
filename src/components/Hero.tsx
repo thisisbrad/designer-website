@@ -48,10 +48,16 @@ export default function Hero() {
       aria-label="Introduction"
       className="relative flex min-h-svh flex-col overflow-hidden"
     >
-      <ThreeScene className="pointer-events-none absolute inset-y-0 right-0 w-full opacity-80 lg:w-3/5" />
+      <ThreeScene className="pointer-events-none absolute inset-0 opacity-80" />
+      {/* Legibility scrim over the text column, then a vignette so the
+          beam fades into the edges instead of hitting a hard canvas cut. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-ink via-ink/55 to-transparent"
+        className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/45 via-45% to-transparent to-75%"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(120%_95%_at_68%_40%,transparent_50%,rgba(10,10,11,0.85)_100%)]"
       />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center px-6 pt-32 pb-16 md:px-10">
