@@ -4,12 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import SceneCanvas, {
-  S,
-  useFrameShift,
-  usePointerRig,
-  useStaticRender,
-} from "./SceneCanvas";
+import SceneCanvas, { S, useFrameShift, usePointerRig } from "./SceneCanvas";
 
 /* Web design — a page composing itself in space. Editorial panels drift on
    independent phases, then a settle cycle pulls them toward their layout
@@ -50,8 +45,6 @@ function Panels({ reduced }: { reduced: boolean }) {
   const items = useRef<(THREE.Group | null)[]>([]);
   usePointerRig(rig, { reduced, amount: 0.16 });
 
-  const invalidate = useStaticRender();
-
   const phases = useMemo(
     () => PANELS.map((_, i) => (i * 2.399) % (Math.PI * 2)),
     []
@@ -85,7 +78,6 @@ function Panels({ reduced }: { reduced: boolean }) {
   // Reduced motion still gets the composed layout, just frozen there.
   useEffect(() => {
     apply(reduced ? CYCLE * 0.45 : 0);
-    if (reduced) invalidate();
   });
 
   useFrame(({ clock }) => {

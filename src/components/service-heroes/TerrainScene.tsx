@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import SceneCanvas, { S, useFrameShift, usePointerRig, useStaticRender } from "./SceneCanvas";
+import SceneCanvas, { S, useFrameShift, usePointerRig } from "./SceneCanvas";
 
 /* Analytics & CRO — a metric field under test. A grid of columns breathes
    on a rolling wave, and a highlight band sweeps across it: the cohort
@@ -30,8 +30,6 @@ function Field({ reduced }: { reduced: boolean }) {
   const rig = useRef<THREE.Group>(null);
   const bars = useRef<THREE.InstancedMesh>(null);
   usePointerRig(rig, { reduced, amount: 0.1, damp: 3, base: [0.5, -0.45] });
-
-  const invalidate = useStaticRender();
 
   const cells = useMemo(() => {
     const out: { x: number; z: number; u: number; base: number }[] = [];
@@ -97,7 +95,6 @@ function Field({ reduced }: { reduced: boolean }) {
 
   useEffect(() => {
     apply(reduced ? CYCLE * 0.45 : 0);
-    if (reduced) invalidate();
   });
 
   useFrame(({ clock }) => {

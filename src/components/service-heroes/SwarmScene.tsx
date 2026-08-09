@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import SceneCanvas, { S, useFrameShift, usePointerRig, useStaticRender } from "./SceneCanvas";
+import SceneCanvas, { S, useFrameShift, usePointerRig } from "./SceneCanvas";
 
 /* AI solutions — scattered inputs resolving into an answer. A cloud of
    particles orbits loosely, then converges onto the vertices of an
@@ -28,8 +28,6 @@ function Swarm({ reduced }: { reduced: boolean }) {
   const points = useRef<THREE.InstancedMesh>(null);
   const shell = useRef<THREE.LineSegments>(null);
   usePointerRig(rig, { reduced, amount: 0.22 });
-
-  const invalidate = useStaticRender();
 
   // Target vertices: an icosahedron's points, reused as many times as the
   // particle count needs, each with a small offset so stacked particles
@@ -122,7 +120,6 @@ function Swarm({ reduced }: { reduced: boolean }) {
 
   useEffect(() => {
     apply(reduced ? CYCLE * 0.5 : 0);
-    if (reduced) invalidate();
   });
 
   useFrame(({ clock }, delta) => {

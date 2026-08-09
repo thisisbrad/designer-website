@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import SceneCanvas, { S, useFrameShift, usePointerRig, useStaticRender } from "./SceneCanvas";
+import SceneCanvas, { S, useFrameShift, usePointerRig } from "./SceneCanvas";
 
 /* Frontend development — a structure compiling. A build front sweeps
    diagonally through a cubic lattice; cells scale up from nothing as it
@@ -29,8 +29,6 @@ function Lattice({ reduced }: { reduced: boolean }) {
   const cubes = useRef<THREE.InstancedMesh>(null);
   const edges = useRef<THREE.LineSegments>(null);
   usePointerRig(rig, { reduced, amount: 0.2, base: [0.35, 0.6] });
-
-  const invalidate = useStaticRender();
 
   // Cell centres plus the diagonal coordinate that orders the build.
   const cells = useMemo(() => {
@@ -113,7 +111,6 @@ function Lattice({ reduced }: { reduced: boolean }) {
 
   useEffect(() => {
     apply(reduced ? CYCLE * 0.62 : 0);
-    if (reduced) invalidate();
   });
 
   useFrame(({ clock }) => {

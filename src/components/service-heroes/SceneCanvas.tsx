@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
@@ -73,17 +73,6 @@ export function useFrameShift(base = 0) {
   );
 }
 
-/**
- * A reduced-motion scene runs `frameloop="demand"`, which draws once at mount
- * and then only when something asks it to. These scenes build their instance
- * matrices in an effect that runs *after* that first draw, so without an
- * explicit invalidate the canvas stays empty for exactly the users who can't
- * see the animation that would otherwise have filled it.
- */
-export function useStaticRender() {
-  return useThree((state) => state.invalidate);
-}
-
 export default function SceneCanvas({
   children,
   className,
@@ -97,15 +86,43 @@ export default function SceneCanvas({
 }) {
   const reduced = useReducedMotion();
 
+  /* Arriving by link leaves the hero blank without this.
+   *
+   * On a client-side navigation the scene chunk is already cached, so the
+   * Canvas mounts before layout has given its container a size. R3F measures
+   * 0, never creates a <canvas>, and nothing ever tells it to look again:
+   * react-use-measure's observer doesn't re-fire, and Lenis suppresses the
+   * native scroll events R3F would otherwise remeasure on. A cold load hides
+   * the whole problem behind the chunk fetch, which is why it only shows up
+   * when clicking through from another page.
+   *
+   * One window resize after layout settles is what makes it measure. Tested:
+   * neither this nor the `resize` prop below fixes it alone — the canvas
+   * stays pinned at the 300x150 default. Both are load-bearing. */
+  useEffect(() => {
+    const id = requestAnimationFrame(() =>
+      window.dispatchEvent(new Event("resize"))
+    );
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   return (
     <div className={className} aria-hidden>
       <Canvas
         dpr={[1, 1.75]}
         camera={{ position: camera, fov }}
         gl={{ alpha: true, antialias: true, powerPreference: "high-performance" }}
-        // A reduced-motion scene renders one frame and stops rather than
-        // burning a rAF loop on a still image.
-        frameloop={reduced ? "demand" : "always"}
+        /* Always-on, including for reduced motion — those scenes freeze their
+           content instead of stopping the loop. A still scene this small is
+           cheap to redraw, and it keeps the visible result independent of
+           demand-mode invalidation timing. */
+        frameloop="always"
+        /* R3F defaults react-use-measure to scroll-driven remeasurement with
+           a debounce. Lenis suppresses native scroll events, so on a
+           client-side navigation the container measures 0, no <canvas> is
+           ever created and the hero is blank. Measuring eagerly and ignoring
+           scroll is what makes it size on mount. */
+        resize={{ scroll: false, debounce: 0 }}
       >
         {children}
       </Canvas>
