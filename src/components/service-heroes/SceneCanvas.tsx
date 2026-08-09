@@ -60,6 +60,34 @@ export function usePointerRig(
   });
 }
 
+/* R3F's own pointer tracking never fires in these heroes: the canvas
+ * containers are pointer-events-none and the legibility scrims sit on top,
+ * so the canvas-attached listeners see nothing — every usePointerRig was
+ * silently frozen at centre. Listen on the window instead and write
+ * canvas-relative NDC into r3f's pointer vector, which is exactly what its
+ * own compute would have produced. Clamped a little past the edges so a
+ * cursor elsewhere on the page can't wrench a rig around. */
+function PointerTracker() {
+  const gl = useThree((state) => state.gl);
+  const pointer = useThree((state) => state.pointer);
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      const r = gl.domElement.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      const clamp = THREE.MathUtils.clamp;
+      pointer.set(
+        clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1.25, 1.25),
+        clamp(-(((e.clientY - r.top) / r.height) * 2 - 1), -1.25, 1.25)
+      );
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [gl, pointer]);
+
+  return null;
+}
+
 /**
  * Shifts a rig toward the right of the frame on wide screens so it clears
  * the headline column, and centres it on portrait — same trick the
@@ -124,6 +152,7 @@ export default function SceneCanvas({
            scroll is what makes it size on mount. */
         resize={{ scroll: false, debounce: 0 }}
       >
+        <PointerTracker />
         {children}
       </Canvas>
     </div>
