@@ -266,7 +266,7 @@ export default async function LocationServicePage({
 
           <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
             {[
-              { term: "Serving", detail: `${location.city} & Central Florida` },
+              { term: "Serving", detail: `${location.city} & ${location.metroLabel}` },
               { term: "Starting at", detail: service.startingAt },
               { term: "Typical timeline", detail: service.timeline },
               { term: "Languages", detail: "English & Spanish" },
