@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MagneticButton from "@/components/MagneticButton";
 import RichText from "@/components/RichText";
+import ServiceHero from "@/components/service-heroes/ServiceHero";
+import { getHeroHeadline, getHeroVariant } from "@/components/service-heroes/config";
 import { getRelatedServices, getService, services } from "@/data/services";
 import { getLocationsForService } from "@/data/locations";
 import { getPost } from "@/data/posts";
@@ -70,6 +72,7 @@ export default async function ServicePage({
 
   /** "$1,500/mo" → "1500" — schema wants a bare number, the unit goes below. */
   const startingPrice = service.startingAt.replace(/[^0-9]/g, "");
+  const heroHeadline = getHeroHeadline(service.slug, service.headline);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -175,85 +178,32 @@ export default async function ServicePage({
   return (
     <>
       <Navbar />
-      <main
-        id="main"
-        className="mx-auto max-w-[1400px] px-6 pt-36 pb-24 md:px-10 md:pt-44 md:pb-32"
-      >
+      <main id="main">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        {/* ---------- Hero ---------- */}
-        <header className="mb-20 md:mb-28">
-          <nav aria-label="Breadcrumb">
-            <ol className="flex flex-wrap items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
-              <li>
-                <Link href="/" className="transition-colors hover:text-paper">
-                  Home
-                </Link>
-              </li>
-              <li aria-hidden>/</li>
-              <li>
-                <Link
-                  href="/services"
-                  className="transition-colors hover:text-paper"
-                >
-                  Services
-                </Link>
-              </li>
-              <li aria-hidden>/</li>
-              <li aria-current="page" className="text-accent">
-                {service.title}
-              </li>
-            </ol>
-          </nav>
+        <ServiceHero
+          variant={getHeroVariant(service.slug)}
+          eyebrow={`${service.category} — ${service.title}`}
+          headline={heroHeadline.lines}
+          accentFrom={heroHeadline.accentFrom}
+          subheadline={service.subheadline}
+          crumbs={[
+            { label: "Home", href: "/" },
+            { label: "Services", href: "/services" },
+            { label: service.title },
+          ]}
+          stats={[
+            { term: "Starting at", detail: service.startingAt },
+            { term: "Typical timeline", detail: service.timeline },
+            { term: "Engagement", detail: "Fixed scope, fixed quote" },
+            { term: "Working with", detail: "You directly — no account layer" },
+          ]}
+        />
 
-          <p className="mt-10 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
-            <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-            {service.category} — {service.title}
-          </p>
-
-          <h1 className="mt-6 max-w-[20ch] font-display text-4xl leading-[1.05] font-medium tracking-tight text-balance md:text-6xl">
-            {service.headline}
-          </h1>
-
-          <p
-            data-speakable
-            className="mt-7 max-w-2xl text-lg leading-relaxed text-muted md:text-xl"
-          >
-            {service.subheadline}
-          </p>
-
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <MagneticButton href="/#audit">
-              Get a free audit
-              <span aria-hidden>↗</span>
-            </MagneticButton>
-            <MagneticButton href="/#contact" variant="outline">
-              Start a project
-            </MagneticButton>
-          </div>
-
-          <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
-            {[
-              { term: "Starting at", detail: service.startingAt },
-              { term: "Typical timeline", detail: service.timeline },
-              { term: "Engagement", detail: "Fixed scope, fixed quote" },
-              { term: "Working with", detail: "You directly — no account layer" },
-            ].map((item) => (
-              <div key={item.term} className="bg-ink px-6 py-7">
-                <dt className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
-                  {item.term}
-                </dt>
-                <dd className="mt-3 font-display text-lg leading-snug font-medium tracking-tight text-balance">
-                  {item.detail}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </header>
-
+        <div className="mx-auto max-w-[1400px] px-6 pb-24 md:px-10 md:pb-32">
         {/* ---------- Problem ---------- */}
         <section
           aria-labelledby="problem-heading"
@@ -603,6 +553,7 @@ export default async function ServicePage({
             {SITE_EMAIL} ↗
           </a>
         </p>
+        </div>
       </main>
       <Footer />
     </>
