@@ -65,10 +65,14 @@ export async function generateMetadata({
   };
 }
 
+/* Pinned to UTC: the dates in content files are date-only ISO strings, which
+   Date parses as UTC midnight. Formatting those in a western timezone renders
+   the day before — a post dated the 9th publishing as the 8th. */
 const dateFormat = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   month: "long",
   year: "numeric",
+  timeZone: "UTC",
 });
 
 /** "8 min read" → ISO 8601 duration for schema. */
