@@ -101,6 +101,57 @@ export const locations: Location[] = [
     geo: { latitude: 28.0836, longitude: -80.6081 },
     radiusKm: 55,
   },
+  {
+    slug: "lake-mary",
+    city: "Lake Mary",
+    region: "Florida",
+    regionCode: "FL",
+    metroLabel: "Seminole County",
+    counties: ["Seminole County"],
+    areas: [
+      "Heathrow",
+      "Alaqua",
+      "Markham Woods",
+      "Timacuan",
+      "Longwood",
+      "Sanford",
+      "Winter Springs",
+      "Casselberry",
+      "Altamonte Springs",
+      "Wekiwa Springs",
+      "Lake Forest",
+      "Oviedo",
+    ],
+    geo: { latitude: 28.7589, longitude: -81.3178 },
+    radiusKm: 25,
+  },
+  {
+    slug: "lakeland",
+    city: "Lakeland",
+    region: "Florida",
+    regionCode: "FL",
+    metroLabel: "Polk County",
+    counties: ["Polk County"],
+    areas: [
+      "Downtown Lakeland",
+      "Dixieland",
+      "Lakeland Highlands",
+      "Highland City",
+      "Kathleen",
+      "Winter Haven",
+      "Cypress Gardens",
+      "Auburndale",
+      "Lake Alfred",
+      "Bartow",
+      "Mulberry",
+      "Haines City",
+      "Davenport",
+      "Lake Wales",
+      "Polk City",
+    ],
+    geo: { latitude: 28.0395, longitude: -81.9498 },
+    radiusKm: 45,
+  },
 ];
 
 export const locationServices: LocationService[] = [
@@ -602,6 +653,496 @@ export const locationServices: LocationService[] = [
     cta: {
       hook: "See what an assistant would handle for your Brevard business.",
       copy: "Send me your site and I'll map the enquiries an assistant could answer today — RFQs it could structure, jobs it could book overnight, and what should never leave a human's hands. Free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "web-design",
+    location: "lake-mary",
+    metaTitle: "Lake Mary Web Design — Sites for Buyers Who Vet",
+    metaDescription:
+      "Web design for Lake Mary, Heathrow and north Seminole — polished, credibility-first sites for practices, firms and premium home services.",
+    keywords: [
+      "Lake Mary web design",
+      "web design Lake Mary FL",
+      "Heathrow web design",
+      "Seminole County website designer",
+      "Longwood web design",
+      "Sanford web design",
+    ],
+    headline: "Lake Mary web design for clients who can afford to be picky",
+    subheadline:
+      "Custom sites for north Seminole businesses — built for a market where the buyer has money, options, and a low tolerance for anything that looks like a template.",
+    context: [
+      "North Seminole is careful money. The homeowner in Heathrow pricing a pool renovation, the executive off Markham Woods choosing an estate attorney, the family in Winter Springs picking an orthodontist — they were probably referred to you, and they will still open your website before they call. In this market the site rarely wins the client alone; it loses them. A dated site next to a polished competitor quietly ends the conversation before it starts.",
+      "It's also a market where the ticket sizes justify the polish. A remodel on Markham Woods, a wealth management relationship, a season of landscape care on an Alaqua lot — these aren't $80 jobs, and buyers spending at that level expect the vendor's own presentation to match. The good news is that most local competitors haven't caught up: plenty of firms billing premium rates are still running sites that read like 2018 templates.",
+      "So I design for verification. Credentials, portfolio work photographed properly, the people behind the firm, and a clear next step that respects the reader's time. Along the International Parkway corridor that extends to B2B — vendors selling into the corporate offices there get vetted by procurement the same way a Heathrow homeowner vets a contractor: quickly, silently, and online.",
+    ],
+    factors: [
+      {
+        title: "Referrals still get verified",
+        description:
+          "In affluent Seminole neighbourhoods, work travels by word of mouth — and every referral gets checked online before the call. The site's job is to confirm what the referrer said: real work, real credentials, a firm that operates at the level the buyer expects.",
+      },
+      {
+        title: "Premium tickets demand premium presentation",
+        description:
+          "A buyer commissioning a six-figure remodel or a long-term advisory relationship reads design quality as a proxy for work quality. Typography, photography and restraint aren't decoration here — they're the first evidence of how you operate.",
+      },
+      {
+        title: "Portfolio and proof over pitch",
+        description:
+          "This market skims claims and studies evidence. Sites get built around the work itself — project galleries with real addresses' worth of context, before-and-afters, named credentials — because that's what a careful buyer actually scrolls to.",
+      },
+      {
+        title: "The corridor is a B2B market too",
+        description:
+          "Lake Mary's office parks put national firms' regional operations on your doorstep. Selling services into them means passing a vendor check — a capabilities page that procurement can skim, forward and approve without a meeting.",
+      },
+    ],
+    industries: [
+      "Legal, financial and wealth management firms",
+      "Medical, dental and aesthetic practices",
+      "Premium home services — pools, remodels, landscape, custom builds",
+      "Real estate teams and luxury property specialists",
+      "B2B services selling into the I-4 corporate corridor",
+      "Private schools, clubs and member organisations",
+    ],
+    faq: [
+      {
+        question: "Do you meet Lake Mary clients in person?",
+        answer:
+          "Yes — I'm Florida-based and glad to meet anywhere in Seminole County for the kickoff session. After that the work runs better over shared screens and a staging link you can open on your own phone between meetings.",
+      },
+      {
+        question: "Most of our clients come from referrals. Is a new site worth it?",
+        answer:
+          "In this market especially, yes — because your referrals are checking you online before they call, and the site either confirms the recommendation or undermines it. [My audit checklist](/blog/website-audit-checklist) shows exactly what a referred prospect sees in their first thirty seconds on your current site.",
+      },
+      {
+        question: "We charge premium rates. How should the site handle pricing?",
+        answer:
+          "Honestly, and without apology. Careful buyers don't need a number on every page, but they do need signals that you operate at a certain level — the work, the process, who it's for. Hiding everything reads as evasive; framing it properly filters out the wrong enquiries before they reach your calendar.",
+      },
+      {
+        question: "Is Lake Mary different from Orlando for this work?",
+        answer:
+          "Meaningfully. Orlando's mix runs heavily on tourist and volume traffic; north Seminole runs on high-consideration local buyers with money and options. That changes what the site optimises for — verification and confidence over speed and price — which is why this page exists separately.",
+      },
+    ],
+    cta: {
+      hook: "See how your site reads to a Heathrow buyer.",
+      copy: "I'll run my 15-point audit against the north Seminole competitors your prospects compare you to, and send back the credibility and conversion gaps costing you the callback — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "seo-marketing",
+    location: "lake-mary",
+    metaTitle: "Lake Mary SEO — Local Search Across North Seminole",
+    metaDescription:
+      "SEO for Lake Mary, Heathrow, Longwood and Sanford — map pack rankings in north Seminole's affluent zip codes and high-value keywords worth competing for.",
+    keywords: [
+      "Lake Mary SEO",
+      "SEO Lake Mary FL",
+      "Seminole County SEO",
+      "Longwood SEO",
+      "Sanford SEO",
+      "Heathrow local SEO",
+    ],
+    headline: "Lake Mary SEO for keywords where one client pays for the year",
+    subheadline:
+      "Local search for north Seminole — a compact, affluent market where the searches are fewer than Orlando's but each one is worth dramatically more.",
+    context: [
+      "North Seminole is a different search market from Orlando proper, and treating it as an Orlando suburb wastes money. The map packs here are their own contests — a searcher in Heathrow or Longwood sees a different three-pack than one in downtown Orlando, thirty minutes south — and the businesses that win them are competing against a much shallower field than anything along I-Drive.",
+      "What makes this market worth the work is the value per search. \"Estate planning attorney lake mary,\" \"med spa heathrow,\" \"pool builder markham woods\" — these are low-volume terms by Orlando standards, and each one carries a client worth thousands to six figures. The economics invert: you don't need a thousand clicks a month here, you need to be the answer for the forty that matter.",
+      "The competitive picture helps too. Plenty of premium north Seminole firms rank on reputation and a Google Business Profile someone set up in 2019, with technical SEO nobody has looked at since. Consistent fundamentals — clean site structure, active reviews, content that actually names the communities you serve — move rankings here faster than they ever could in the saturated Orlando core.",
+    ],
+    factors: [
+      {
+        title: "Low volume, high value changes the strategy",
+        description:
+          "Keyword targets get chosen by client value, not search volume. Ranking for forty high-intent searches a month in Heathrow and Markham Woods beats ranking for four thousand generic ones you'd share with every firm in the metro.",
+      },
+      {
+        title: "North Seminole's map packs are their own contest",
+        description:
+          "Proximity means Lake Mary, Longwood, Sanford and Winter Springs each resolve their own three-pack. The work gets sequenced by where your buyers actually are — starting with the zip codes whose clients justify the effort.",
+      },
+      {
+        title: "Reviews carry extra weight with careful buyers",
+        description:
+          "Affluent clients read reviews the way they read references. Review velocity, response quality and recovery from the occasional bad one get managed as part of the ranking work, because here they convert as hard as they rank.",
+      },
+      {
+        title: "Incumbents rank on reputation, not fundamentals",
+        description:
+          "Many page-one firms in this market have never had real technical SEO. Fixing crawl issues, structuring services properly and publishing content that names actual communities is often enough to take positions they assumed were safe.",
+      },
+    ],
+    industries: [
+      "Legal, financial and advisory practices",
+      "Medical, dental, aesthetic and specialist clinics",
+      "Premium home services and custom builders",
+      "Real estate and luxury property teams",
+      "Private education, clubs and family services",
+      "B2B and professional services along the corridor",
+    ],
+    faq: [
+      {
+        question: "Can I rank in both Lake Mary and Orlando?",
+        answer:
+          "In organic results, with genuinely separate pages, partially. In the map pack, proximity decides — your pins reach your real radius and not much further. For most north Seminole firms the honest play is owning Lake Mary, Longwood and Sanford outright rather than chasing Orlando terms dominated by bigger budgets. I explain the mechanics in [how local businesses win the map pack](/blog/local-seo-map-pack).",
+      },
+      {
+        question: "Search volume here looks tiny. Is SEO even worth it?",
+        answer:
+          "That's the wrong metric for this market. A single \"wealth management lake mary\" client can be worth more than ten thousand generic clicks. Low volume also means low competition — the cost of owning these terms is a fraction of what the same position costs in Orlando, and the clients are better.",
+      },
+      {
+        question: "How long until results in north Seminole?",
+        answer:
+          "Technical fixes and review work often move things within two to three months, because most incumbents here are soft on fundamentals. Genuinely contested terms — injury law, dental implants — take longer, and I'll tell you which bucket your targets sit in before you spend anything.",
+      },
+      {
+        question: "Do you build pages for every Seminole suburb?",
+        answer:
+          "Only where you serve and can say something true. A Heathrow page and a Sanford page describing genuinely different buyers make sense; twelve town-swap templates get treated as spam by Google and as filler by exactly the careful readers this market is full of.",
+      },
+    ],
+    cta: {
+      hook: "Find out which north Seminole searches you can actually win.",
+      copy: "I'll audit your site and Google Business Profile against the Lake Mary firms outranking you, and send back the highest-value targets in priority order — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "ai-solutions",
+    location: "lake-mary",
+    metaTitle: "Lake Mary AI Solutions — Premium Practice Intake",
+    metaDescription:
+      "Custom AI assistants for Lake Mary firms and practices — after-hours intake and booking that protects expensive calendars across north Seminole.",
+    keywords: [
+      "Lake Mary AI solutions",
+      "AI assistant Lake Mary FL",
+      "AI intake for law firms",
+      "business automation Seminole County",
+      "AI chatbot for medical practice",
+      "north Seminole AI consultant",
+    ],
+    headline: "AI assistants that answer like your best front desk, at 9pm",
+    subheadline:
+      "Custom assistants for north Seminole firms and practices — qualifying the enquiry, protecting your calendar, and booking the consultation while your competitors' phones ring out.",
+    context: [
+      "North Seminole's buyers are busy professionals, and they handle their own lives the way they handle work: outside work hours. The Heathrow executive researching estate attorneys does it at 9pm. The Markham Woods homeowner comparing remodelers sends enquiries on Sunday morning. The practice or firm that responds in that moment — accurately, in a tone that matches its brand — books the consultation. The one that responds Tuesday gets the polite no.",
+      "For premium firms the assistant's second job matters as much as the first: protecting the calendar. An attorney's consultation slot or a surgeon's evaluation is expensive, and filling it with unqualified enquiries costs real money. A well-built assistant qualifies the way your best intake person would — matter type, timeline, budget signals, fit — and only books what belongs on the calendar, with everything else handled courteously and captured.",
+      "Tone is the make-or-break here, and it's where generic chatbots fail this market. Careful clients notice when the first interaction with a premium firm feels like a cable company's support widget. Every assistant I build runs on your actual language, your real constraints, and hard rules about what it never answers — with a clean human handoff the moment a conversation deserves one.",
+    ],
+    factors: [
+      {
+        title: "After-hours is when this market shops",
+        description:
+          "Professionals research services at night and on weekends. An assistant that answers properly at those hours converts enquiries your office was never going to see until they'd already booked elsewhere.",
+      },
+      {
+        title: "Qualification that protects expensive time",
+        description:
+          "Consultation slots at premium firms cost too much to fill with the wrong enquiries. The assistant screens for fit the way your best intake person would — and declines gracefully, so even a no leaves a good impression.",
+      },
+      {
+        title: "A tone that matches a premium brand",
+        description:
+          "The assistant speaks in your language, not chatbot boilerplate. Every answer comes from facts you approved; anything sensitive, emotional or high-stakes routes to a human immediately with context attached.",
+      },
+      {
+        title: "Discretion built in, not bolted on",
+        description:
+          "Legal, medical and financial enquiries carry confidentiality expectations. The assistant collects only what you approve, runs in accounts you control, and keeps auditable transcripts — boundaries agreed in writing before anything is built.",
+      },
+    ],
+    industries: [
+      "Law firms and legal consultations",
+      "Medical, dental and aesthetic practices",
+      "Wealth management and financial advisory",
+      "Premium home services and custom builders",
+      "Real estate and luxury property teams",
+      "Private schools and member organisations",
+    ],
+    faq: [
+      {
+        question: "Will an AI assistant feel off-brand for a premium firm?",
+        answer:
+          "A generic one would. The ones I build run on your voice, your approved answers and strict boundaries — closer to a well-trained front desk than a widget. Careful clients experience it as responsiveness, not automation, and anything nuanced reaches a human with the context already gathered.",
+      },
+      {
+        question: "Can it handle confidential enquiries appropriately?",
+        answer:
+          "That's designed in from the start. It collects only the intake fields you approve, never probes into privileged or clinical detail, and routes sensitive conversations straight to your team. Everything runs in accounts you control with transcripts you can audit.",
+      },
+      {
+        question: "Will it book consultations directly into our calendar?",
+        answer:
+          "Yes — that's the point. It qualifies against your actual intake criteria, then books the right calendar or pushes the lead to your CRM with the conversation attached. [AI assistants that book clients](/blog/ai-assistants-that-book-clients) shows how that's put together.",
+      },
+      {
+        question: "What does it do with enquiries that aren't a fit?",
+        answer:
+          "It declines the way you would — courteously, sometimes with a referral if you provide one — and logs the conversation. Protecting your calendar shouldn't cost you goodwill, and in a referral market like this one, how you say no travels.",
+      },
+      {
+        question: "Do you meet north Seminole clients in person?",
+        answer:
+          "For the mapping session at the start, gladly — that one goes better in a room. The build, testing and monthly tuning all run remotely with a regular check-in.",
+      },
+    ],
+    cta: {
+      hook: "See what an assistant would handle for your practice.",
+      copy: "Send me your site and I'll map the enquiries an assistant could qualify and book after hours, what it should route to your team, and what it should never touch — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "web-design",
+    location: "lakeland",
+    metaTitle: "Lakeland Web Design — Sites for a Growth County",
+    metaDescription:
+      "Web design for Lakeland, Winter Haven and Polk County — conversion-first sites for trades, practices and B2B in Florida's fastest-growing county.",
+    keywords: [
+      "Lakeland web design",
+      "web design Lakeland FL",
+      "Winter Haven web design",
+      "Polk County website designer",
+      "Haines City web design",
+      "Bartow web design",
+    ],
+    headline: "Lakeland web design for a county growing faster than its websites",
+    subheadline:
+      "Custom sites for Polk County businesses — from Lakeland trades to Winter Haven's lakefront money to the supplier who needs to look solid to a corporate buyer down the road.",
+    context: [
+      "Polk is the fastest-growing county in Florida, and its web presence hasn't noticed. Subdivisions pour into Davenport and Haines City, Lakeland adds employers along the I-4 logistics corridor, and yet a striking share of established Polk businesses still run on a referral network and a site nobody has touched in years. Every one of those new residents arrives with no plumber, no dentist and no roofer — they search cold, compare three tabs and call one.",
+      "The money here is more layered than outsiders assume. Winter Haven's Chain of Lakes carries serious lakefront wealth — homeowners who commission docks, pools, renovations and landscape work at price points that surprise people who only know the county from the interstate. Those buyers vet carefully, and the contractor whose site looks like the work costs what it costs wins them from the contractor whose site looks free.",
+      "So I build Polk sites for two jobs at once. For growth-market businesses: convert a stranger — service area stated plainly, reviews up front, a phone number that works one-handed from a job site. For anyone selling B2B into the county's corporate and logistics employers: pass the vendor check — capabilities, insurance, capacity, on a page procurement can skim and forward. Different buyers, same principle: answer before the other tab does.",
+    ],
+    factors: [
+      {
+        title: "New residents search cold",
+        description:
+          "Tens of thousands of arrivals a year have no local network to ask. Sites for trades and practices get built to convert a stranger in under a minute — coverage area, proof, and the next step, in that order.",
+      },
+      {
+        title: "Chain of Lakes money buys carefully",
+        description:
+          "Winter Haven's lakefront owners spend at levels most Polk businesses undersell to. For premium trades — docks, pools, remodels, landscape — the site gets designed to justify the quote before it's given: real project photography, process, and proof.",
+      },
+      {
+        title: "The referral-era incumbents set a low bar",
+        description:
+          "Much of page one in Polk is held by sites built once and abandoned. Looking obviously more current and answering more clearly is a lower bar than in any coastal metro — and the businesses that clear it stop competing on price.",
+      },
+      {
+        title: "Bilingual is a genuine edge in east Polk",
+        description:
+          "Haines City and the 27 corridor have large Spanish-speaking communities that almost no local business builds for properly. Where it fits your customers, a real Spanish path — own URLs, hreflang, human-quality translation — is an open lane.",
+      },
+    ],
+    industries: [
+      "Home services — roofing, HVAC, pool and restoration",
+      "Lakefront trades — docks, seawalls, marine and landscape",
+      "Medical, dental and specialist practices",
+      "Logistics, distribution and industrial B2B services",
+      "New-construction trades and contractors",
+      "Legal, financial and professional services",
+    ],
+    faq: [
+      {
+        question: "Do you work with Polk County businesses in person?",
+        answer:
+          "Yes — I'm Florida-based and happy to meet for the kickoff session anywhere from Lakeland to Lake Wales. After that the work runs better over shared screens and a staging link you can open on your own phone.",
+      },
+      {
+        question: "My business has run on referrals for twenty years. Why change now?",
+        answer:
+          "Because the county's growth is precisely when referrals stop being enough. The new arrivals in Davenport and Haines City don't know anyone to ask — they search, compare three tabs and call one. [My audit checklist](/blog/website-audit-checklist) shows where you'd stand in those three tabs today.",
+      },
+      {
+        question: "We serve the whole county. Can one site cover Lakeland and Winter Haven?",
+        answer:
+          "Yes, if it's honest about it. One site with real pages for the areas you genuinely serve beats separate thin sites every time. Polk is big — the design makes your actual coverage obvious fast, so a Winter Haven searcher doesn't bounce assuming you're Lakeland-only.",
+      },
+      {
+        question: "Does Legoland-driven tourism change anything?",
+        answer:
+          "Only if visitors are actually your market — vacation rentals and attractions near Winter Haven, mostly. For everyone else, Polk's economy runs on residents, logistics and healthcare, and designing for tourists would waste your best selling space. We build for who actually buys from you.",
+      },
+    ],
+    cta: {
+      hook: "See how your site compares across Polk County.",
+      copy: "I'll run my 15-point audit against the Lakeland and Winter Haven competitors who actually outrank you, and send back the design and conversion gaps costing you calls — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "seo-marketing",
+    location: "lakeland",
+    metaTitle: "Lakeland SEO — Local Search Across Polk County",
+    metaDescription:
+      "SEO for Lakeland, Winter Haven and Polk County — map pack rankings town by town and first-mover content in the county's growth corridors.",
+    keywords: [
+      "Lakeland SEO",
+      "SEO Lakeland FL",
+      "Winter Haven SEO",
+      "Polk County SEO company",
+      "Haines City SEO",
+      "Davenport FL SEO",
+    ],
+    headline: "Lakeland SEO for a county where page one is still winnable",
+    subheadline:
+      "Local search for Polk County — sequenced town by town from Lakeland to Winter Haven to the 27 corridor, in the rare Florida market where fundamentals still take rankings fast.",
+    context: [
+      "Polk is enormous — nearly two thousand square miles — and Google treats it as a dozen separate markets. Lakeland, Winter Haven, Bartow, Haines City and Davenport each resolve their own map packs, and a business in one will not appear in another's three-pack no matter what an agency promises. The winners here pick their towns deliberately and own them before spending anything chasing the rest.",
+      "The opportunity is that the competition hasn't shown up yet. Much of page one across Polk is held by referral-era businesses with stale reviews and sites nobody has crawled properly in years — and in the growth corridors around Davenport and Haines City, entire high-intent searches have no strong local answer at all. That's the rare situation where consistent fundamentals don't just improve rankings; they take vacant ground.",
+      "Timing matters more here than anywhere else I work. The county's search volume grows with every closing, and the businesses that build their presence now — reviews accumulating, content aging, location pages indexed — will be the incumbents the next wave of competitors has to displace. In five years Polk's search market will look like Orlando's. The cheap seats are now.",
+    ],
+    factors: [
+      {
+        title: "A dozen map packs, one county",
+        description:
+          "Rankings get sequenced by town: your own first, then the neighbours you genuinely serve — Lakeland to Auburndale to Winter Haven, or down the 27 through Haines City. Each expansion gets a real page with something true on it, never a town-swap template.",
+      },
+      {
+        title: "Growth corridors are uncontested ground",
+        description:
+          "The subdivisions around Davenport and Haines City generate thousands of new-resident searches with weak local answers. Content aimed at those buyers — new-to-the-area guides, service pages naming their communities — captures demand incumbents aren't writing for.",
+      },
+      {
+        title: "Soft incumbents reward fundamentals fast",
+        description:
+          "Weak technical SEO and stale reviews hold much of Polk's page one. Fixing crawl issues, building review velocity and publishing genuinely local content moves rankings here in months — a different job entirely from displacing funded franchises in Orlando.",
+      },
+      {
+        title: "Spanish-language search is an open lane",
+        description:
+          "East Polk's Spanish-speaking population is large and growing, and almost nobody local builds properly translated pages for it. Where it fits your customer base, real hreflang'd content wins searches your competitors don't know exist.",
+      },
+    ],
+    industries: [
+      "Home services and storm-driven trades",
+      "Medical, dental and specialist practices",
+      "Legal, financial and professional services",
+      "Lakefront and marine trades around Winter Haven",
+      "Logistics, industrial and B2B services",
+      "New-construction and real estate services",
+    ],
+    faq: [
+      {
+        question: "Can one business rank across all of Polk County?",
+        answer:
+          "In organic results, with real location pages, partially. In the map pack, no — proximity caps your pins at your actual stretch of the county, and Polk is far too big for one pin to cover. I explain how the pack decides in [how local businesses win the map pack](/blog/local-seo-map-pack).",
+      },
+      {
+        question: "How is Polk different from Orlando or Tampa SEO?",
+        answer:
+          "Thinner competition and cheaper wins, but more geography to choose between. Most Polk niches can still be won with fundamentals done consistently — the county's size just forces honest choices about which towns you're actually playing for.",
+      },
+      {
+        question: "How long until results in this market?",
+        answer:
+          "Often faster than anywhere else I work. Technical fixes and review velocity can move Polk rankings inside two to three months because the incumbents are soft. Contested terms in Lakeland proper — injury law, roofing — still take a season or two of consistency.",
+      },
+      {
+        question: "Is it worth targeting Davenport and Haines City if I'm based in Lakeland?",
+        answer:
+          "For organic search, if you genuinely serve them, yes — the growth corridor's demand is real and the local answers are weak. For the map pack, distance will cap you, and I'll be straight about which searches you're geographically excluded from before you spend anything.",
+      },
+    ],
+    cta: {
+      hook: "Find out which Polk County searches you can actually win.",
+      copy: "I'll audit your site and Google Business Profile against the businesses outranking you from Lakeland to Winter Haven, and send back realistic targets, town by town — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "ai-solutions",
+    location: "lakeland",
+    metaTitle: "Lakeland AI Solutions — Assistants That Book",
+    metaDescription:
+      "Custom AI assistants for Lakeland and Winter Haven — 24/7 booking for trades and practices, bilingual enquiries and intake that survives Polk's growth.",
+    keywords: [
+      "Lakeland AI solutions",
+      "AI assistant Lakeland FL",
+      "business automation Polk County",
+      "AI chatbot Winter Haven",
+      "bilingual AI assistant Florida",
+      "Polk County AI consultant",
+    ],
+    headline: "AI assistants for businesses growing faster than their front desk",
+    subheadline:
+      "Custom assistants for Polk County — answering the new-resident enquiry at 10pm, handling Spanish properly, and booking the job while the county's growth buries everyone else's voicemail.",
+    context: [
+      "Growth is a wonderful problem that still loses you money. Polk businesses are fielding more enquiries than ever — new residents pouring into Davenport and Haines City, storm calls after every named system, lakefront projects in Winter Haven — and most of them arrive outside office hours, because people search after the kids are in bed. The business that answers at that hour books the job. The one whose voicemail fills up finds out later, if at all.",
+      "That's the specific gap an assistant closes. Not a chat widget that stalls people until morning, but a system that knows your service area across a two-thousand-square-mile county, your pricing rules, and what you won't take on — and can put a real appointment on a real calendar at ten at night. For trades riding the construction boom, it's the difference between growing headcount to answer phones and growing headcount to do work.",
+      "Polk adds two local wrinkles worth building for. East Polk's Spanish-speaking communities are large and badly underserved — an assistant that switches languages naturally and escalates to a human who can continue the conversation wins customers competitors never even greet. And the county's surge patterns — storm season, snowbird season, spring training weeks — are exactly when a human team gets buried and an assistant simply doesn't.",
+    ],
+    factors: [
+      {
+        title: "After-hours is where the growth converts",
+        description:
+          "New residents research services at night with no local loyalty to anyone. An assistant that answers accurately at 10pm converts enquiries your office would have met as a cold voicemail — or not at all.",
+      },
+      {
+        title: "Service area triage across a huge county",
+        description:
+          "Polk is big enough that half of qualifying is geography. The assistant asks where the job is first, applies your travel and minimum-charge rules, and stops your team quoting work it was never going to take.",
+      },
+      {
+        title: "Bilingual by default",
+        description:
+          "Handling Spanish properly is one of the cheapest advantages available in east Polk. The assistant detects and responds naturally, keeps the same accuracy rules in both languages, and hands off to a human who can actually continue the conversation.",
+      },
+      {
+        title: "Surge capacity when the county spikes",
+        description:
+          "After a storm or during season, volume multiplies overnight. The assistant triages — emergencies escalate to a human with details captured, routine work gets scheduled, and everything is logged instead of lost in the flood.",
+      },
+    ],
+    industries: [
+      "Home services and storm restoration",
+      "New-construction trades and contractors",
+      "Medical, dental and specialist practices",
+      "Lakefront and marine services around Winter Haven",
+      "Logistics and industrial B2B fielding repetitive intake",
+      "Property management and real estate teams",
+    ],
+    faq: [
+      {
+        question: "Can the assistant handle Spanish enquiries?",
+        answer:
+          "Yes — and in east Polk that's one of the strongest reasons to build one. It responds naturally in Spanish with the same accuracy constraints as the English path, and escalates to a human who can continue in that language rather than dumping the customer.",
+      },
+      {
+        question: "Can it tell customers whether we cover their area?",
+        answer:
+          "Yes, and in a county this size it's usually the first thing worth automating. The assistant knows your real radius and travel rules, so an enquiry from Poinciana or Lake Wales gets an honest answer immediately instead of a callback that wastes both sides' time.",
+      },
+      {
+        question: "Will it book directly into our calendar?",
+        answer:
+          "That's the point of it. It qualifies against the questions your intake actually needs, then books your calendar or pushes a structured lead to your CRM — see [AI assistants that book clients](/blog/ai-assistants-that-book-clients) for how that's put together.",
+      },
+      {
+        question: "What happens during a storm surge?",
+        answer:
+          "The assistant holds the line: genuine emergencies escalate immediately with details already captured, routine jobs get scheduled, and everything is logged with a transcript. You set those thresholds before launch, not during the flood.",
+      },
+      {
+        question: "Do you meet Polk County clients in person?",
+        answer:
+          "For the mapping session at the start, gladly — that one goes better in a room, and I'll drive to Lakeland or Winter Haven for it. The build, testing and monthly tuning all run remotely.",
+      },
+    ],
+    cta: {
+      hook: "See what an assistant would handle for your Polk business.",
+      copy: "Send me your site and I'll map the enquiries an assistant could answer today, what it could book overnight during the growth rush, and what should stay human — free.",
       button: "Get my free audit",
     },
   },
