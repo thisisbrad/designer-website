@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { posts } from "@/data/posts";
 import { services } from "@/data/services";
 import { locationServices } from "@/data/locations";
+import { legalDocs } from "@/data/legal";
 import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -54,6 +55,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(post.date),
       changeFrequency: "yearly" as const,
       priority: 0.6,
+    })),
+    // Indexable but low priority: trust pages, not landing pages.
+    ...legalDocs.map((doc) => ({
+      url: `${SITE_URL}/${doc.slug}`,
+      lastModified: new Date(doc.updated),
+      changeFrequency: "yearly" as const,
+      priority: 0.2,
     })),
   ];
 }

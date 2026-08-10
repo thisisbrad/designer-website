@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import MagneticButton from "./MagneticButton";
 import { cn } from "@/lib/utils";
 
@@ -178,6 +179,17 @@ export default function ContactForm({
           </p>
         )}
       </div>
+
+      <p className="font-mono text-[10px] tracking-[0.15em] text-muted/70 uppercase">
+        Used only to reply to you. See the{" "}
+        <Link
+          href="/privacy"
+          className="underline decoration-muted/40 underline-offset-4 transition-colors hover:text-accent"
+        >
+          privacy policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }

@@ -11,6 +11,8 @@ const PAGES = [
   "/",
   "/about",
   "/contact",
+  "/privacy",
+  "/terms",
   "/services",
   "/services/web-design",
   "/services/frontend-development",
@@ -262,6 +264,23 @@ for (const page of PAGES) {
     );
     console.log(`  internal links out: ${out.size} services`);
     if (out.size < 3) fail(page, "fewer than 3 service links");
+  }
+
+  if (page === "/privacy" || page === "/terms") {
+    const doc = nodes.find((n) => n["@type"] === "WebPage");
+    if (!doc) fail(page, "no WebPage node");
+    else if (!doc.dateModified) fail(page, "WebPage missing dateModified");
+    if (!nodes.some((n) => n["@type"] === "BreadcrumbList"))
+      fail(page, "no BreadcrumbList node");
+    // A policy nobody can reach from the site isn't doing its job.
+    const linkedFromFooter = /href="\/privacy"/.test(html) && /href="\/terms"/.test(html);
+    if (!linkedFromFooter) fail(page, "legal pages not linked in the footer");
+    const words = html
+      .replace(/<script[\s\S]*?<\/script>/g, "")
+      .replace(/<[^>]+>/g, " ")
+      .split(/\s+/)
+      .filter(Boolean).length;
+    console.log(`  ~${words} words, updated ${doc?.dateModified ?? "?"}`);
   }
 
   if (page === "/services") {

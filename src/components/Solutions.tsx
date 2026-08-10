@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "@/lib/gsap";
@@ -438,7 +439,14 @@ export default function Solutions() {
             </div>
 
             <p className="mt-6 font-mono text-[10px] tracking-[0.15em] text-muted/70 uppercase">
-              No spam, no list — just the audit.
+              No spam, no list — just the audit. See the{" "}
+              <Link
+                href="/privacy"
+                className="underline decoration-muted/40 underline-offset-4 transition-colors hover:text-accent"
+              >
+                privacy policy
+              </Link>
+              .
             </p>
           </form>
         </div>

@@ -17,9 +17,12 @@ export function slugify(text: string) {
     .replace(/\s+/g, "-");
 }
 
-/** Strips inline-link syntax so counts and feed summaries read as prose. */
+/** Strips inline link and bold syntax so counts, feed summaries and
+ *  structured-data strings read as plain prose. */
 export function stripMarkup(text: string) {
-  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1");
 }
 
 export function escapeXml(text: string) {

@@ -145,7 +145,14 @@ export default function Footer() {
             </time>{" "}
             ET
           </p>
-          <p>Designed &amp; built by hand</p>
+          <p className="flex items-center gap-4">
+            <Link href="/privacy" className="transition-colors hover:text-accent">
+              Privacy
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-accent">
+              Terms
+            </Link>
+          </p>
           <button
             type="button"
             onClick={scrollToTop}
