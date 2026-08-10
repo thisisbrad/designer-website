@@ -152,6 +152,31 @@ export const locations: Location[] = [
     geo: { latitude: 28.0395, longitude: -81.9498 },
     radiusKm: 45,
   },
+  {
+    slug: "daytona-beach",
+    city: "Daytona Beach",
+    region: "Florida",
+    regionCode: "FL",
+    metroLabel: "Volusia County",
+    counties: ["Volusia County"],
+    areas: [
+      "Port Orange",
+      "Ormond Beach",
+      "South Daytona",
+      "Daytona Beach Shores",
+      "Holly Hill",
+      "New Smyrna Beach",
+      "Edgewater",
+      "Ponce Inlet",
+      "Deltona",
+      "DeLand",
+      "Orange City",
+      "DeBary",
+      "Lake Helen",
+    ],
+    geo: { latitude: 29.2108, longitude: -81.0228 },
+    radiusKm: 45,
+  },
 ];
 
 export const locationServices: LocationService[] = [
@@ -1143,6 +1168,256 @@ export const locationServices: LocationService[] = [
     cta: {
       hook: "See what an assistant would handle for your Polk business.",
       copy: "Send me your site and I'll map the enquiries an assistant could answer today, what it could book overnight during the growth rush, and what should stay human — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "web-design",
+    location: "daytona-beach",
+    metaTitle: "Daytona Beach Web Design — Sites That Convert",
+    metaDescription:
+      "Web design for Daytona Beach, Port Orange and Deltona — event-surge booking for the coast, cold-search conversion for west Volusia, storm-ready trade sites.",
+    keywords: [
+      "Daytona Beach web design",
+      "web design Daytona Beach FL",
+      "Port Orange web design",
+      "Deltona web design",
+      "Ormond Beach web design",
+      "Volusia County website designer",
+    ],
+    headline: "Daytona web design for a county that's two markets in one",
+    subheadline:
+      "Custom sites for Volusia businesses — built for a coast that sells to event crowds and visitors, and a west side full of new residents searching cold.",
+    context: [
+      "Volusia is two markets wearing one county line. The coast — Daytona, Port Orange, Ormond, New Smyrna — runs on visitors and events: race weeks, Bike Week, beach season, each one a demand spike where the business that books fastest wins the weekend. West Volusia — Deltona, DeLand, Orange City — is a different economy entirely: fast-growing commuter towns where thousands of new residents arrive every year with no plumber, no dentist and no one to ask.",
+      "Both halves share the same weakness: the web presence hasn't kept up. Much of the county's page one is held by sites built once and abandoned — beachside rentals running on portal listings alone, established trades coasting on referral networks, practices whose sites predate their youngest patients. Looking obviously more current and answering more clearly is a lower bar here than in any of the metros an hour away.",
+      "So I build for whichever half you're actually in. Coastal businesses get booking-first design — availability, distance and dates answerable in seconds by someone planning an event weekend from out of state. West-side trades and practices get cold-search conversion — service area stated plainly, reviews up front, a phone number that works one-handed. And for the storm-exposed coast, an emergency path with the insurance and repair content owners actually search after a named system.",
+    ],
+    factors: [
+      {
+        title: "Event weekends compress the whole sales cycle",
+        description:
+          "Race weeks and Bike Week put hundreds of thousands of visitors on a decision clock. Rentals, venues and services that sell to them get booking-first design — dates, distance and price answerable before the competitor's tab loads.",
+      },
+      {
+        title: "West Volusia's growth is a cold-search market",
+        description:
+          "Deltona keeps growing and its arrivals have no referral network. Sites for trades and practices get built to convert a stranger in under a minute — coverage, proof, next step, in that order.",
+      },
+      {
+        title: "Storm and erosion content is a coastal requirement",
+        description:
+          "Volusia's coast takes hits — flooding, wind, beach erosion. Roofers, restoration and marine trades get an emergency path plus the insurance-process content that beachside owners search the week after landfall.",
+      },
+      {
+        title: "The incumbents set a very low bar",
+        description:
+          "A striking share of Volusia's established businesses run on sites nobody has touched in years. Clearing that bar — current design, clear answers, real reviews — is often all it takes to stop competing on price.",
+      },
+    ],
+    industries: [
+      "Vacation rentals, hotels and event-driven hospitality",
+      "Home services — roofing, HVAC, restoration and marine",
+      "Medical, dental and specialist practices",
+      "New-construction trades serving Deltona and DeLand",
+      "Motorsports, powersports and event businesses",
+      "Legal, financial and professional services",
+    ],
+    faq: [
+      {
+        question: "Do you meet Volusia clients in person?",
+        answer:
+          "Yes — I'm Florida-based and happy to meet for the kickoff session anywhere from Ormond Beach to Deltona. After that the work runs better over shared screens and a staging link you can open on your own phone.",
+      },
+      {
+        question: "Our business lives and dies by event weekends. Does that change the design?",
+        answer:
+          "Completely. Event visitors buy on availability, distance and dates, and they decide in minutes — so booking moves to the top, the calendar reflects real availability, and the site is tested on a phone first because that's where the booking happens. The rest of the year, the same site sells to locals without the event framing getting in the way.",
+      },
+      {
+        question: "My Deltona business runs on referrals. Why invest in a site now?",
+        answer:
+          "Because west Volusia's growth is exactly when referrals stop being enough. New residents search, compare three tabs and call one — and the business that looks current wins them by default. [My audit checklist](/blog/website-audit-checklist) shows where you'd stand in those three tabs today.",
+      },
+      {
+        question: "Can one site serve both the coast and west Volusia?",
+        answer:
+          "Yes, if it's honest about your coverage. The county's two halves search differently, so the design makes your actual service area obvious fast — a Deltona searcher shouldn't bounce assuming you're beachside-only, and vice versa.",
+      },
+    ],
+    cta: {
+      hook: "See how your site compares across Volusia.",
+      copy: "I'll run my 15-point audit against the Daytona and Deltona competitors who actually outrank you, and send back the design and conversion gaps costing you bookings — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "seo-marketing",
+    location: "daytona-beach",
+    metaTitle: "Daytona Beach SEO — Local Search Across Volusia",
+    metaDescription:
+      "SEO for Daytona Beach, Port Orange and Deltona — map pack rankings on both sides of Volusia County, plus event-season content that ranks before the surge.",
+    keywords: [
+      "Daytona Beach SEO",
+      "SEO Daytona Beach FL",
+      "Port Orange SEO",
+      "Deltona SEO",
+      "Volusia County SEO company",
+      "New Smyrna Beach SEO",
+    ],
+    headline: "Daytona SEO for a county Google treats as two",
+    subheadline:
+      "Local search for Volusia — the coastal strip and the west-side growth towns are separate ranking contests, and the businesses that pick their side first win it.",
+    context: [
+      "Google splits Volusia the same way the county splits itself. The coastal strip from Ormond down to New Smyrna resolves its own map packs, and the west-side towns — Deltona, DeLand, Orange City — resolve theirs; twenty-five miles of pine forest sits between them, and proximity means a beachside business simply doesn't appear in a Deltona three-pack. The first strategic choice here isn't keywords, it's which side of the county you're actually playing for.",
+      "The demand runs on two clocks. Coastal search is seasonal and event-driven — race weeks, Bike Week and summer put out-of-state intent behind everything from rentals to towing, and the businesses that rank before the surge take the weekend. West-side search is the steady growth kind: new Deltona residents searching cold for every service a household needs, year round, with almost nobody writing content for them.",
+      "And the competitive picture is the softest of any market I work. Volusia's page one is full of referral-era businesses with stale reviews and sites nobody has crawled properly in years. Consistent fundamentals — clean structure, review velocity, content that names real towns — move rankings here in months, and the positions you take now are the ones the next wave of competitors will have to pay to displace.",
+    ],
+    factors: [
+      {
+        title: "Pick your side of the pine forest",
+        description:
+          "Coastal and west Volusia are separate map-pack worlds. Rankings get sequenced within your side — Daytona to Port Orange to Ormond, or Deltona to Orange City to DeLand — with a real page for each expansion, never a template.",
+      },
+      {
+        title: "Event season is a content calendar",
+        description:
+          "Race weeks and Bike Week drive search you can rank for months in advance — availability, logistics, what's-open content aimed at out-of-state visitors. Ranking before the surge is the whole game; writing during it is too late.",
+      },
+      {
+        title: "West-side growth searches have no strong answer",
+        description:
+          "Deltona's new residents generate thousands of high-intent searches that referral-era incumbents aren't writing for. New-to-the-area content and service pages naming real neighbourhoods take that ground uncontested.",
+      },
+      {
+        title: "Stale incumbents reward fundamentals fast",
+        description:
+          "Weak technical SEO and abandoned profiles hold much of Volusia's page one. Crawl fixes, review velocity and genuinely local content move rankings here faster than in any adjacent metro.",
+      },
+    ],
+    industries: [
+      "Vacation rentals and event-driven hospitality",
+      "Home services and storm-driven trades",
+      "Medical, dental and specialist practices",
+      "Legal, financial and professional services",
+      "Motorsports, marine and powersports businesses",
+      "New-construction and real estate services",
+    ],
+    faq: [
+      {
+        question: "Can one business rank across all of Volusia?",
+        answer:
+          "In organic results, with real location pages, partially. In the map pack, no — the coast and the west side are separate contests and proximity decides both. I cover how the pack chooses in [how local businesses win the map pack](/blog/local-seo-map-pack).",
+      },
+      {
+        question: "How does event season change SEO here?",
+        answer:
+          "It front-loads it. Event-week searches spike from out of state, and the pages that win them were published and indexed months earlier. We plan content against the county's actual calendar — race weeks, Bike Week, summer — so you're ranking before the demand arrives, not chasing it.",
+      },
+      {
+        question: "How is Volusia different from Orlando SEO?",
+        answer:
+          "Far softer competition and a county-shaped constraint. You're not displacing funded franchises; you're displacing sites nobody has touched since 2018. The trade-off is choosing your side of the county honestly, because no budget beats twenty-five miles of proximity math.",
+      },
+      {
+        question: "How long until results here?",
+        answer:
+          "Often the fastest of any market I work. Technical fixes and review velocity can move Volusia rankings inside two to three months because the incumbents are stale. Contested coastal terms — roofing, injury law — still take a season or two of consistency.",
+      },
+      {
+        question: "Does Spanish-language search matter in Volusia?",
+        answer:
+          "In Deltona especially, yes — it has one of the larger Spanish-speaking populations in Central Florida and almost nobody local builds properly translated pages for it. Where it fits your customer base, real hreflang'd content is an open lane.",
+      },
+    ],
+    cta: {
+      hook: "Find out which Volusia searches you can actually win.",
+      copy: "I'll audit your site and Google Business Profile against the businesses outranking you on your side of the county, and send back realistic targets in priority order — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "ai-solutions",
+    location: "daytona-beach",
+    metaTitle: "Daytona Beach AI Solutions — Assistants That Book",
+    metaDescription:
+      "Custom AI assistants for Daytona Beach and Volusia — event-surge booking for the coast, after-hours intake for west-side trades and bilingual enquiries.",
+    keywords: [
+      "Daytona Beach AI solutions",
+      "AI assistant Daytona Beach FL",
+      "business automation Volusia County",
+      "AI chatbot Port Orange",
+      "AI booking for vacation rentals",
+      "Deltona AI assistant",
+    ],
+    headline: "AI assistants that survive Bike Week",
+    subheadline:
+      "Custom assistants for Volusia businesses — answering the out-of-state rental enquiry at midnight, triaging the storm call, and booking the Deltona job while competitors' phones ring out.",
+    context: [
+      "Volusia's enquiry patterns are surge-shaped. An event week can multiply a rental operator's inbound twenty-fold, with most of it arriving from other time zones at hours no front desk covers. A named storm does the same to roofers and restoration crews overnight. And on the west side, Deltona's new residents send their enquiries after the kids are in bed, to every business whose tab survived the comparison. In all three, the business that answers first books the work.",
+      "That's the gap an assistant closes. Not a chat widget that stalls people until morning, but a system that knows your real availability, your service area on your side of the county, your rules about minimum stays or minimum charges — and can put a booking on a real calendar at midnight during the busiest week of your year.",
+      "The county adds texture worth building for. Event-week guests ask the same fifty questions — parking, distance to the track or the beach, noise rules, what's walkable — and an assistant that answers them accurately frees your team for the conversations that need a human. Deltona's Spanish-speaking households are badly underserved by local businesses. And storm season demands triage: real emergencies escalated with details captured, routine jobs scheduled, nothing lost in the flood.",
+    ],
+    factors: [
+      {
+        title: "Event-surge booking without event-surge staffing",
+        description:
+          "Race weeks and Bike Week multiply enquiries overnight, mostly from out of state and out of hours. The assistant answers the fifty standard questions, applies your event-week rules, and books against real availability while your competitors sleep.",
+      },
+      {
+        title: "Storm triage on the exposed coast",
+        description:
+          "When a system clips Volusia, restoration enquiries flood in at once. Emergencies escalate to a human immediately with details captured; routine work gets scheduled; everything is logged with a transcript instead of dying on hold.",
+      },
+      {
+        title: "West-side after-hours intake",
+        description:
+          "Deltona's growth converts at night — new residents comparing services after work. An assistant that qualifies, answers coverage questions honestly and books converts enquiries your office would have met as a cold voicemail.",
+      },
+      {
+        title: "Bilingual by default",
+        description:
+          "Deltona has one of Central Florida's larger Spanish-speaking communities, and almost no local business greets it properly. The assistant switches languages naturally and escalates to a human who can continue the conversation.",
+      },
+    ],
+    industries: [
+      "Vacation rentals, hotels and event hospitality",
+      "Home services and storm restoration",
+      "Motorsports, powersports and rental businesses",
+      "Medical, dental and specialist practices",
+      "New-construction trades serving west Volusia",
+      "Property management and real estate teams",
+    ],
+    faq: [
+      {
+        question: "Can it handle an event-week booking surge?",
+        answer:
+          "That's the strongest local reason to build one. It answers the standard event questions accurately, applies your event-week pricing and minimum-stay rules, and books against real availability — so a twenty-fold enquiry spike doesn't need twenty-fold staff. [AI assistants that book clients](/blog/ai-assistants-that-book-clients) shows how the booking side works.",
+      },
+      {
+        question: "Can the assistant handle Spanish enquiries?",
+        answer:
+          "Yes — and in Deltona that's a genuine competitive edge. It responds naturally in Spanish with the same accuracy constraints as the English path, and escalates to a human who can continue in that language rather than dumping the customer.",
+      },
+      {
+        question: "Can it tell customers whether we cover their area?",
+        answer:
+          "Yes, and in a county split by twenty-five miles of pine forest it's usually the first thing worth automating. The assistant knows which side you serve and your travel rules, so a mismatched enquiry gets an honest answer immediately.",
+      },
+      {
+        question: "What happens when a storm hits?",
+        answer:
+          "The assistant holds the line: genuine emergencies escalate immediately with details already captured, routine jobs get scheduled, and everything is logged with a transcript. You set those thresholds before launch, not during the flood.",
+      },
+      {
+        question: "Do you meet Volusia clients in person?",
+        answer:
+          "For the mapping session at the start, gladly — that one goes better in a room, and I'll drive to Daytona or Deltona for it. The build, testing and monthly tuning all run remotely.",
+      },
+    ],
+    cta: {
+      hook: "See what an assistant would handle for your Volusia business.",
+      copy: "Send me your site and I'll map the enquiries an assistant could answer today — event-week bookings, storm triage, after-hours intake — and what should stay human. Free.",
       button: "Get my free audit",
     },
   },

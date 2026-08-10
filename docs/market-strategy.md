@@ -1,6 +1,6 @@
 # Target Markets & PPC Strategy
 
-Working reference for the four markets the site targets, what each is positioned
+Working reference for the five markets the site targets, what each is positioned
 around, and what it costs to compete in paid search. Compiled August 2026 from
 2026 Google Ads benchmark data — CPC figures marked *(est.)* should be verified
 in Google Keyword Planner before committing budget.
@@ -10,7 +10,7 @@ content lives in `src/data/locations.ts`.
 
 ---
 
-## The four markets
+## The five markets
 
 ### Orlando (Orange, Seminole, Osceola, Lake)
 - **Positioning:** tourist intent vs. resident intent split, bilingual done
@@ -55,6 +55,17 @@ content lives in `src/data/locations.ts`.
   local answer at all. In five years Polk's search market looks like Orlando's;
   the cheap seats are now.
 
+### Daytona Beach / Deltona (Volusia)
+- **Positioning:** two markets in one county — the events-driven coast (race
+  weeks, Bike Week, storm-exposed trades) and fast-growing commuter west
+  Volusia (Deltona +21% since 2014, new residents searching cold). Proximity
+  splits the county's map packs at the pine forest between the halves.
+- **PPC:** ~$8–14/click *(est.)* — Brevard-tier pricing, softest incumbents of
+  any market. Event-season terms spike seasonally.
+- **Role in the plan:** chains geographically onto Brevard, extending the
+  coastal corridor. Event-week booking demand is the unique angle — rentals and
+  hospitality campaigns timed to the county's event calendar.
+
 ---
 
 ## PPC budget math
@@ -72,6 +83,7 @@ Per-campaign monthly floors (one service, one market):
 | Lake Mary | $1,500–2,500 | $2,000–3,000 | $500–1,000 |
 | Melbourne | $1,000–1,500 | $1,200–2,000 | $500–1,000 |
 | Lakeland / Winter Haven | $1,000–1,500 | $1,200–2,000 | $500–1,000 |
+| Daytona / Deltona | $1,000–1,500 | $1,200–2,000 | $500–1,000 |
 
 Notes:
 - Each service is its own campaign with its own ads and landing page — budgets
@@ -99,11 +111,8 @@ every campaign starves below its data floor and nothing converges.
 
 ## Other Central Florida markets considered (bench)
 
-Evaluated August 2026, not built yet — candidates if a fifth market is added:
+Evaluated August 2026, not built yet — candidates if a sixth market is added:
 
-- **Deltona / Daytona / Port Orange (Volusia):** Deltona +21% since 2014, almost
-  no premium local web presence. Borders Brevard, so the corridor strategy and
-  location-page link graph extend naturally up the coast. Strongest bench pick.
 - **The Villages / Wildwood / Ocala:** Wildwood is the fastest-growing city in
   the country; huge demand from medical and senior-focused businesses whose
   buyers vet carefully. Geographically detached from current markets.
