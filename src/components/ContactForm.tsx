@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import MagneticButton from "./MagneticButton";
+import { attributionPayload } from "@/lib/analytics/attribution";
+import { trackFormError, trackFormStart, trackLead } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
 const inputCls =
@@ -11,7 +13,18 @@ const inputCls =
 const labelCls =
   "mb-2 block font-mono text-xs tracking-[0.2em] text-muted uppercase";
 
-const budgets = ["$5k — $10k", "$10k — $25k", "$25k — $50k", "$50k+"];
+/* "Not sure yet" leads deliberately, for two reasons. It removes the reason to
+   abandon for anyone who genuinely hasn't scoped a budget, and it stops the
+   select's silent default from reporting "$5k — $10k" as a stated answer when
+   the visitor never touched the field — which quietly poisoned the one piece
+   of qualifying data this form collects. */
+const budgets = [
+  "Not sure yet",
+  "$5k — $10k",
+  "$10k — $25k",
+  "$25k — $50k",
+  "$50k+",
+];
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -21,19 +34,32 @@ type Status = "idle" | "sending" | "sent" | "error";
  */
 export default function ContactForm({
   idPrefix = "contact",
+  location = "contact",
   className,
 }: {
   idPrefix?: string;
+  /** Named placement for analytics, e.g. "home_contact" or "contact_page". */
+  location?: string;
   className?: string;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  const started = useRef(false);
+
+  /* The abandonment denominator. Fires once, on the first real interaction
+     with any field, so the gap to generate_lead is the drop-off rate. */
+  const onFirstInteraction = () => {
+    if (started.current) return;
+    started.current = true;
+    trackFormStart("enquiry", location);
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (status === "sending") return;
 
     const data = new FormData(e.currentTarget);
+    const budget = String(data.get("budget") ?? "");
     setStatus("sending");
     setError("");
 
@@ -44,8 +70,11 @@ export default function ContactForm({
         body: JSON.stringify({
           name: data.get("name"),
           email: data.get("email"),
-          budget: data.get("budget"),
+          budget,
           message: data.get("message"),
+          // Which ad, campaign or search produced this enquiry — recorded with
+          // the lead itself so it survives any GA4 attribution window.
+          attribution: attributionPayload(),
         }),
       });
 
@@ -55,13 +84,15 @@ export default function ContactForm({
       }
 
       setStatus("sent");
+      trackLead("enquiry", { location, qualifier: budget });
     } catch (err) {
-      setStatus("error");
-      setError(
+      const message =
         err instanceof Error
           ? err.message
-          : "Something went wrong. Try again, or email me directly."
-      );
+          : "Something went wrong. Try again, or email me directly.";
+      setStatus("error");
+      setError(message);
+      trackFormError("enquiry", location, message);
     }
   };
 
@@ -101,7 +132,13 @@ export default function ContactForm({
   }
 
   return (
-    <form className={cn("flex flex-col gap-8", className)} onSubmit={onSubmit}>
+    <form
+      className={cn("flex flex-col gap-8", className)}
+      onSubmit={onSubmit}
+      // React's onFocus bubbles (it maps to focusin), so one handler on the
+      // form catches the first touch of any field without wiring each input.
+      onFocus={onFirstInteraction}
+    >
       <div className="grid gap-8 sm:grid-cols-2">
         <div>
           <label htmlFor={`${idPrefix}-name`} className={labelCls}>
@@ -175,13 +212,21 @@ export default function ContactForm({
         </MagneticButton>
         {status === "error" && (
           <p role="alert" className="text-sm text-content/80">
-            {error}
+            {error}{" "}
+            {/* The worst possible moment to leave someone without a next step:
+                they decided to contact you and the form failed. */}
+            <a
+              href="mailto:hello@beltowski.studio"
+              className="underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent"
+            >
+              Email me directly instead.
+            </a>
           </p>
         )}
       </div>
 
       <p className="font-mono text-[10px] tracking-[0.15em] text-muted/70 uppercase">
-        Used only to reply to you. See the{" "}
+        Replied to within 48 hours, by me. Used only to reply to you — see the{" "}
         <Link
           href="/privacy"
           className="underline decoration-muted/40 underline-offset-4 transition-colors hover:text-accent"

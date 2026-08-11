@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { gsap } from "@/lib/gsap";
+import { trackCta } from "@/lib/analytics/events";
 import {
   cn,
   hasFinePointer,
@@ -16,6 +17,14 @@ type Props = {
   variant?: "solid" | "outline";
   className?: string;
   onClick?: (e: React.MouseEvent) => void;
+  /**
+   * Where this button sits, for the `cta_click` event. Left unset, the nearest
+   * ancestor `section[id]` is used — which is right often enough that only
+   * buttons outside a section need to name themselves.
+   */
+  analyticsLocation?: string;
+  /** Skip CTA tracking entirely, for buttons that aren't conversion steps. */
+  analyticsExclude?: boolean;
 };
 
 const base =
@@ -36,6 +45,8 @@ export default function MagneticButton({
   variant = "solid",
   className,
   onClick,
+  analyticsLocation,
+  analyticsExclude = false,
 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -67,15 +78,41 @@ export default function MagneticButton({
 
   const cls = cn(base, variants[variant], className);
 
+  /**
+   * Every CTA on the site routes through this component, so measuring here
+   * instruments all of them at once — no call site has to remember to.
+   *
+   * Submit buttons are excluded: the form funnel (`form_start` →
+   * `generate_lead` / `form_error`) already describes them, and counting a
+   * rejected submit as a CTA click would inflate the numbers that matter most.
+   */
+  const handleClick = (e: React.MouseEvent) => {
+    if (!analyticsExclude && type !== "submit") {
+      const el = e.currentTarget as HTMLElement;
+      // Read the label from the DOM rather than the children prop, which may
+      // be an arbitrary node tree. The trailing arrow glyph is decoration.
+      const label = (el.textContent ?? "").replace(/[↗→↑\s]+$/u, "").trim();
+
+      trackCta({
+        label: label || "(unlabelled)",
+        location:
+          analyticsLocation ?? el.closest("section[id]")?.id ?? "page",
+        destination: href,
+      });
+    }
+
+    onClick?.(e);
+  };
+
   return (
     // Slightly oversized hit area gives the magnet room to attract.
     <div ref={wrapRef} className="-m-2 inline-block p-2" data-cursor="hover">
       {href ? (
-        <a href={href} onClick={onClick} className={cls}>
+        <a href={href} onClick={handleClick} className={cls}>
           {children}
         </a>
       ) : (
-        <button type={type} onClick={onClick} className={cls}>
+        <button type={type} onClick={handleClick} className={cls}>
           {children}
         </button>
       )}

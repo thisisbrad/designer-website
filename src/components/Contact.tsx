@@ -74,7 +74,11 @@ export default function Contact() {
           </p>
         </div>
 
-        <ContactForm idPrefix="home" className="lg:col-span-6 lg:col-start-7" />
+        <ContactForm
+          idPrefix="home"
+          location="home_contact"
+          className="lg:col-span-6 lg:col-start-7"
+        />
       </div>
     </section>
   );

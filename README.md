@@ -154,6 +154,34 @@ curl -X POST http://localhost:3000/api/audit-lead \
   delivery channel. Add a database or spreadsheet hook if a durable second
   copy is ever needed.
 
+## Analytics & CRO
+
+GA4 plus Google Ads conversion tracking, behind geo-gated Consent Mode v2.
+Full detail — event taxonomy, the custom dimensions GA4 needs before any of it
+shows up in reports, and the Ads setup steps — is in
+[`docs/measurement-plan.md`](docs/measurement-plan.md).
+
+The short version:
+
+- **Nothing is sent unless `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set.** Set it in
+  production only, or your own clicking around becomes your data. Local dev and
+  preview deploys stay silent by default.
+- **`NEXT_PUBLIC_ANALYTICS_DEBUG=1`** logs every event to the console and sends
+  nothing — the fastest way to check the taxonomy while building.
+- **All measurement goes through `src/lib/analytics/events.ts`.** Nothing calls
+  `window.gtag` anywhere else, so that file's exports are the complete list of
+  what the site measures. Add events there, not at the call site.
+- **`generate_lead` is the only key event.** Both forms fire it, with different
+  values ($50 audit / $250 enquiry) so Ads bids toward the better lead.
+- **Consent defaults are inlined in `<head>`** by `layout.tsx`, because they
+  must execute before gtag.js loads. Storage is denied by default across the
+  EEA, UK and Switzerland, granted elsewhere, with a one-click permanent
+  opt-out in the footer and a live switch on `/privacy`.
+
+> `src/data/legal.ts` is part of this surface, not documentation of it. If you
+> add a tag, embed or widget, update the privacy page in the same commit —
+> otherwise it becomes a false statement rather than a stale one.
+
 ## Portrait assets
 
 `public/portrait-duotone.png` and `public/portrait-face.png` are generated

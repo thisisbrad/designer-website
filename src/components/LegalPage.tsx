@@ -2,6 +2,7 @@ import Link from "next/link";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import RichText from "./RichText";
+import ConsentControl from "./analytics/ConsentControl";
 import type { LegalDoc } from "@/data/legal";
 import { OWNER_NAME, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 import { slugify } from "@/lib/seo";
@@ -162,6 +163,9 @@ export default function LegalPage({
               </section>
             ))}
           </div>
+
+          {/* A policy that describes an opt-out should carry the switch. */}
+          {doc.slug === "privacy" && <ConsentControl />}
 
           <aside className="mt-16 rounded-2xl border border-accent/25 bg-surface-2 p-7 md:p-8">
             <h2 className="font-mono text-[11px] tracking-[0.25em] text-accent uppercase">

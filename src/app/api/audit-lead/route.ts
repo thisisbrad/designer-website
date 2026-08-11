@@ -1,12 +1,23 @@
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import {
+  formatAttribution,
+  parseAttribution,
+  type LeadAttribution,
+} from "@/lib/analytics/server";
 
 type Lead = {
   name: string;
   email: string;
   website: string;
   goal: string;
+};
+
+/** A lead plus everything the server knows about it at the moment it arrived. */
+type StampedLead = Lead & {
+  receivedAt: string;
+  attribution: LeadAttribution;
 };
 
 const MAX_FIELD_LENGTH = 300;
@@ -44,13 +55,13 @@ function parseLead(body: unknown): Lead | null {
 const CAN_WRITE_DISK = !process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME;
 
 /** Local backup, written before any email is attempted. */
-async function saveToDisk(lead: Lead & { receivedAt: string }) {
+async function saveToDisk(lead: StampedLead) {
   const dir = path.join(process.cwd(), "var");
   await mkdir(dir, { recursive: true });
   await appendFile(path.join(dir, "leads.jsonl"), JSON.stringify(lead) + "\n");
 }
 
-async function sendEmail(lead: Lead & { receivedAt: string }) {
+async function sendEmail(lead: StampedLead) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_TO_EMAIL;
   if (!apiKey || !to) return { sent: false as const, reason: "not configured" };
@@ -74,6 +85,7 @@ async function sendEmail(lead: Lead & { receivedAt: string }) {
         `Email:   ${lead.email}`,
         `Website: ${lead.website}`,
         `Goal:    ${lead.goal || "—"}`,
+        ...formatAttribution(lead.attribution),
         ``,
         `Received ${lead.receivedAt}`,
         `Reply directly to this email to reach them.`,
@@ -105,7 +117,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const stamped = { ...lead, receivedAt: new Date().toISOString() };
+  const stamped: StampedLead = {
+    ...lead,
+    receivedAt: new Date().toISOString(),
+    attribution: parseAttribution(body),
+  };
 
   // Disk first so a lead is never lost to an email hiccup.
   let backedUp = false;

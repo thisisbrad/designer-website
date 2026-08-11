@@ -6,6 +6,7 @@ import { getService, services } from "@/data/services";
 import { getLocation, locationServices } from "@/data/locations";
 import { SITE_EMAIL } from "@/lib/site";
 import { scrollToTop } from "./SmoothScroll";
+import { openConsentSettings } from "./analytics/ConsentBanner";
 
 /** Sitewide links so every page — blog posts included — reaches the money pages. */
 const explore = [
@@ -152,6 +153,16 @@ export default function Footer() {
             <Link href="/terms" className="transition-colors hover:text-accent">
               Terms
             </Link>
+            {/* Permanent opt-out, reachable from every page — including for
+                visitors outside the EEA, who never saw the banner. */}
+            <button
+              type="button"
+              onClick={openConsentSettings}
+              data-cursor="hover"
+              className="uppercase transition-colors hover:text-accent"
+            >
+              Cookies
+            </button>
           </p>
           <button
             type="button"

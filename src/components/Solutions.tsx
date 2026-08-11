@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { gsap } from "@/lib/gsap";
+import { attributionPayload } from "@/lib/analytics/attribution";
+import { trackFormError, trackFormStart, trackLead } from "@/lib/analytics/events";
+import { SITE_EMAIL } from "@/lib/site";
 import { useIsomorphicLayoutEffect } from "@/lib/utils";
 import { solutions } from "@/data/solutions";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
@@ -35,10 +38,14 @@ const labelCls =
 
 type FormStatus = "idle" | "sending" | "sent" | "error";
 
+/** Named placement for analytics — this form also exists nowhere else. */
+const AUDIT_FORM_LOCATION = "home_audit_band";
+
 export default function Solutions() {
   const ref = useSectionReveal<HTMLElement>();
   const bandRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<FormStatus>("idle");
+  const started = useRef(false);
 
   // One-shot entrance for copy and form; scroll-scrubbed parallax for the
   // portrait and glow, so the scene has depth while the section stays compact.
@@ -99,6 +106,14 @@ export default function Solutions() {
     return () => mm.revert();
   }, []);
 
+  /* The abandonment denominator — one handler on the form catches the first
+     touch of any field, because React's onFocus bubbles. */
+  const onFirstInteraction = () => {
+    if (started.current) return;
+    started.current = true;
+    trackFormStart("audit", AUDIT_FORM_LOCATION);
+  };
+
   const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (status === "sending") return;
@@ -111,14 +126,27 @@ export default function Solutions() {
       const res = await fetch("/api/audit-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          // Which ad or search produced this lead, carried with the lead.
+          attribution: attributionPayload(),
+        }),
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
       setStatus("sent");
+      trackLead("audit", {
+        location: AUDIT_FORM_LOCATION,
+        qualifier: String(data.goal ?? ""),
+      });
       form.reset();
     } catch (err) {
       console.error("Lead submit failed:", err);
       setStatus("error");
+      trackFormError(
+        "audit",
+        AUDIT_FORM_LOCATION,
+        err instanceof Error ? err.message : "unknown"
+      );
     }
   };
 
@@ -355,100 +383,141 @@ export default function Solutions() {
             />
           </div>
 
-          <form
-            aria-label="Request your free website audit"
-            data-band-form
-            className="rounded-2xl border border-accent/20 bg-surface/70 p-8 shadow-[0_0_90px_rgba(215,251,68,0.07)] backdrop-blur-md md:p-10"
-            onSubmit={submitLead}
-          >
-            <div className="grid gap-7 sm:grid-cols-2">
-              <div>
-                <label htmlFor="audit-name" className={labelCls}>
-                  Name
-                </label>
-                <input
-                  id="audit-name"
-                  name="name"
-                  type="text"
-                  required
-                  autoComplete="name"
-                  placeholder="Jane Appleseed"
-                  className={inputCls}
-                />
-              </div>
-              <div>
-                <label htmlFor="audit-email" className={labelCls}>
-                  Email
-                </label>
-                <input
-                  id="audit-email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  placeholder="jane@business.com"
-                  className={inputCls}
-                />
-              </div>
-            </div>
-
-            <div className="mt-7">
-              <label htmlFor="audit-url" className={labelCls}>
-                Your website
-              </label>
-              <input
-                id="audit-url"
-                name="website"
-                type="url"
-                required
-                inputMode="url"
-                autoComplete="url"
-                placeholder="https://yourbusiness.com"
-                className={inputCls}
-              />
-            </div>
-
-            <div className="mt-7">
-              <label htmlFor="audit-goal" className={labelCls}>
-                Biggest goal right now
-              </label>
-              <select id="audit-goal" name="goal" className={inputCls}>
-                <option className="bg-surface">More traffic from search</option>
-                <option className="bg-surface">More enquiries & sales</option>
-                <option className="bg-surface">Automate work with AI</option>
-                <option className="bg-surface">All of the above</option>
-              </select>
-            </div>
-
-            <div className="mt-9 flex flex-wrap items-center gap-5">
-              <MagneticButton type="submit">
-                {status === "sending" ? "Sending…" : "Get my free audit"}
-                <span aria-hidden>↗</span>
-              </MagneticButton>
-              {status === "sent" && (
-                <p role="status" className="text-sm text-accent">
-                  Thanks — your audit lands in your inbox within 48 hours.
-                </p>
-              )}
-              {status === "error" && (
-                <p role="status" className="text-sm text-[#ffb36b]">
-                  Something went wrong — email me instead at
-                  hello@beltowski.studio.
-                </p>
-              )}
-            </div>
-
-            <p className="mt-6 font-mono text-[10px] tracking-[0.15em] text-muted/70 uppercase">
-              No spam, no list — just the audit. See the{" "}
-              <Link
-                href="/privacy"
-                className="underline decoration-muted/40 underline-offset-4 transition-colors hover:text-accent"
+          {/* The conversion moment gets a real confirmation rather than a line
+              of text beside a form that is still inviting a second submission. */}
+          {status === "sent" ? (
+            <div
+              data-band-form
+              className="rounded-2xl border border-accent/25 bg-surface/70 p-8 shadow-[0_0_90px_rgba(215,251,68,0.07)] backdrop-blur-md md:p-10"
+            >
+              <p
+                role="status"
+                className="flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase"
               >
-                privacy policy
-              </Link>
-              .
-            </p>
-          </form>
+                <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+                Request received
+              </p>
+              <p className="mt-6 font-display text-2xl font-medium tracking-tight text-balance md:text-3xl">
+                Your audit is on my list.
+              </p>
+              <p className="mt-4 leading-relaxed text-muted">
+                I record these personally, so it lands within 48 hours rather
+                than instantly — a generated report would be worth less than
+                your time. It arrives as a short video from{" "}
+                <a
+                  href={`mailto:${SITE_EMAIL}`}
+                  className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent"
+                >
+                  {SITE_EMAIL}
+                </a>
+                , so it&apos;s worth allowing that through.
+              </p>
+              <p className="mt-6 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
+                Nothing else will be sent to you
+              </p>
+            </div>
+          ) : (
+            <form
+              aria-label="Request your free website audit"
+              data-band-form
+              className="rounded-2xl border border-accent/20 bg-surface/70 p-8 shadow-[0_0_90px_rgba(215,251,68,0.07)] backdrop-blur-md md:p-10"
+              onSubmit={submitLead}
+              onFocus={onFirstInteraction}
+            >
+              {/* A single fieldset disables every control while in flight, so a
+                  slow connection can't produce two leads from one person. */}
+              <fieldset disabled={status === "sending"} className="disabled:opacity-60">
+                <div className="grid gap-7 sm:grid-cols-2">
+                  <div>
+                    <label htmlFor="audit-name" className={labelCls}>
+                      Name
+                    </label>
+                    <input
+                      id="audit-name"
+                      name="name"
+                      type="text"
+                      required
+                      autoComplete="name"
+                      placeholder="Jane Appleseed"
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="audit-email" className={labelCls}>
+                      Email
+                    </label>
+                    <input
+                      id="audit-email"
+                      name="email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      placeholder="jane@business.com"
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-7">
+                  <label htmlFor="audit-url" className={labelCls}>
+                    Your website
+                  </label>
+                  <input
+                    id="audit-url"
+                    name="website"
+                    type="url"
+                    required
+                    inputMode="url"
+                    autoComplete="url"
+                    placeholder="https://yourbusiness.com"
+                    className={inputCls}
+                  />
+                </div>
+
+                <div className="mt-7">
+                  <label htmlFor="audit-goal" className={labelCls}>
+                    Biggest goal right now
+                  </label>
+                  <select id="audit-goal" name="goal" className={inputCls}>
+                    <option className="bg-surface">More traffic from search</option>
+                    <option className="bg-surface">More enquiries &amp; sales</option>
+                    <option className="bg-surface">Automate work with AI</option>
+                    <option className="bg-surface">All of the above</option>
+                  </select>
+                </div>
+              </fieldset>
+
+              <div className="mt-9 flex flex-wrap items-center gap-5">
+                <MagneticButton type="submit">
+                  {status === "sending" ? "Sending…" : "Get my free audit"}
+                  <span aria-hidden>↗</span>
+                </MagneticButton>
+                {status === "error" && (
+                  <p role="alert" className="text-sm text-[#ffb36b]">
+                    That didn&apos;t send. Try again, or email me at{" "}
+                    <a
+                      href={`mailto:${SITE_EMAIL}`}
+                      className="underline decoration-current/40 underline-offset-4"
+                    >
+                      {SITE_EMAIL}
+                    </a>
+                    .
+                  </p>
+                )}
+              </div>
+
+              <p className="mt-6 font-mono text-[10px] tracking-[0.15em] text-muted/70 uppercase">
+                No spam, no list — just the audit. See the{" "}
+                <Link
+                  href="/privacy"
+                  className="underline decoration-muted/40 underline-offset-4 transition-colors hover:text-accent"
+                >
+                  privacy policy
+                </Link>
+                .
+              </p>
+            </form>
+          )}
         </div>
       </div>
     </section>

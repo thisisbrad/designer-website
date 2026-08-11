@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { trackCta } from "@/lib/analytics/events";
 import { scrollToSection, scrollToTop } from "./SmoothScroll";
 import ThemeToggle from "./ThemeToggle";
 
@@ -52,19 +53,25 @@ export default function Navbar() {
     className,
     tabIndex,
     style,
+    onNavigate,
     children,
   }: {
     href: string;
     className?: string;
     tabIndex?: number;
     style?: React.CSSProperties;
+    /** Fires on click in every branch below, so tracking survives the routing. */
+    onNavigate?: () => void;
     children: React.ReactNode;
   }) => {
     if (href.startsWith("/")) {
       return (
         <Link
           href={href}
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            onNavigate?.();
+            setOpen(false);
+          }}
           className={className}
           tabIndex={tabIndex}
           style={style}
@@ -77,7 +84,10 @@ export default function Navbar() {
       return (
         <a
           href={href}
-          onClick={(e) => go(e, href)}
+          onClick={(e) => {
+            onNavigate?.();
+            go(e, href);
+          }}
           className={className}
           tabIndex={tabIndex}
           style={style}
@@ -89,7 +99,10 @@ export default function Navbar() {
     return (
       <a
         href={`/${href}`}
-        onClick={() => setOpen(false)}
+        onClick={() => {
+          onNavigate?.();
+          setOpen(false);
+        }}
         className={className}
         tabIndex={tabIndex}
         style={style}
@@ -152,11 +165,32 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="flex items-center gap-6">
-          <p className="hidden items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase md:flex">
+        <div className="flex items-center gap-4 md:gap-6">
+          {/* Demoted to xl: on a lead-generation site the persistent header
+              should carry a way to convert before it carries a status line,
+              and both together crowd the bar at laptop widths. */}
+          <p className="hidden items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase xl:flex">
             <span aria-hidden className="size-1.5 animate-pulse-dot rounded-full bg-accent" />
             Open for Q3 2026
           </p>
+
+          {/* The only conversion path that follows the visitor everywhere —
+              onto blog posts, service pages and city pages, which is where
+              search and paid traffic actually lands. */}
+          <NavLink
+            href="#audit"
+            className="hidden rounded-full bg-accent-fill px-5 py-2.5 text-[12px] font-medium tracking-[0.12em] text-on-accent uppercase transition-colors duration-300 hover:bg-content hover:text-surface sm:inline-block"
+            onNavigate={() =>
+              trackCta({
+                label: "Free audit",
+                location: "nav",
+                destination: "#audit",
+              })
+            }
+          >
+            Free audit
+          </NavLink>
+
           <ThemeToggle />
           <button
             type="button"
@@ -195,26 +229,55 @@ export default function Navbar() {
           open ? "opacity-100" : "pointer-events-none opacity-0"
         )}
       >
-        <ul className="flex h-full flex-col justify-center gap-2 px-6 pt-16">
-          {links.map((link, i) => (
-            <li key={link.href}>
-              <NavLink
-                href={link.href}
-                tabIndex={open ? 0 : -1}
-                style={{ transitionDelay: open ? `${100 + i * 50}ms` : "0ms" }}
-                className={cn(
-                  "block py-2 font-display text-4xl font-medium tracking-tight transition-all duration-500",
-                  open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-                )}
-              >
-                <span className="mr-4 font-mono text-sm text-accent">
-                  0{i + 1}
-                </span>
-                {link.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        <div className="flex h-full flex-col justify-center px-6 pt-16 pb-10">
+          <ul className="flex flex-col gap-2">
+            {links.map((link, i) => (
+              <li key={link.href}>
+                <NavLink
+                  href={link.href}
+                  tabIndex={open ? 0 : -1}
+                  style={{ transitionDelay: open ? `${100 + i * 50}ms` : "0ms" }}
+                  className={cn(
+                    "block py-2 font-display text-4xl font-medium tracking-tight transition-all duration-500",
+                    open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+                  )}
+                >
+                  <span className="mr-4 font-mono text-sm text-accent">
+                    0{i + 1}
+                  </span>
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+
+          {/* Six navigation links and no way to act on any of them was the
+              state of this menu on every phone. */}
+          <NavLink
+            href="#audit"
+            tabIndex={open ? 0 : -1}
+            style={{
+              transitionDelay: open ? `${100 + links.length * 50}ms` : "0ms",
+            }}
+            onNavigate={() =>
+              trackCta({
+                label: "Get a free audit",
+                location: "mobile_menu",
+                destination: "#audit",
+              })
+            }
+            className={cn(
+              "mt-10 block rounded-full bg-accent-fill px-6 py-4 text-center text-sm font-medium tracking-wide text-on-accent transition-all duration-500",
+              open ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            )}
+          >
+            Get a free audit ↗
+          </NavLink>
+
+          <p className="mt-5 text-center font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
+            Free · 48h turnaround · No sales call
+          </p>
+        </div>
       </div>
     </header>
   );

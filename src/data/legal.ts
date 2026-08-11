@@ -20,20 +20,23 @@ export type LegalDoc = {
 };
 
 /* Written against what the code actually does — the two API routes, the
-   hosting and the email provider — rather than generic boilerplate. If the
-   site gains analytics, a chat widget or embeds, the "What this site
-   doesn't do" section below stops being true and has to change with it. */
+   hosting and email providers, and the measurement in src/lib/analytics —
+   rather than generic boilerplate.
+
+   This file is part of the analytics surface, not documentation of it. If a
+   tag, embed or chat widget is added and this page is not updated in the same
+   commit, the page becomes a false statement rather than a stale one. */
 
 export const privacy: LegalDoc = {
   slug: "privacy",
   title: "Privacy",
   metaTitle: "Privacy Policy",
   metaDescription:
-    "What this site collects, who processes it and how to have it deleted. No cookies, no analytics, no tracking — only what you type into a form.",
-  updated: "2026-08-09",
+    "What this site collects, who processes it and how to have it deleted — including exactly what Google Analytics does here, and how to turn it off in one click.",
+  updated: "2026-08-11",
   headline: "Privacy policy",
   intro:
-    "This is a short site with two forms on it. That is genuinely the whole surface area, and this page says so in plain terms rather than hiding it behind a page of legal furniture.",
+    "Two forms and one analytics tag. That is the whole surface area, and this page describes it in plain terms rather than hiding it behind a page of legal furniture.",
   sections: [
     {
       heading: "Who is responsible",
@@ -44,42 +47,60 @@ export const privacy: LegalDoc = {
     {
       heading: "What I collect",
       paragraphs: [
-        "Only what you type into a form, plus the ordinary request records any web host keeps.",
+        "What you type into a form, the ordinary request records any web host keeps, and anonymous usage measurement.",
       ],
       list: [
         "**Free audit form** — your name, email address, website URL, and the goal you pick from the dropdown.",
         "**Project enquiry form** — your name, email address, the budget range you select, and whatever you write in the project details field.",
         "**Server logs** — my host records standard request data such as IP address, browser user agent and timestamp. This is automatic, applies to every website, and I don't build profiles from it.",
+        "**Usage measurement** — which pages were viewed, in what order, how far down them people scrolled, which buttons were clicked, and whether a form was started and finished. Described in full in the next section.",
+        "**How you arrived** — if you reached this site from a search advert or a tagged link, the campaign details in that link are recorded with your enquiry, so I know which advert paid for itself.",
       ],
     },
     {
-      heading: "What this site doesn't do",
+      heading: "Cookies and analytics — what actually runs",
+      paragraphs: [
+        "I run Google Analytics 4 and Google Ads conversion tracking. The honest reason: I sell search marketing and conversion work, and a site that cannot measure its own funnel has no business charging anyone to fix theirs.",
+        "What it is used for is narrow. I look at which pages lead to enquiries, where in a form people give up, and whether an advert produced a client. I do not run session recording, heatmaps, or a Meta, TikTok or LinkedIn pixel, and I do not build advertising audiences from visitors to this site.",
+      ],
+      list: [
+        "**Cookies set** — Google Analytics sets `_ga` and `_ga_*` to recognise a returning browser. Google Ads may set `_gcl_*` to connect an advert click to an enquiry. Nothing else on this site sets a cookie.",
+        "**If you're in the UK, EEA or Switzerland** — nothing is stored until you accept the banner. Decline and Google receives an anonymous, cookieless signal that a page was viewed, with no identifier attached to you and nothing written to your device.",
+        "**Everywhere else** — measurement is on by default, and the “Cookies” link at the bottom of every page turns it off permanently in one click.",
+        "**Changing your mind** — that same “Cookies” link reopens the choice at any time, from any page, in either direction.",
+        "**Google's own opt-out** — the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout) blocks this across every site you visit, not only mine.",
+      ],
+    },
+    {
+      heading: "What this site still doesn't do",
       paragraphs: [
         "Worth stating explicitly, because most sites can't:",
       ],
       list: [
-        "**No cookies.** The site sets none at all, which is why you aren't reading this through a consent banner.",
-        "**No analytics.** No Google Analytics, no Meta or LinkedIn pixel, no session recording, no heatmaps.",
-        "**No third-party fonts at runtime.** Typefaces are compiled into the site at build time, so your browser never requests anything from Google's servers.",
-        "**No advertising.** Nothing here is used for ad targeting or sold to anyone, ever.",
+        "**No session recording or heatmaps.** Nobody watches a replay of your visit.",
+        "**No advertising pixels.** No Meta, LinkedIn, TikTok or X tracking. You will not be retargeted for having read this.",
+        "**No third-party fonts at runtime.** Typefaces are compiled into the site at build time, so your browser never requests one from Google's servers.",
+        "**Nothing is sold.** Your details are never sold, rented or shared for anyone else's marketing, ever.",
+        "**No dark patterns.** Declining is one click, in the same size and weight as accepting, and the site behaves identically afterwards.",
       ],
     },
     {
       heading: "Why I hold it, and on what basis",
       paragraphs: [
-        "To read your message and reply to it. If you asked for an audit, to look at your site and send back what I found. That's the entire purpose.",
-        "Under UK and EU GDPR the lawful basis is taking steps at your request before entering a contract, and my legitimate interest in responding to people who contact my business. There is no consent banner because there is nothing here that requires consent.",
+        "For form submissions: to read your message and reply to it. If you asked for an audit, to look at your site and send back what I found. That's the entire purpose. Under UK and EU GDPR the lawful basis is taking steps at your request before entering a contract, and my legitimate interest in responding to people who contact my business.",
+        "For analytics: to understand what works on my own website. In the UK, EEA and Switzerland the lawful basis is your consent, given through the banner and withdrawable at any time through the “Cookies” link — withdrawing it doesn't undo measurement that already happened, but it stops all of it from that moment. Elsewhere the basis is my legitimate interest in measuring my own site, which is why the opt-out is one click and permanent.",
       ],
     },
     {
       heading: "Who else can see it",
       paragraphs: [
-        "Two service providers process data on my behalf. I have no other sub-processors, and no human outside my business reads your enquiry.",
+        "A small number of service providers process data on my behalf. There are no others, and no human outside my business reads your enquiry.",
       ],
       list: [
         "**Vercel** — hosts the site and keeps the server logs described above.",
         "**Resend** — delivers form submissions to my inbox as email.",
         "**My email provider** — where your message then lives, like any other email you send me.",
+        "**Google** — receives the analytics and advertising measurement described above, and only that. Your name, email address and the contents of your message are never sent to Google.",
       ],
     },
     {
@@ -92,6 +113,7 @@ export const privacy: LegalDoc = {
       heading: "How long it's kept",
       paragraphs: [
         "Enquiries stay in my email for as long as the working relationship or conversation is useful, and are deleted on request. Server logs are retained by my host on their own short rolling schedule. When running the site on my own machine during development, submissions are also appended to a local file that never leaves it.",
+        "Analytics records are kept for 14 months, after which Google deletes the visit-level detail and only aggregate totals — how many people, from where — remain. Fourteen months rather than two so that this year can be compared against last year, which is the entire reason for keeping it. The `_ga` cookie, if you accepted it, expires two years after your last visit; declining, or clearing your browser data, removes it immediately.",
       ],
     },
     {
@@ -110,6 +132,7 @@ export const privacy: LegalDoc = {
       heading: "Where your data goes",
       paragraphs: [
         "My hosting and email providers operate globally, so if you write to me from outside the United States your message will be processed there. Both providers offer standard contractual clauses for transfers out of the UK and EU.",
+        "Google processes analytics data in the United States. Google is certified under the EU–US Data Privacy Framework and its UK extension, and offers standard contractual clauses, which is what makes that transfer lawful. If you decline the banner, no transfer relating to you takes place at all.",
       ],
     },
     {
@@ -127,7 +150,7 @@ export const privacy: LegalDoc = {
     {
       heading: "Changes",
       paragraphs: [
-        "If I add anything that changes the picture — analytics, a chat widget, embedded video — I'll update this page and the date at the top of it before switching it on.",
+        "If I add anything that changes the picture — a chat widget, embedded video, another tag — I'll update this page and the date at the top of it before switching it on. Analytics was added on 11 August 2026, and this page changed in the same commit that switched it on.",
       ],
     },
   ],

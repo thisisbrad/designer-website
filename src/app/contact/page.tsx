@@ -263,7 +263,7 @@ export default function Contact() {
             <h2 className="mb-8 font-mono text-[11px] tracking-[0.25em] text-muted uppercase">
               Send an enquiry
             </h2>
-            <ContactForm idPrefix="page" />
+            <ContactForm idPrefix="page" location="contact_page" />
           </div>
         </div>
 

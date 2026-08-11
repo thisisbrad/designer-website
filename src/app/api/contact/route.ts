@@ -1,12 +1,23 @@
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
+import {
+  formatAttribution,
+  parseAttribution,
+  type LeadAttribution,
+} from "@/lib/analytics/server";
 
 type Enquiry = {
   name: string;
   email: string;
   budget: string;
   message: string;
+};
+
+/** An enquiry plus everything the server knows about it at the moment it arrived. */
+type StampedEnquiry = Enquiry & {
+  receivedAt: string;
+  attribution: LeadAttribution;
 };
 
 const MAX_FIELD_LENGTH = 300;
@@ -47,7 +58,7 @@ function parseEnquiry(body: unknown): Enquiry | null {
 const CAN_WRITE_DISK = !process.env.VERCEL && !process.env.AWS_LAMBDA_FUNCTION_NAME;
 
 /** Local backup, written before any email is attempted. */
-async function saveToDisk(enquiry: Enquiry & { receivedAt: string }) {
+async function saveToDisk(enquiry: StampedEnquiry) {
   const dir = path.join(process.cwd(), "var");
   await mkdir(dir, { recursive: true });
   await appendFile(
@@ -56,7 +67,7 @@ async function saveToDisk(enquiry: Enquiry & { receivedAt: string }) {
   );
 }
 
-async function sendEmail(enquiry: Enquiry & { receivedAt: string }) {
+async function sendEmail(enquiry: StampedEnquiry) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_TO_EMAIL;
   if (!apiKey || !to) return { sent: false as const, reason: "not configured" };
@@ -78,6 +89,7 @@ async function sendEmail(enquiry: Enquiry & { receivedAt: string }) {
         `Name:   ${enquiry.name}`,
         `Email:  ${enquiry.email}`,
         `Budget: ${enquiry.budget || "—"}`,
+        ...formatAttribution(enquiry.attribution),
         ``,
         `Details:`,
         enquiry.message,
@@ -112,7 +124,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const stamped = { ...enquiry, receivedAt: new Date().toISOString() };
+  const stamped: StampedEnquiry = {
+    ...enquiry,
+    receivedAt: new Date().toISOString(),
+    attribution: parseAttribution(body),
+  };
 
   // Disk first so an enquiry is never lost to an email hiccup.
   let backedUp = false;

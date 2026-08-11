@@ -106,13 +106,26 @@ export default function Hero() {
           automate the busywork.
         </p>
 
+        {/* The free audit carries the solid fill and the first position: it is
+            the page's actual conversion and the destination every paid campaign
+            points at. "See the plan" stays as the lower-commitment path for
+            anyone not ready to hand over an email address. */}
         <div data-hero-fade className="mt-10 flex flex-wrap items-center gap-4">
-          <MagneticButton href="#solutions" onClick={go("#solutions")}>
-            See the Plan
+          <MagneticButton
+            href="#audit"
+            onClick={go("#audit")}
+            analyticsLocation="hero"
+          >
+            Get a Free Audit
             <span aria-hidden>↗</span>
           </MagneticButton>
-          <MagneticButton href="#audit" variant="outline" onClick={go("#audit")}>
-            Get a Free Audit
+          <MagneticButton
+            href="#solutions"
+            variant="outline"
+            onClick={go("#solutions")}
+            analyticsLocation="hero"
+          >
+            See the Plan
           </MagneticButton>
         </div>
       </div>

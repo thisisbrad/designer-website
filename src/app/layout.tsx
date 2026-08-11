@@ -3,6 +3,10 @@ import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { THEME_INIT_SCRIPT } from "@/components/ThemeToggle";
+import Analytics from "@/components/analytics/Analytics";
+import ConsentBanner from "@/components/analytics/ConsentBanner";
+import { buildConsentBootstrap } from "@/lib/analytics/consent";
+import { GA_MEASUREMENT_ID, GOOGLE_ADS_ID } from "@/lib/analytics/config";
 import { services } from "@/data/services";
 import { OWNER_NAME, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -168,6 +172,13 @@ const organizationJsonLd = {
   ],
 };
 
+/* Consent defaults have to be in place before gtag.js runs, so this is
+   inlined in <head> alongside the theme script rather than loaded. */
+const CONSENT_BOOTSTRAP = buildConsentBootstrap({
+  measurementId: GA_MEASUREMENT_ID,
+  adsId: GOOGLE_ADS_ID,
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -182,6 +193,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: CONSENT_BOOTSTRAP }} />
       </head>
       <body className="bg-surface font-body text-content antialiased">
         <script
@@ -197,6 +209,8 @@ export default function RootLayout({
           Skip to content
         </a>
         <SmoothScroll>{children}</SmoothScroll>
+        <Analytics />
+        <ConsentBanner />
       </body>
     </html>
   );
