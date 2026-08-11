@@ -1,12 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0a0a0b;
-  --color-ink-2: #111113;
-  --color-paper: #f2efe8;
+  /* Semantic, not literal: these swap per theme, so a name like "ink" would
+     mean near-white in light mode. Values here are the dark defaults —
+     the per-theme blocks below are what actually drive them. */
+  --color-surface: #0a0a0b;
+  --color-surface-2: #111113;
+  --color-content: #f2efe8;
   --color-muted: #8d8d86;
   --color-line: rgba(242, 239, 232, 0.1);
+
+  /* Accent as text, border or small mark. Lime is unreadable on a light
+     ground (1.03:1), so light mode gets a darkened lime instead. */
   --color-accent: #d7fb44;
+
+  /* The brand lime itself, and what sits on top of it. Both are
+     theme-invariant: a lime button with dark text is the identity, and it
+     reads correctly on either background. */
+  --color-accent-fill: #d7fb44;
+  --color-on-accent: #0a0a0b;
 
   --animate-marquee: marquee 16s linear infinite;
   --animate-rotate-slow: rotate-slow 18s linear infinite;
@@ -74,48 +86,72 @@
   --font-mono: var(--font-jetbrains);
 }
 
-html {
+:root,
+[data-theme="dark"] {
+  --color-surface: #0a0a0b;
+  --color-surface-2: #111113;
+  --color-content: #f2efe8;
+  --color-muted: #8d8d86;
+  --color-line: rgba(242, 239, 232, 0.1);
+  --color-accent: #d7fb44;
+  --grain-opacity: 0.045;
   color-scheme: dark;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
+[data-theme="light"] {
+  --color-surface: #fdfcf9;
+  --color-surface-2: #f3f1ea;
+  --color-content: #14150f;
+  /* 5.4:1 on surface — the dark-mode muted was 2.9:1 here and failed AA. */
+  --color-muted: #585c4e;
+  --color-line: rgba(20, 21, 15, 0.14);
+  /* 4.9:1 on surface. Lime itself is 1.03:1 and unusable as text. */
+  --color-accent: #4f6110;
+  /* Black grain on a light ground reads as dirt before it reads as film. */
+  --grain-opacity: 0.016;
+  color-scheme: light;
 }
 
-/* Lenis takes over scrolling when active */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-::selection {
-  background: var(--color-accent);
-  color: var(--color-ink);
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-}
-
-section[id] {
-  scroll-margin-top: 5rem;
+/* A dark band inside a light page — the hero sections keep their night
+   palette by design. Declared standalone rather than merged into the :root
+   selector list above: the minifier splits those lists and was dropping this
+   selector, which left the band inheriting light tokens. */
+.theme-dark {
+  --color-surface: #0a0a0b;
+  --color-surface-2: #111113;
+  --color-content: #f2efe8;
+  --color-muted: #8d8d86;
+  --color-line: rgba(242, 239, 232, 0.1);
+  --color-accent: #d7fb44;
+  --grain-opacity: 0.045;
+  color-scheme: dark;
+  background-color: var(--color-surface);
+  /* Re-establish the text colour, don't just swap the variable. `color` is
+     inherited as a resolved value from <body>, so anything in here without
+     its own colour class would otherwise keep the light-theme ink. */
+  color: var(--color-content);
 }
 
-/* Film-grain overlay for a cinematic texture */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  pointer-events: none;
-  opacity: 0.045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* The navbar is fixed and transparent until scrolled, so at the top of a page
+   whose first section is a dark hero band it's sitting on black — light-theme
+   text would be invisible there. Once scrolled it gets its own translucent
+   surface and can go back to following the page. */
+body:has(.theme-dark) header[data-at-top="true"] {
+  color: var(--color-content);
+  --color-surface: #0a0a0b;
+  --color-surface-2: #111113;
+  --color-content: #f2efe8;
+  --color-muted: #8d8d86;
+  --color-line: rgba(242, 239, 232, 0.1);
+  --color-accent: #d7fb44;
+  --grain-opacity: 0.045;
+}
+
+/* Theme toggle shows the icon for the theme you'd switch *to*. Driven by the
+   attribute rather than React state so it's correct before hydration. */
+[data-theme="dark"] [data-theme-icon="light"],
+[data-theme="light"] [data-theme-icon="dark"] {
+  display: none;
 }
 
 /* Custom cursor hides the native one only on fine pointers */

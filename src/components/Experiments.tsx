@@ -68,7 +68,7 @@ function Visual({ kind }: { kind: UseCase["visual"] }) {
     case "marquee":
       return (
         <div className="w-full overflow-hidden">
-          <div className="flex w-max whitespace-nowrap font-display text-4xl font-semibold tracking-tight text-paper/20 motion-safe:animate-marquee">
+          <div className="flex w-max whitespace-nowrap font-display text-4xl font-semibold tracking-tight text-content/20 motion-safe:animate-marquee">
             <span className="pr-6">QUOTE — FOLLOW UP — BOOKED —&nbsp;</span>
             <span className="pr-6">QUOTE — FOLLOW UP — BOOKED —&nbsp;</span>
           </div>
@@ -110,8 +110,8 @@ function Visual({ kind }: { kind: UseCase["visual"] }) {
     case "cross":
       return (
         <div className="relative size-28">
-          <div className="absolute top-1/2 left-0 h-px w-full bg-paper/20" />
-          <div className="absolute top-0 left-1/2 h-full w-px bg-paper/20" />
+          <div className="absolute top-1/2 left-0 h-px w-full bg-content/20" />
+          <div className="absolute top-0 left-1/2 h-full w-px bg-content/20" />
           <div className="absolute top-1/2 left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent motion-safe:animate-pulse-dot" />
         </div>
       );
@@ -138,7 +138,7 @@ export default function Experiments() {
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {useCases.map((useCase) => (
           <li key={useCase.title} data-reveal data-cursor="hover">
-            <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-2 transition-colors duration-500 hover:border-accent/40">
+            <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-2 transition-colors duration-500 hover:border-accent/40">
               <div className="flex h-44 items-center justify-center overflow-hidden border-b border-line p-6">
                 <div className="flex size-full items-center justify-center transition-transform duration-700 group-hover:scale-105">
                   <Visual kind={useCase.visual} />

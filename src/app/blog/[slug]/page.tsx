@@ -169,7 +169,7 @@ export default async function BlogPost({
               <nav aria-label="Breadcrumb">
                 <ol className="flex flex-wrap items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
                   <li>
-                    <Link href="/" className="transition-colors hover:text-paper">
+                    <Link href="/" className="transition-colors hover:text-content">
                       Home
                     </Link>
                   </li>
@@ -177,7 +177,7 @@ export default async function BlogPost({
                   <li>
                     <Link
                       href="/blog"
-                      className="transition-colors hover:text-paper"
+                      className="transition-colors hover:text-content"
                     >
                       Blog
                     </Link>
@@ -198,7 +198,7 @@ export default async function BlogPost({
               </p>
 
               <div className="mt-8 flex flex-wrap items-center gap-4 border-y border-line py-5">
-                <div className="relative size-11 shrink-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-ink-2">
+                <div className="relative size-11 shrink-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-surface-2">
                   <Image
                     src="/portrait-face.png"
                     alt=""
@@ -233,7 +233,7 @@ export default async function BlogPost({
             <section
               data-speakable
               aria-label="Key takeaways"
-              className="mt-10 rounded-2xl border border-accent/20 bg-ink-2 p-6 md:p-8"
+              className="mt-10 rounded-2xl border border-accent/20 bg-surface-2 p-6 md:p-8"
             >
               <h2 className="font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
                 Key takeaways
@@ -242,7 +242,7 @@ export default async function BlogPost({
                 {post.takeaways.map((item) => (
                   <li
                     key={item}
-                    className="flex items-start gap-3 leading-relaxed text-paper/85"
+                    className="flex items-start gap-3 leading-relaxed text-content/85"
                   >
                     <span
                       aria-hidden
@@ -256,7 +256,7 @@ export default async function BlogPost({
 
             {/* Mobile contents — the sticky sidebar covers large screens */}
             {headings.length > 2 && (
-              <details className="mt-8 rounded-2xl border border-line bg-ink-2 p-5 lg:hidden">
+              <details className="mt-8 rounded-2xl border border-line bg-surface-2 p-5 lg:hidden">
                 <summary className="cursor-pointer font-mono text-[11px] tracking-[0.25em] text-muted uppercase">
                   Contents
                 </summary>
@@ -268,7 +268,7 @@ export default async function BlogPost({
                       </span>
                       <a
                         href={`#${heading.id}`}
-                        className="text-muted transition-colors hover:text-paper"
+                        className="text-muted transition-colors hover:text-content"
                       >
                         {heading.text}
                       </a>
@@ -290,7 +290,7 @@ export default async function BlogPost({
                       {section.heading}
                     </h2>
                   )}
-                  <div className="flex flex-col gap-4 leading-relaxed text-paper/80">
+                  <div className="flex flex-col gap-4 leading-relaxed text-content/80">
                     {section.paragraphs.map((paragraph, j) => (
                       <p key={j}>
                         <RichText text={paragraph} />
@@ -302,7 +302,7 @@ export default async function BlogPost({
                       {section.list.map((item) => (
                         <li
                           key={item}
-                          className="flex items-start gap-3 leading-relaxed text-paper/80"
+                          className="flex items-start gap-3 leading-relaxed text-content/80"
                         >
                           <span
                             aria-hidden
@@ -326,7 +326,7 @@ export default async function BlogPost({
                   {post.faq.map((item) => (
                     <div
                       key={item.question}
-                      className="rounded-2xl border border-line bg-ink-2 p-6"
+                      className="rounded-2xl border border-line bg-surface-2 p-6"
                     >
                       <dt className="font-display text-lg font-medium tracking-tight">
                         {item.question}
@@ -344,7 +344,7 @@ export default async function BlogPost({
             <aside className="relative mt-16 overflow-hidden rounded-2xl border border-accent/25 p-8 md:p-10">
               <div
                 aria-hidden
-                className="absolute inset-0 bg-gradient-to-br from-accent/10 via-ink-2 to-ink"
+                className="absolute inset-0 bg-gradient-to-br from-accent/10 via-surface-2 to-surface"
               />
               <div className="relative">
                 <p className="mb-4 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
@@ -369,9 +369,9 @@ export default async function BlogPost({
             {/* Author credentials — experience and accountability signals */}
             <section
               aria-label="About the author"
-              className="mt-12 flex flex-col gap-5 rounded-2xl border border-line bg-ink-2 p-7 sm:flex-row sm:items-start md:p-8"
+              className="mt-12 flex flex-col gap-5 rounded-2xl border border-line bg-surface-2 p-7 sm:flex-row sm:items-start md:p-8"
             >
-              <div className="relative size-16 shrink-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-ink-2">
+              <div className="relative size-16 shrink-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-surface-2">
                 <Image
                   src="/portrait-face.png"
                   alt={OWNER_NAME}
@@ -460,7 +460,7 @@ export default async function BlogPost({
                     <li key={item.slug}>
                       <Link
                         href={`/blog/${item.slug}`}
-                        className="group flex h-full flex-col rounded-2xl border border-line bg-ink-2 p-6 transition-colors hover:border-accent/40"
+                        className="group flex h-full flex-col rounded-2xl border border-line bg-surface-2 p-6 transition-colors hover:border-accent/40"
                       >
                         <span className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                           {item.category}

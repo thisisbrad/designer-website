@@ -172,7 +172,7 @@ export default function Contact() {
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               <li>
-                <Link href="/" className="transition-colors hover:text-paper">
+                <Link href="/" className="transition-colors hover:text-content">
                   Home
                 </Link>
               </li>
@@ -223,7 +223,7 @@ export default function Contact() {
                   <dt className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
                     {item.term}
                   </dt>
-                  <dd className="text-paper/85">{item.detail}</dd>
+                  <dd className="text-content/85">{item.detail}</dd>
                 </div>
               ))}
             </dl>
@@ -239,12 +239,12 @@ export default function Contact() {
                     target="_blank"
                     rel="noopener noreferrer"
                     data-cursor="hover"
-                    className="group inline-flex items-baseline gap-3 transition-colors hover:text-paper"
+                    className="group inline-flex items-baseline gap-3 transition-colors hover:text-content"
                   >
                     <span className="font-mono text-xs tracking-[0.2em] text-muted uppercase transition-colors group-hover:text-accent">
                       {social.label}
                     </span>
-                    <span className="text-sm text-paper/60">
+                    <span className="text-sm text-content/60">
                       {social.handle}
                     </span>
                     <span
@@ -286,7 +286,7 @@ export default function Contact() {
             {steps.map((step) => (
               <li
                 key={step.step}
-                className="rounded-2xl border border-line bg-ink-2 p-7"
+                className="rounded-2xl border border-line bg-surface-2 p-7"
               >
                 <p className="font-mono text-xs text-accent">({step.step})</p>
                 <h3 className="mt-5 font-display text-xl leading-snug font-medium tracking-tight">
@@ -307,7 +307,7 @@ export default function Contact() {
         >
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-ink-2 to-ink"
+            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-surface-2 to-surface"
           />
           <div className="relative">
             <p className="mb-4 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
@@ -353,7 +353,7 @@ export default function Contact() {
             {faq.map((item) => (
               <div
                 key={item.question}
-                className="rounded-2xl border border-line bg-ink-2 p-7 md:p-8"
+                className="rounded-2xl border border-line bg-surface-2 p-7 md:p-8"
               >
                 <dt className="font-display text-lg font-medium tracking-tight md:text-xl">
                   {item.question}

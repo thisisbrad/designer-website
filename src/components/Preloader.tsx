@@ -50,14 +50,14 @@ export default function Preloader() {
     <div
       ref={ref}
       aria-hidden
-      className="fixed inset-0 z-[100] flex items-end justify-between bg-ink px-6 pb-6 md:px-10 md:pb-10"
+      className="fixed inset-0 z-[100] flex items-end justify-between bg-surface px-6 pb-6 md:px-10 md:pb-10"
     >
       <p className="font-mono text-xs tracking-[0.3em] text-muted uppercase">
         Beltowski® — Portfolio 2026
       </p>
       <p
         data-count
-        className="font-display text-7xl font-medium text-paper tabular-nums md:text-8xl"
+        className="font-display text-7xl font-medium text-content tabular-nums md:text-8xl"
       >
         000
       </p>

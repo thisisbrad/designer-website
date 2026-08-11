@@ -112,7 +112,7 @@ export default function ArticleToc({ headings }: { headings: TocHeading[] }) {
                   aria-current={isActive ? "true" : undefined}
                   className={cn(
                     "block text-sm leading-snug transition-colors duration-300",
-                    isActive ? "text-accent" : "text-muted hover:text-paper"
+                    isActive ? "text-accent" : "text-muted hover:text-content"
                   )}
                 >
                   {heading.text}

@@ -209,7 +209,7 @@ export default async function LocationServicePage({
           <nav aria-label="Breadcrumb">
             <ol className="flex flex-wrap items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               <li>
-                <Link href="/" className="transition-colors hover:text-paper">
+                <Link href="/" className="transition-colors hover:text-content">
                   Home
                 </Link>
               </li>
@@ -217,7 +217,7 @@ export default async function LocationServicePage({
               <li>
                 <Link
                   href="/services"
-                  className="transition-colors hover:text-paper"
+                  className="transition-colors hover:text-content"
                 >
                   Services
                 </Link>
@@ -226,7 +226,7 @@ export default async function LocationServicePage({
               <li>
                 <Link
                   href={`/services/${slug}`}
-                  className="transition-colors hover:text-paper"
+                  className="transition-colors hover:text-content"
                 >
                   {service.title}
                 </Link>
@@ -271,7 +271,7 @@ export default async function LocationServicePage({
               { term: "Typical timeline", detail: service.timeline },
               { term: "Languages", detail: "English & Spanish" },
             ].map((item) => (
-              <div key={item.term} className="bg-ink px-6 py-7">
+              <div key={item.term} className="bg-surface px-6 py-7">
                 <dt className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
                   {item.term}
                 </dt>
@@ -322,7 +322,7 @@ export default async function LocationServicePage({
                 {page.industries.map((industry) => (
                   <li
                     key={industry}
-                    className="flex items-start gap-3 text-sm leading-relaxed text-paper/80"
+                    className="flex items-start gap-3 text-sm leading-relaxed text-content/80"
                   >
                     <span
                       aria-hidden
@@ -339,7 +339,7 @@ export default async function LocationServicePage({
             {page.factors.map((factor, i) => (
               <li
                 key={factor.title}
-                className="group rounded-2xl border border-line bg-ink-2 p-7 transition-colors duration-500 hover:border-accent/40 md:p-8"
+                className="group rounded-2xl border border-line bg-surface-2 p-7 transition-colors duration-500 hover:border-accent/40 md:p-8"
               >
                 <p className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                   {String(i + 1).padStart(2, "0")}
@@ -374,7 +374,7 @@ export default async function LocationServicePage({
             the market it&apos;s aimed at. Full detail on the{" "}
             <Link
               href={`/services/${slug}`}
-              className="text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+              className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
             >
               {service.title} page
             </Link>
@@ -385,7 +385,7 @@ export default async function LocationServicePage({
             {service.includes.map((item, i) => (
               <li
                 key={item.title}
-                className="rounded-2xl border border-line bg-ink-2 p-7"
+                className="rounded-2xl border border-line bg-surface-2 p-7"
               >
                 <p className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                   {String(i + 1).padStart(2, "0")}
@@ -469,7 +469,7 @@ export default async function LocationServicePage({
             {page.faq.map((item) => (
               <div
                 key={item.question}
-                className="rounded-2xl border border-line bg-ink-2 p-7 md:p-8"
+                className="rounded-2xl border border-line bg-surface-2 p-7 md:p-8"
               >
                 <dt className="font-display text-lg font-medium tracking-tight md:text-xl">
                   {item.question}
@@ -486,7 +486,7 @@ export default async function LocationServicePage({
         <aside className="relative mt-20 overflow-hidden rounded-2xl border border-accent/25 p-8 md:mt-24 md:p-12">
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-ink-2 to-ink"
+            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-surface-2 to-surface"
           />
           <div className="relative">
             <p className="mb-4 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
@@ -526,7 +526,7 @@ export default async function LocationServicePage({
                     <Link
                       href={`/services/${item.service}/${item.location}`}
                       data-cursor="hover"
-                      className="group flex h-full flex-col rounded-2xl border border-line bg-ink-2 p-6 transition-colors duration-500 hover:border-accent/40"
+                      className="group flex h-full flex-col rounded-2xl border border-line bg-surface-2 p-6 transition-colors duration-500 hover:border-accent/40"
                     >
                       <span className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                         {sibling.category}

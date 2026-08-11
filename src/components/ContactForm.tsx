@@ -6,7 +6,7 @@ import MagneticButton from "./MagneticButton";
 import { cn } from "@/lib/utils";
 
 const inputCls =
-  "w-full border-b border-line bg-transparent py-3 text-lg text-paper transition-colors placeholder:text-muted/50 focus:border-accent focus:outline-none disabled:opacity-50";
+  "w-full border-b border-line bg-transparent py-3 text-lg text-content transition-colors placeholder:text-muted/50 focus:border-accent focus:outline-none disabled:opacity-50";
 
 const labelCls =
   "mb-2 block font-mono text-xs tracking-[0.2em] text-muted uppercase";
@@ -71,7 +71,7 @@ export default function ContactForm({
     return (
       <div
         className={cn(
-          "flex flex-col justify-center rounded-2xl border border-accent/25 bg-ink-2 p-8 md:p-10",
+          "flex flex-col justify-center rounded-2xl border border-accent/25 bg-surface-2 p-8 md:p-10",
           className
         )}
       >
@@ -90,7 +90,7 @@ export default function ContactForm({
           sooner. If it&apos;s urgent, email me directly at{" "}
           <a
             href="mailto:hello@beltowski.studio"
-            className="text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent"
+            className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent"
           >
             hello@beltowski.studio
           </a>
@@ -146,7 +146,7 @@ export default function ContactForm({
           className={inputCls}
         >
           {budgets.map((budget) => (
-            <option key={budget} className="bg-ink">
+            <option key={budget} className="bg-surface">
               {budget}
             </option>
           ))}
@@ -174,7 +174,7 @@ export default function ContactForm({
           <span aria-hidden>↗</span>
         </MagneticButton>
         {status === "error" && (
-          <p role="alert" className="text-sm text-paper/80">
+          <p role="alert" className="text-sm text-content/80">
             {error}
           </p>
         )}

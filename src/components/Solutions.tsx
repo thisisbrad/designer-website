@@ -28,7 +28,7 @@ const auditChecks = [
 ];
 
 const inputCls =
-  "w-full border-b border-paper/15 bg-transparent py-3 text-base text-paper transition-colors placeholder:text-muted/40 focus:border-accent focus:outline-none";
+  "w-full border-b border-paper/15 bg-transparent py-3 text-base text-content transition-colors placeholder:text-muted/40 focus:border-accent focus:outline-none";
 
 const labelCls =
   "mb-2 block font-mono text-[11px] tracking-[0.2em] text-muted uppercase";
@@ -171,7 +171,7 @@ export default function Solutions() {
             >
               <div
                 data-cursor="hover"
-                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-2/80 p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40"
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-2/80 p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40"
               >
                 <div
                   aria-hidden
@@ -179,7 +179,7 @@ export default function Solutions() {
                 />
                 <span
                   aria-hidden
-                  className="absolute -top-7 right-3 font-display text-[8rem] leading-none font-semibold text-paper/[0.04] select-none transition-colors duration-700 group-hover:text-accent/10"
+                  className="absolute -top-7 right-3 font-display text-[8rem] leading-none font-semibold text-content/[0.04] select-none transition-colors duration-700 group-hover:text-accent/10"
                 >
                   {solution.index}
                 </span>
@@ -204,7 +204,7 @@ export default function Solutions() {
                   {solution.deliverables.map((item) => (
                     <li
                       key={item}
-                      className="flex items-center gap-3 border-b border-line py-3 text-sm text-paper/80"
+                      className="flex items-center gap-3 border-b border-line py-3 text-sm text-content/80"
                     >
                       <span
                         aria-hidden
@@ -235,7 +235,7 @@ export default function Solutions() {
         {/* Focus treatment: rising tint, breathing glow and an edge vignette
             that pulls the eye to the center while the band owns the viewport */}
         <div aria-hidden data-band-glow className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/[0.08] to-ink-2" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent/[0.08] to-surface-2" />
           <div className="absolute top-[15%] left-1/4 h-[75%] w-1/2 rounded-full bg-accent/10 blur-[160px] motion-safe:animate-glow-breathe" />
           <div
             className="absolute inset-0"
@@ -274,7 +274,7 @@ export default function Solutions() {
               aria-label="What the audit covers"
             >
               {auditChecks.map((item) => (
-                <li key={item} className="flex items-center gap-3 text-paper/85">
+                <li key={item} className="flex items-center gap-3 text-content/85">
                   <span
                     aria-hidden
                     className="size-1.5 shrink-0 rounded-full bg-accent"
@@ -286,7 +286,7 @@ export default function Solutions() {
 
             <div className="mt-10 flex items-center gap-4">
               <div className="relative size-14 shrink-0">
-                <div className="absolute inset-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-ink-2">
+                <div className="absolute inset-0 overflow-hidden rounded-full border border-accent/30 bg-gradient-to-br from-[#242c1a] to-surface-2">
                   <Image
                     src="/portrait-face.png"
                     alt=""
@@ -297,7 +297,7 @@ export default function Solutions() {
                 </div>
                 <span
                   aria-hidden
-                  className="absolute right-0 bottom-0 size-3.5 rounded-full border-2 border-ink bg-accent motion-safe:animate-pulse-dot"
+                  className="absolute right-0 bottom-0 size-3.5 rounded-full border-2 border-surface bg-accent motion-safe:animate-pulse-dot"
                 />
               </div>
               <div>
@@ -331,7 +331,7 @@ export default function Solutions() {
             <div aria-hidden className="absolute inset-0">
               <span className="absolute top-[8%] left-[6%] size-1.5 rounded-full bg-accent/80 motion-safe:animate-float-y" />
               <span
-                className="absolute top-[24%] right-[2%] size-1 rounded-full bg-paper/60 motion-safe:animate-float-y"
+                className="absolute top-[24%] right-[2%] size-1 rounded-full bg-content/60 motion-safe:animate-float-y"
                 style={{ animationDelay: "-2.2s", animationDuration: "7s" }}
               />
               <span
@@ -358,7 +358,7 @@ export default function Solutions() {
           <form
             aria-label="Request your free website audit"
             data-band-form
-            className="rounded-2xl border border-accent/20 bg-ink/70 p-8 shadow-[0_0_90px_rgba(215,251,68,0.07)] backdrop-blur-md md:p-10"
+            className="rounded-2xl border border-accent/20 bg-surface/70 p-8 shadow-[0_0_90px_rgba(215,251,68,0.07)] backdrop-blur-md md:p-10"
             onSubmit={submitLead}
           >
             <div className="grid gap-7 sm:grid-cols-2">
@@ -413,10 +413,10 @@ export default function Solutions() {
                 Biggest goal right now
               </label>
               <select id="audit-goal" name="goal" className={inputCls}>
-                <option className="bg-ink">More traffic from search</option>
-                <option className="bg-ink">More enquiries & sales</option>
-                <option className="bg-ink">Automate work with AI</option>
-                <option className="bg-ink">All of the above</option>
+                <option className="bg-surface">More traffic from search</option>
+                <option className="bg-surface">More enquiries & sales</option>
+                <option className="bg-surface">Automate work with AI</option>
+                <option className="bg-surface">All of the above</option>
               </select>
             </div>
 

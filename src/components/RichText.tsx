@@ -22,14 +22,14 @@ export default function RichText({ text }: { text: string }) {
 
     if (bold !== undefined) {
       nodes.push(
-        <strong key={match.index} className="font-medium text-paper">
+        <strong key={match.index} className="font-medium text-content">
           {bold}
         </strong>
       );
     } else {
       const external = href.startsWith("http");
       const className =
-        "text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent";
+        "text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent";
 
       nodes.push(
         external ? (

@@ -72,7 +72,7 @@ export default function LegalPage({
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               <li>
-                <Link href="/" className="transition-colors hover:text-paper">
+                <Link href="/" className="transition-colors hover:text-content">
                   Home
                 </Link>
               </li>
@@ -100,7 +100,7 @@ export default function LegalPage({
               someone actually came for. */}
           <nav
             aria-label="On this page"
-            className="mt-12 rounded-2xl border border-line bg-ink-2 p-6 md:p-7"
+            className="mt-12 rounded-2xl border border-line bg-surface-2 p-6 md:p-7"
           >
             <h2 className="font-mono text-[11px] tracking-[0.25em] text-muted uppercase">
               On this page
@@ -113,7 +113,7 @@ export default function LegalPage({
                   </span>
                   <a
                     href={`#${slugify(section.heading)}`}
-                    className="text-muted transition-colors hover:text-paper"
+                    className="text-muted transition-colors hover:text-content"
                   >
                     {section.heading}
                   </a>
@@ -163,7 +163,7 @@ export default function LegalPage({
             ))}
           </div>
 
-          <aside className="mt-16 rounded-2xl border border-accent/25 bg-ink-2 p-7 md:p-8">
+          <aside className="mt-16 rounded-2xl border border-accent/25 bg-surface-2 p-7 md:p-8">
             <h2 className="font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
               Questions about this
             </h2>
@@ -171,7 +171,7 @@ export default function LegalPage({
               Email {OWNER_NAME.split(" ")[0]} directly at{" "}
               <a
                 href={`mailto:${SITE_EMAIL}`}
-                className="text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
               >
                 {SITE_EMAIL}
               </a>

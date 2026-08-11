@@ -72,7 +72,7 @@ export default function Footer() {
                 <Link
                   href={`/services/${service.slug}`}
                   data-cursor="hover"
-                  className="text-sm text-paper/70 transition-colors hover:text-accent"
+                  className="text-sm text-content/70 transition-colors hover:text-accent"
                 >
                   {service.title}
                 </Link>
@@ -94,7 +94,7 @@ export default function Footer() {
                   <Link
                     href={`/services/${item.service}/${item.location}`}
                     data-cursor="hover"
-                    className="text-sm text-paper/70 transition-colors hover:text-accent"
+                    className="text-sm text-content/70 transition-colors hover:text-accent"
                   >
                     {location.city} {service.title}
                   </Link>
@@ -114,7 +114,7 @@ export default function Footer() {
                 <Link
                   href={link.href}
                   data-cursor="hover"
-                  className="text-sm text-paper/70 transition-colors hover:text-accent"
+                  className="text-sm text-content/70 transition-colors hover:text-accent"
                 >
                   {link.label}
                 </Link>

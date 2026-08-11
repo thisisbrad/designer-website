@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { scrollToSection, scrollToTop } from "./SmoothScroll";
+import ThemeToggle from "./ThemeToggle";
 
 const links = [
   { href: "#solutions", label: "The Plan" },
@@ -100,10 +101,11 @@ export default function Navbar() {
 
   return (
     <header
+      data-at-top={!scrolled}
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-all duration-500",
         scrolled && !open
-          ? "border-line bg-ink/70 backdrop-blur-md"
+          ? "border-line bg-surface/70 backdrop-blur-md"
           : "border-transparent"
       )}
     >
@@ -138,7 +140,7 @@ export default function Navbar() {
             <li key={link.href}>
               <NavLink
                 href={link.href}
-                className="group relative text-[13px] tracking-[0.18em] text-muted uppercase transition-colors hover:text-paper"
+                className="group relative text-[13px] tracking-[0.18em] text-muted uppercase transition-colors hover:text-content"
               >
                 {link.label}
                 <span
@@ -155,6 +157,7 @@ export default function Navbar() {
             <span aria-hidden className="size-1.5 animate-pulse-dot rounded-full bg-accent" />
             Open for Q3 2026
           </p>
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -166,14 +169,14 @@ export default function Navbar() {
             <span
               aria-hidden
               className={cn(
-                "h-px w-6 bg-paper transition-transform duration-300",
+                "h-px w-6 bg-content transition-transform duration-300",
                 open && "translate-y-[3.5px] rotate-45"
               )}
             />
             <span
               aria-hidden
               className={cn(
-                "h-px w-6 bg-paper transition-transform duration-300",
+                "h-px w-6 bg-content transition-transform duration-300",
                 open && "-translate-y-[3.5px] -rotate-45"
               )}
             />
@@ -188,7 +191,7 @@ export default function Navbar() {
       <div
         id="mobile-menu"
         className={cn(
-          "fixed inset-0 z-40 bg-ink transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-40 bg-surface transition-opacity duration-300 lg:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0"
         )}
       >

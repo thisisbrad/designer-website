@@ -93,7 +93,8 @@ export default function ServiceHero({
     <section
       ref={ref}
       aria-label={`${eyebrow} introduction`}
-      className="relative mb-20 flex min-h-[86svh] flex-col overflow-hidden md:mb-28"
+      // Dark band on a light page — see Hero.tsx.
+      className="theme-dark relative mb-20 flex min-h-[86svh] flex-col overflow-hidden md:mb-28"
     >
       <div
         aria-hidden
@@ -107,7 +108,7 @@ export default function ServiceHero({
           fades into the edges instead of hitting a hard canvas cut. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/35 via-42% to-transparent to-66%"
+        className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/35 via-42% to-transparent to-66%"
       />
       <div
         aria-hidden
@@ -116,7 +117,7 @@ export default function ServiceHero({
       {/* Bottom fade into the page body below the hero */}
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent"
+        className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-surface to-transparent"
       />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center px-6 pt-36 pb-16 md:px-10 md:pt-44">
@@ -128,7 +129,7 @@ export default function ServiceHero({
                 {crumb.href ? (
                   <Link
                     href={crumb.href}
-                    className="transition-colors hover:text-paper"
+                    className="transition-colors hover:text-content"
                   >
                     {crumb.label}
                   </Link>
@@ -188,7 +189,7 @@ export default function ServiceHero({
       >
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line backdrop-blur-sm md:grid-cols-4">
           {stats.map((stat) => (
-            <div key={stat.term} className="bg-ink/85 px-6 py-7">
+            <div key={stat.term} className="bg-surface/85 px-6 py-7">
               <dt className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
                 {stat.term}
               </dt>

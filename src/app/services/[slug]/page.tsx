@@ -220,7 +220,7 @@ export default async function ServicePage({
               {service.painPoints.map((point) => (
                 <li
                   key={point}
-                  className="flex items-start gap-3 leading-relaxed text-paper/80"
+                  className="flex items-start gap-3 leading-relaxed text-content/80"
                 >
                   <span
                     aria-hidden
@@ -268,7 +268,7 @@ export default async function ServicePage({
             {service.includes.map((item, i) => (
               <li
                 key={item.title}
-                className="group rounded-2xl border border-line bg-ink-2 p-7 transition-colors duration-500 hover:border-accent/40"
+                className="group rounded-2xl border border-line bg-surface-2 p-7 transition-colors duration-500 hover:border-accent/40"
               >
                 <p className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                   {String(i + 1).padStart(2, "0")}
@@ -321,7 +321,7 @@ export default async function ServicePage({
             {service.outcomes.map((outcome) => (
               <div
                 key={outcome.label}
-                className="rounded-2xl border border-line bg-ink-2 p-7"
+                className="rounded-2xl border border-line bg-surface-2 p-7"
               >
                 <dt className="font-display text-4xl font-medium tracking-tight text-accent md:text-5xl">
                   {outcome.stat}
@@ -358,7 +358,7 @@ export default async function ServicePage({
             {service.whoFor.map((item) => (
               <li
                 key={item}
-                className="flex items-start gap-4 rounded-2xl border border-line bg-ink-2 p-6 leading-relaxed text-paper/85"
+                className="flex items-start gap-4 rounded-2xl border border-line bg-surface-2 p-6 leading-relaxed text-content/85"
               >
                 <span aria-hidden className="mt-0.5 text-accent">
                   →
@@ -388,7 +388,7 @@ export default async function ServicePage({
             {service.faq.map((item) => (
               <div
                 key={item.question}
-                className="rounded-2xl border border-line bg-ink-2 p-7 md:p-8"
+                className="rounded-2xl border border-line bg-surface-2 p-7 md:p-8"
               >
                 <dt className="font-display text-lg font-medium tracking-tight md:text-xl">
                   {item.question}
@@ -426,7 +426,7 @@ export default async function ServicePage({
                   <Link
                     href={`/services/${service.slug}/${city.slug}`}
                     data-cursor="hover"
-                    className="group flex items-center gap-4 rounded-2xl border border-line bg-ink-2 px-7 py-5 transition-colors duration-500 hover:border-accent/40"
+                    className="group flex items-center gap-4 rounded-2xl border border-line bg-surface-2 px-7 py-5 transition-colors duration-500 hover:border-accent/40"
                   >
                     <span className="font-display text-xl font-medium tracking-tight transition-colors duration-300 group-hover:text-accent">
                       {service.title} in {city.city}
@@ -448,7 +448,7 @@ export default async function ServicePage({
         <aside className="relative mt-20 overflow-hidden rounded-2xl border border-accent/25 p-8 md:mt-24 md:p-12">
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-ink-2 to-ink"
+            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-surface-2 to-surface"
           />
           <div className="relative">
             <p className="mb-4 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">
@@ -485,7 +485,7 @@ export default async function ServicePage({
                   <Link
                     href={`/services/${item.slug}`}
                     data-cursor="hover"
-                    className="group flex h-full flex-col rounded-2xl border border-line bg-ink-2 p-6 transition-colors duration-500 hover:border-accent/40"
+                    className="group flex h-full flex-col rounded-2xl border border-line bg-surface-2 p-6 transition-colors duration-500 hover:border-accent/40"
                   >
                     <span className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                       {item.category}

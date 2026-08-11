@@ -174,7 +174,7 @@ export default function About() {
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               <li>
-                <Link href="/" className="transition-colors hover:text-paper">
+                <Link href="/" className="transition-colors hover:text-content">
                   Home
                 </Link>
               </li>
@@ -225,7 +225,7 @@ export default function About() {
                 upscale and crop the face. The glow sits low and dim — the PNG
                 has an alpha channel, and anything brighter behind it tints
                 straight through the skin. */}
-            <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-ink-2 to-[#16190f]">
+            <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-gradient-to-br from-surface-2 to-[#16190f]">
               <div
                 aria-hidden
                 className="absolute -bottom-[20%] left-1/2 size-[70%] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px]"
@@ -243,16 +243,16 @@ export default function About() {
                   duotone and drops below readable contrast. */}
               <div
                 aria-hidden
-                className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-ink/90 to-transparent"
+                className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-surface/90 to-transparent"
               />
-              <p className="absolute bottom-5 left-5 font-mono text-[11px] tracking-[0.25em] text-paper/70 uppercase">
+              <p className="absolute bottom-5 left-5 font-mono text-[11px] tracking-[0.25em] text-content/70 uppercase">
                 Studio portrait — Florida, 2026
               </p>
             </div>
 
             <dl className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line">
               {stats.map((stat) => (
-                <div key={stat.label} className="flex flex-col-reverse bg-ink p-6">
+                <div key={stat.label} className="flex flex-col-reverse bg-surface p-6">
                   <dt className="mt-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
                     {stat.label}
                   </dt>
@@ -272,7 +272,7 @@ export default function About() {
               How I ended up doing all three
             </h2>
             <div className="mt-8 flex flex-col gap-5 leading-relaxed text-muted">
-              <p className="font-display text-xl leading-relaxed font-medium tracking-tight text-balance text-paper md:text-2xl">
+              <p className="font-display text-xl leading-relaxed font-medium tracking-tight text-balance text-content md:text-2xl">
                 Most of what I know came from watching good work fail for
                 reasons nobody in the room was responsible for.
               </p>
@@ -301,21 +301,21 @@ export default function About() {
                 Today the three sit together:{" "}
                 <Link
                   href="/services/web-design"
-                  className="text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                  className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
                 >
                   design
                 </Link>
                 ,{" "}
                 <Link
                   href="/services/seo-marketing"
-                  className="text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                  className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
                 >
                   search
                 </Link>{" "}
                 and{" "}
                 <Link
                   href="/services/ai-solutions"
-                  className="text-paper underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                  className="text-content underline decoration-accent/40 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
                 >
                   AI
                 </Link>{" "}
@@ -345,7 +345,7 @@ export default function About() {
             {principles.map((principle, i) => (
               <li
                 key={principle.title}
-                className="group rounded-2xl border border-line bg-ink-2 p-7 transition-colors duration-500 hover:border-accent/40"
+                className="group rounded-2xl border border-line bg-surface-2 p-7 transition-colors duration-500 hover:border-accent/40"
               >
                 <p className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                   {String(i + 1).padStart(2, "0")}
@@ -482,7 +482,7 @@ export default function About() {
         <aside className="relative mt-20 overflow-hidden rounded-2xl border border-accent/25 p-8 md:mt-24 md:p-12">
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-ink-2 to-ink"
+            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-surface-2 to-surface"
           />
           <div className="relative">
             <p className="mb-4 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">

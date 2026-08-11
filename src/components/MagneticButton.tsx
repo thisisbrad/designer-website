@@ -22,8 +22,11 @@ const base =
   "relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium tracking-wide select-none transition-colors duration-300";
 
 const variants = {
-  solid: "bg-accent text-ink hover:bg-paper",
-  outline: "border border-line text-paper hover:border-accent hover:text-accent",
+  /* accent-fill, not accent: the brand lime stays lime in both themes.
+     The readable-on-light accent is for text and borders. */
+  solid:
+    "bg-accent-fill text-on-accent hover:bg-content hover:text-surface",
+  outline: "border border-line text-content hover:border-accent hover:text-accent",
 };
 
 export default function MagneticButton({

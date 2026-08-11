@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { THEME_INIT_SCRIPT } from "@/components/ThemeToggle";
 import { services } from "@/data/services";
 import { OWNER_NAME, SITE_EMAIL, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -70,8 +71,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
+  // Dark is the default; ThemeToggle rewrites this when someone opts into light.
   themeColor: "#0a0a0b",
-  colorScheme: "dark" as const,
+  colorScheme: "light dark" as const,
 };
 
 /** Site-wide entity graph: the business (local search), its owner and the site. */
@@ -170,8 +172,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${grotesk.variable} ${mono.variable}`}>
-      <body className="bg-ink font-body text-paper antialiased">
+    <html
+      lang="en"
+      className={`${inter.variable} ${grotesk.variable} ${mono.variable}`}
+      // The init script sets this before paint; declared here so the server
+      // markup and the pre-hydration DOM agree.
+      data-theme="dark"
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="bg-surface font-body text-content antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -180,7 +192,7 @@ export default function RootLayout({
         />
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[110] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[110] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:text-on-accent"
         >
           Skip to content
         </a>

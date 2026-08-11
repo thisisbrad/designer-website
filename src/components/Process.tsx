@@ -98,7 +98,7 @@ export default function Process() {
           <li key={step.n} data-reveal className="relative pb-16 last:pb-0">
             <span
               aria-hidden
-              className="absolute top-2.5 left-[-45px] size-[9px] rounded-full border border-accent bg-ink md:left-[-69px]"
+              className="absolute top-2.5 left-[-45px] size-[9px] rounded-full border border-accent bg-surface md:left-[-69px]"
             />
             <div className="flex items-baseline gap-5">
               <span className="font-mono text-sm text-accent">{step.n}</span>

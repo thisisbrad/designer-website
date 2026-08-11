@@ -88,7 +88,7 @@ export default function ServicesIndex() {
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               <li>
-                <Link href="/" className="transition-colors hover:text-paper">
+                <Link href="/" className="transition-colors hover:text-content">
                   Home
                 </Link>
               </li>
@@ -127,7 +127,7 @@ export default function ServicesIndex() {
               <Link
                 href={`/services/${service.slug}`}
                 data-cursor="hover"
-                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink-2 p-8 transition-colors duration-500 hover:border-accent/40"
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-2 p-8 transition-colors duration-500 hover:border-accent/40"
               >
                 <div
                   aria-hidden
@@ -164,7 +164,7 @@ export default function ServicesIndex() {
         >
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-ink-2 to-ink"
+            className="absolute inset-0 bg-gradient-to-br from-accent/10 via-surface-2 to-surface"
           />
           <div className="relative">
             <p className="mb-4 flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase">

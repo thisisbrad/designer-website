@@ -48,17 +48,17 @@ export default function ProjectCard({
               />
               <span
                 aria-hidden
-                className="absolute right-[6%] bottom-[2%] font-display text-[24vw] leading-none font-semibold text-paper/[0.06] select-none lg:text-[13vw]"
+                className="absolute right-[6%] bottom-[2%] font-display text-[24vw] leading-none font-semibold text-content/[0.06] select-none lg:text-[13vw]"
               >
                 {project.index}
               </span>
-              <span className="absolute top-[16%] left-[8%] font-mono text-[11px] tracking-[0.3em] text-paper/40 uppercase">
+              <span className="absolute top-[16%] left-[8%] font-mono text-[11px] tracking-[0.3em] text-content/40 uppercase">
                 {project.slug}.case
               </span>
             </div>
           </div>
 
-          <div className="absolute inset-0 flex items-center justify-center bg-ink/30 opacity-0 backdrop-blur-[2px] transition-opacity duration-500 group-hover:opacity-100">
+          <div className="absolute inset-0 flex items-center justify-center bg-surface/30 opacity-0 backdrop-blur-[2px] transition-opacity duration-500 group-hover:opacity-100">
             <span className="rounded-full border border-paper/30 px-5 py-2 font-mono text-xs tracking-[0.2em] uppercase">
               View case study
             </span>

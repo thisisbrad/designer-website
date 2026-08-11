@@ -73,7 +73,7 @@ export default function About() {
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-line">
               <div
                 data-parallax
-                className="absolute -inset-y-[12%] inset-x-0 bg-gradient-to-br from-ink-2 to-[#16190f]"
+                className="absolute -inset-y-[12%] inset-x-0 bg-gradient-to-br from-surface-2 to-[#16190f]"
               >
                 <div
                   aria-hidden
@@ -81,12 +81,12 @@ export default function About() {
                 />
                 <span
                   aria-hidden
-                  className="absolute bottom-[-4%] left-[6%] font-display text-[12rem] leading-none font-semibold text-paper/[0.07] select-none md:text-[16rem]"
+                  className="absolute bottom-[-4%] left-[6%] font-display text-[12rem] leading-none font-semibold text-content/[0.07] select-none md:text-[16rem]"
                 >
                   B.
                 </span>
               </div>
-              <p className="absolute bottom-5 left-5 font-mono text-[11px] tracking-[0.25em] text-paper/50 uppercase">
+              <p className="absolute bottom-5 left-5 font-mono text-[11px] tracking-[0.25em] text-content/50 uppercase">
                 Studio portrait — Florida, 2026
               </p>
             </div>
@@ -94,7 +94,7 @@ export default function About() {
 
           <div className="flex flex-col gap-6 text-lg leading-relaxed text-muted lg:col-span-6 lg:col-start-7">
             <p data-reveal>
-              I&apos;m <span className="text-paper">Brad Beltowski</span> — an
+              I&apos;m <span className="text-content">Brad Beltowski</span> — an
               independent designer and developer with nine years of practice
               building websites that don&apos;t just look premium, they perform.
               I&apos;ve worked with startups, agencies and local businesses,
@@ -137,7 +137,7 @@ export default function About() {
           />
           <dl className="relative grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label} data-reveal className="flex flex-col-reverse bg-ink p-8">
+              <div key={stat.label} data-reveal className="flex flex-col-reverse bg-surface p-8">
                 <dt className="mt-3 font-mono text-xs tracking-[0.2em] text-muted uppercase">
                   {stat.label}
                 </dt>

@@ -96,7 +96,7 @@ export default function BlogIndex() {
           <nav aria-label="Breadcrumb">
             <ol className="flex items-center gap-2 font-mono text-[11px] tracking-[0.2em] text-muted uppercase">
               <li>
-                <Link href="/" className="transition-colors hover:text-paper">
+                <Link href="/" className="transition-colors hover:text-content">
                   Home
                 </Link>
               </li>
@@ -136,7 +136,7 @@ export default function BlogIndex() {
           <Link
             href={`/blog/${featured.slug}`}
             data-cursor="hover"
-            className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-2 p-8 transition-colors duration-500 hover:border-accent/40 md:p-12"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface-2 p-8 transition-colors duration-500 hover:border-accent/40 md:p-12"
           >
             <div
               aria-hidden
@@ -178,7 +178,7 @@ export default function BlogIndex() {
                 <Link
                   href={`/blog/${post.slug}`}
                   data-cursor="hover"
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-ink-2 p-7 transition-colors duration-500 hover:border-accent/40"
+                  className="group flex h-full flex-col rounded-2xl border border-line bg-surface-2 p-7 transition-colors duration-500 hover:border-accent/40"
                 >
                   <p className="font-mono text-[11px] tracking-[0.2em] text-accent uppercase">
                     {post.category}

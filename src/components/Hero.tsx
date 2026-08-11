@@ -51,7 +51,9 @@ export default function Hero() {
       id="top"
       ref={ref}
       aria-label="Introduction"
-      className="relative flex min-h-svh flex-col overflow-hidden"
+      /* Stays dark on a light page by design: the scene is a night
+         scene, and the band gives the page its cinematic opening. */
+      className="theme-dark relative flex min-h-svh flex-col overflow-hidden"
     >
       {/* Phones don't mount the WebGL scene, so approximate the lantern glow in
           CSS for them. Hidden from md up, where it would stack on top of the
@@ -67,7 +69,7 @@ export default function Hero() {
           beam fades into the edges instead of hitting a hard canvas cut. */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/45 via-45% to-transparent to-75%"
+        className="absolute inset-0 bg-gradient-to-r from-surface/95 via-surface/45 via-45% to-transparent to-75%"
       />
       <div
         aria-hidden
