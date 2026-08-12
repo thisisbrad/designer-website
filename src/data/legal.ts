@@ -19,24 +19,26 @@ export type LegalDoc = {
   sections: LegalSection[];
 };
 
-/* Written against what the code actually does — the two API routes, the
-   hosting and email providers, and the measurement in src/lib/analytics —
-   rather than generic boilerplate.
+/* Written against what the code actually does — the three API routes, the
+   hosting and email providers, the measurement in src/lib/analytics and the
+   assistant in src/lib/assistant — rather than generic boilerplate.
 
-   This file is part of the analytics surface, not documentation of it. If a
-   tag, embed or chat widget is added and this page is not updated in the same
-   commit, the page becomes a false statement rather than a stale one. */
+   This file is part of that surface, not documentation of it. If a tag, embed
+   or provider is added and this page is not updated in the same commit, the
+   page becomes a false statement rather than a stale one. In particular, the
+   claim that no third-party AI is involved stops being true the moment an LLM
+   is wired into the assistant. */
 
 export const privacy: LegalDoc = {
   slug: "privacy",
   title: "Privacy",
   metaTitle: "Privacy Policy",
   metaDescription:
-    "What this site collects, who processes it and how to have it deleted — including exactly what Google Analytics does here, and how to turn it off in one click.",
-  updated: "2026-08-11",
+    "What this site collects, who processes it and how to have it deleted — what Google Analytics does here, what the assistant does with your questions, and how to turn it off.",
+  updated: "2026-08-12",
   headline: "Privacy policy",
   intro:
-    "Two forms and one analytics tag. That is the whole surface area, and this page describes it in plain terms rather than hiding it behind a page of legal furniture.",
+    "Two forms, one analytics tag and an assistant that searches these pages. That is the whole surface area, and this page describes it in plain terms rather than hiding it behind a page of legal furniture.",
   sections: [
     {
       heading: "Who is responsible",
@@ -72,6 +74,19 @@ export const privacy: LegalDoc = {
       ],
     },
     {
+      heading: "The assistant in the corner",
+      paragraphs: [
+        "The “Ask a question” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and nothing you type into it leaves my own server — there is no third-party AI provider involved at any point.",
+        "How it works: your question is matched against the text of the pages on this site, and the closest passage is quoted back to you with a link to the page it came from. Every answer is text I wrote elsewhere on this site. It cannot compose a new answer, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
+      ],
+      list: [
+        "**What's sent** — the question you type and the previous few turns of the conversation, so follow-up questions make sense.",
+        "**What's stored** — nothing is written to disk. Questions are handled in memory and gone when the request finishes.",
+        "**What I see** — if analytics is on for you, the question text is recorded in Google Analytics so I can find out what this site fails to explain. That is the entire purpose, and it's why declining the banner also keeps your questions out of it.",
+        "**Please don't type anything sensitive.** It's a public form on a public website. Passwords, card numbers and personal details don't belong in it — and it can't do anything useful with them anyway.",
+      ],
+    },
+    {
       heading: "What this site still doesn't do",
       paragraphs: [
         "Worth stating explicitly, because most sites can't:",
@@ -79,6 +94,7 @@ export const privacy: LegalDoc = {
       list: [
         "**No session recording or heatmaps.** Nobody watches a replay of your visit.",
         "**No advertising pixels.** No Meta, LinkedIn, TikTok or X tracking. You will not be retargeted for having read this.",
+        "**No third-party AI.** The assistant runs on my own server against this site's own text. Nothing you ask it is sent to OpenAI, Anthropic, Google or anyone else.",
         "**No third-party fonts at runtime.** Typefaces are compiled into the site at build time, so your browser never requests one from Google's servers.",
         "**Nothing is sold.** Your details are never sold, rented or shared for anyone else's marketing, ever.",
         "**No dark patterns.** Declining is one click, in the same size and weight as accepting, and the site behaves identically afterwards.",
@@ -150,7 +166,7 @@ export const privacy: LegalDoc = {
     {
       heading: "Changes",
       paragraphs: [
-        "If I add anything that changes the picture — a chat widget, embedded video, another tag — I'll update this page and the date at the top of it before switching it on. Analytics was added on 11 August 2026, and this page changed in the same commit that switched it on.",
+        "If I add anything that changes the picture — an embedded video, another tag, a third-party AI provider behind the assistant — I'll update this page and the date at the top of it before switching it on. Analytics and the on-site assistant were both added in August 2026, and this page changed in the same commit each time.",
       ],
     },
   ],
