@@ -46,7 +46,10 @@ const SUGGESTIONS = [
   "How does the process work?",
   "Do you do SEO?",
   "Can you help with an AI assistant?",
-  "How many revisions do I get?",
+  // Chips must only ask what the site answers well — a chip is a promise.
+  // "How many revisions do I get?" was here until the site turned out to
+  // mention revisions exactly once, in an unrelated UI/UX context.
+  "What's included in web design?",
   "Who owns the website when it's done?",
   "Do you guarantee rankings?",
   "How do I get in touch?",
@@ -80,8 +83,41 @@ const BADGE_LABEL = "From this site";
 const BADGE_TITLE =
   "Answers are quoted from this site's own pages rather than generated.";
 
+/**
+ * Words that must never be mistaken for a visitor's name.
+ *
+ * Upstream gates its name capture on a blocklist of recruiter vocabulary
+ * ("bradley", "aws", "github", "linkedin"). Anything of one or two words that
+ * misses the list is taken as a name — and the question is swallowed rather
+ * than answered. On this site "SEO pricing" is two words and hits none of
+ * them, so it would be greeted as a person. These are the studio's terms.
+ */
+const NAME_BLOCKLIST = [
+  "website", "site", "page", "cost", "costs", "price", "pricing", "quote",
+  "budget", "cheap", "expensive", "seo", "search", "design", "designer",
+  "redesign", "audit", "brand", "branding", "logo", "timeline", "deadline",
+  "orlando", "melbourne", "lakeland", "daytona", "deltona", "seminole",
+  "florida", "service", "services", "process", "revisions", "hosting",
+  "ecommerce", "wordpress", "analytics", "conversion", "hire", "book",
+];
+
 /** Each patch is asserted; a miss fails the build. `all` replaces every hit. */
 const PATCHES = [
+  {
+    /* A user-visible error path still offering "AWS experience, CIRIS, target
+       roles". Shown exactly when something has gone wrong, which is the worst
+       moment to sound like a different website. */
+    name: "error fallback",
+    find: /"I can still help from Bradley’s verified profile details\. Try asking about projects, AWS experience, CIRIS, target roles, skills, or contact links\."/,
+    replace:
+      '"Something went wrong on my end. Brad reads every enquiry personally — try the contact page, or ask for the free audit."',
+  },
+  {
+    /* See NAME_BLOCKLIST above: this is a correctness fix, not cosmetics. */
+    name: "name-capture blocklist",
+    find: /\/\\b\(what\|why\|how\|tell\|about\|project\|bradley\|aws\|contact\|github\|linkedin\|/,
+    replace: `/\\b(${NAME_BLOCKLIST.join("|")}|what|why|how|tell|about|project|contact|`,
+  },
   {
     /* "100% free", tooltipped with an explanation about GCP free tiers and
        Ollama fallbacks. Accurate upstream, meaningless here — on a studio site
@@ -271,6 +307,11 @@ const BANNED = [
   "AWS background",
   "free provider",
   "100% free",
+  "AWS experience",
+  "CIRIS",
+  "target roles",
+  "verified profile details",
+  "|bradley|",
   "no paid AI required",
   "Recruiter assistant",
   "junior software engineer",

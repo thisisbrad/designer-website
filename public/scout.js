@@ -48,7 +48,7 @@ const suggestions = [
   "How does the process work?",
   "Do you do SEO?",
   "Can you help with an AI assistant?",
-  "How many revisions do I get?",
+  "What's included in web design?",
   "Who owns the website when it's done?",
   "Do you guarantee rankings?",
   "How do I get in touch?"
@@ -1093,7 +1093,7 @@ async function handleQuery(userQuery, projects, codePens, lastQueryTopic, fetchA
     const match = cleaned.match(/(?:my name is|i am|i'm|im|this is|call me)\s+([a-z][a-z .'-]{1,32})/i);
     const rawName = (match ? match[1] : cleaned).split(/[,.!?]/)[0].trim();
     if (!rawName || rawName.length > 32) return "";
-    if (/\b(what|why|how|tell|about|project|bradley|aws|contact|github|linkedin|can|could|you|give|show|example|explain|describe|do|does|is|are|was|were|will|would|should|who|when|where|which|please|hey|hi|hello|test|help|question|yes|no|maybe|sure|ok|okay)\b/i.test(rawName)) return "";
+    if (/\b(website|site|page|cost|costs|price|pricing|quote|budget|cheap|expensive|seo|search|design|designer|redesign|audit|brand|branding|logo|timeline|deadline|orlando|melbourne|lakeland|daytona|deltona|seminole|florida|service|services|process|revisions|hosting|ecommerce|wordpress|analytics|conversion|hire|book|what|why|how|tell|about|project|contact|can|could|you|give|show|example|explain|describe|do|does|is|are|was|were|will|would|should|who|when|where|which|please|hey|hi|hello|test|help|question|yes|no|maybe|sure|ok|okay)\b/i.test(rawName)) return "";
     if (rawName.split(/\s+/).length > 2 && !match) return "";
     return rawName.split(/\s+/).slice(0, 2).map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()).join(" ");
   }
@@ -1411,7 +1411,7 @@ async function handleQuery(userQuery, projects, codePens, lastQueryTopic, fetchA
       resizeInput();
     } catch (error) {
       console.error("ProjectHub chat error:", error);
-      if (statusRow) await showBotReply(statusRow, "I can still help from Bradley’s verified profile details. Try asking about projects, AWS experience, CIRIS, target roles, skills, or contact links.", typingStart);
+      if (statusRow) await showBotReply(statusRow, "Something went wrong on my end. Brad reads every enquiry personally — try the contact page, or ask for the free audit.", typingStart);
     } finally {
       setBusy(false);
       chatInput.placeholder = "Ask about cost, timelines or process…";
