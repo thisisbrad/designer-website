@@ -31,12 +31,56 @@ What was worth taking was the engine and the architecture.
 | Grounded-first, degrade-don't-break | `server-gemini.js` | Kept as the whole design, not the fallback |
 | Golden-set eval | `scripts/eval-retrieval.js` | Rewritten for this domain |
 
-**Not taken:** the vanilla-JS widget chrome (this site has a custom cursor,
-Lenis smooth scroll and GSAP — a second UI layer would have fought all three),
-the multi-provider LLM network, Think Mode, the GitHub knowledge sync, the
-GCP VM, and the cost ledger. None have a job here.
+**Not taken:** the multi-provider LLM network, Think Mode, the GitHub
+knowledge sync, the GCP VM, and the cost ledger. None have a job here.
+
+The widget chrome *is* available — see [Two front ends, one brain](#two-front-ends-one-brain)
+— but self-hosted, restyled and pointed at this site's own backend rather than
+loaded from upstream as-is.
 
 ---
+
+## Two front ends, one brain
+
+`NEXT_PUBLIC_ASSISTANT_MODE` chooses which chat UI mounts. Both answer from the
+same grounded engine, so the choice is cosmetic rather than substantive.
+
+| Mode | UI | Backend |
+|---|---|---|
+| `grounded` *(default)* | `src/components/assistant/Assistant.tsx` | `/api/assistant` |
+| `projecthub` | Scout's widget, self-hosted at `/scout.js` | `/api/assistant/scout` |
+| `off` | none | — |
+
+### Running Scout on studio content
+
+Scout's `handleQuery` sends **every** question to its backend — the
+client-side intent matching in `logic.js` is vestigial. That makes the backend
+a clean seam: `/api/assistant/scout` speaks Scout's `{reply, followUps}`
+contract and answers from this site's content, so keeping the chat UI costs
+nothing in correctness. Replies are instant; upstream's own backend took ~11
+seconds on a good run, routing through free-tier LLM providers on a shared VM.
+
+What the backend can't fix is what's baked into the 51KB widget — suggestion
+chips reading *"Why is Bradley a good junior candidate?"*, a header saying
+"Recruiter assistant", a "100% free" badge about GCP free tiers. Those are
+string literals, so `npm run scout:build` fetches upstream and rewrites them
+into `public/scout.js`.
+
+**Every patch is asserted, and the build fails if one misses.** A silent
+partial patch is the only genuinely bad outcome — a widget that is 90%
+rebranded and still says "recruiter" in the header. A final pass greps the
+output for banned phrases as a second net. Both caught real misses while this
+was written: a *second* hardcoded chip list (`prioritySuggestions`) that
+prepends to the one already patched, and a *second* endpoint definition
+(`chatApiUrl()`) on a different call path.
+
+Self-hosting also removes the third-party request to `bradleymatera.github.io`
+and the dependency on upstream's GCP VM — which is why the privacy page can
+state that nothing a visitor types leaves this server, in either mode.
+
+Re-run `npm run scout:build` after any upstream change. Styling lives
+separately in `scout-brand.css`; see the header comment there for why it wins
+on specificity rather than load order.
 
 ## Architecture
 

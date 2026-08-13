@@ -192,7 +192,13 @@ this site's own content. Full detail in
 ```bash
 npm run assistant:test    # 21 unit tests, no server needed
 npm run assistant:eval    # 32-question golden set (needs `npm run dev`)
+npm run scout:build       # rebuild public/scout.js from upstream ProjectHub
 ```
+
+`NEXT_PUBLIC_ASSISTANT_MODE` picks the chat UI — `grounded` (default),
+`projecthub` (Scout's widget, self-hosted and restyled), or `off`. Both front
+ends answer from the same engine and the same content, so nothing about the
+answers changes with the choice.
 
 - **No LLM, no API key, no per-message cost.** Every answer is either written
   by hand in `answer.ts` or quoted verbatim from a file in `src/data/`. It

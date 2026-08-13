@@ -5,6 +5,7 @@ import Script from "next/script";
 import { usePathname } from "next/navigation";
 import { trackAssistantOpen, trackAssistantQuestion } from "@/lib/analytics/events";
 import {
+  PROJECTHUB_AVATAR,
   PROJECTHUB_CHAT_API,
   PROJECTHUB_SCRIPT_URL,
   PROJECTHUB_START_MINIMIZED,
@@ -40,11 +41,11 @@ export default function ProjectHubWidget() {
     if (booted.current) return;
     booted.current = true;
 
-    // Read at call time by the widget, so setting it here is early enough.
-    if (PROJECTHUB_CHAT_API) {
-      (window as unknown as Record<string, string>).__PROJECTHUB_CHAT_API__ =
-        PROJECTHUB_CHAT_API;
-    }
+    // Both are read at call time by the widget, so setting them here is early
+    // enough, and they win over the defaults baked in at build time.
+    const w = window as unknown as Record<string, string>;
+    if (PROJECTHUB_CHAT_API) w.__PROJECTHUB_CHAT_API__ = PROJECTHUB_CHAT_API;
+    if (PROJECTHUB_AVATAR) w.__PROJECTHUB_AVATAR__ = PROJECTHUB_AVATAR;
 
     // The replay that actually starts the widget. See note 1 above.
     if (document.readyState !== "loading") {
