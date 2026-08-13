@@ -159,3 +159,10 @@ html.cursor-none,
 html.cursor-none * {
   cursor: none;
 }
+
+/* Fixed overlays stand down while the mobile menu is open. The menu is a
+   full-screen layer at z-40 and the assistants sit at 90+, so without this
+   they float over it. Navbar sets the attribute alongside its scroll lock. */
+html[data-menu-open] [data-assistant-root] {
+  display: none;
+}

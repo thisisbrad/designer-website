@@ -1,4 +1,5 @@
 import { OWNER_NAME, SITE_EMAIL, SITE_NAME } from "@/lib/site";
+import { ASSISTANT_MODE } from "@/lib/assistant/mode";
 
 export type LegalSection = {
   heading: string;
@@ -28,6 +29,45 @@ export type LegalDoc = {
    page becomes a false statement rather than a stale one. In particular, the
    claim that no third-party AI is involved stops being true the moment an LLM
    is wired into the assistant. */
+
+/* The assistant section is written per mode, because the honest answer to
+   "where does what I type go" differs completely between them. A policy that
+   hedged across both would be accurate for neither. */
+const assistantSections: LegalSection[] =
+  ASSISTANT_MODE === "off"
+    ? []
+    : ASSISTANT_MODE === "grounded"
+      ? [
+          {
+            heading: "The assistant in the corner",
+            paragraphs: [
+              "The “Ask a question” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and nothing you type into it leaves my own server — there is no third-party AI provider involved at any point.",
+              "How it works: your question is matched against the text of the pages on this site, and the closest passage is quoted back to you with a link to the page it came from. Every answer is text I wrote elsewhere on this site. It cannot compose a new answer, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
+            ],
+            list: [
+              "**What's sent** — the question you type and the previous few turns of the conversation, so follow-up questions make sense.",
+              "**What's stored** — nothing is written to disk. Questions are handled in memory and gone when the request finishes.",
+              "**What I see** — if analytics is on for you, the question text is recorded in Google Analytics so I can find out what this site fails to explain. That is the entire purpose, and it's why declining the banner also keeps your questions out of it.",
+              "**Please don't type anything sensitive.** It's a public form on a public website. Passwords, card numbers and personal details don't belong in it — and it can't do anything useful with them anyway.",
+            ],
+          },
+        ]
+      : [
+          {
+            heading: "The assistant in the corner",
+            paragraphs: [
+              "The chat widget is Scout, an open-source assistant I built separately — the code is public at github.com/BradleyMatera/ProjectHub. It answers questions about my background, projects and experience.",
+              "It is a genuine third-party component, and unlike anything else on this site it involves other companies. Read this before typing into it.",
+            ],
+            list: [
+              "**The widget loads from GitHub Pages.** Your browser fetches it from `bradleymatera.github.io`, so GitHub receives your IP address and browser details, as it would for any file you download from them.",
+              "**Your questions go to a server I run** on Google Cloud, and from there to whichever AI provider is free at the time — Groq, Cloudflare, GitHub Models, Google Gemini or xAI. Your question text is sent to that provider and is subject to their terms as well as mine.",
+              "**It asks for your first name** to keep the conversation coherent. That is optional, a made-up name works exactly as well, and it stays in your own browser rather than a database.",
+              "**Questions it answers poorly may be published.** It improves itself by working out better answers and writing them into a public file in that open-source repository. Anything you type could end up there, visible to anyone.",
+              "**So please don't type anything private into it.** No passwords, card numbers, client details or anything confidential. Use the forms above or email " + SITE_EMAIL + " for anything that matters — those reach only me.",
+            ],
+          },
+        ];
 
 export const privacy: LegalDoc = {
   slug: "privacy",
@@ -73,19 +113,7 @@ export const privacy: LegalDoc = {
         "**Google's own opt-out** — the [Google Analytics opt-out add-on](https://tools.google.com/dlpage/gaoptout) blocks this across every site you visit, not only mine.",
       ],
     },
-    {
-      heading: "The assistant in the corner",
-      paragraphs: [
-        "The “Ask a question” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and nothing you type into it leaves my own server — there is no third-party AI provider involved at any point.",
-        "How it works: your question is matched against the text of the pages on this site, and the closest passage is quoted back to you with a link to the page it came from. Every answer is text I wrote elsewhere on this site. It cannot compose a new answer, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
-      ],
-      list: [
-        "**What's sent** — the question you type and the previous few turns of the conversation, so follow-up questions make sense.",
-        "**What's stored** — nothing is written to disk. Questions are handled in memory and gone when the request finishes.",
-        "**What I see** — if analytics is on for you, the question text is recorded in Google Analytics so I can find out what this site fails to explain. That is the entire purpose, and it's why declining the banner also keeps your questions out of it.",
-        "**Please don't type anything sensitive.** It's a public form on a public website. Passwords, card numbers and personal details don't belong in it — and it can't do anything useful with them anyway.",
-      ],
-    },
+    ...assistantSections,
     {
       heading: "What this site still doesn't do",
       paragraphs: [
@@ -94,7 +122,11 @@ export const privacy: LegalDoc = {
       list: [
         "**No session recording or heatmaps.** Nobody watches a replay of your visit.",
         "**No advertising pixels.** No Meta, LinkedIn, TikTok or X tracking. You will not be retargeted for having read this.",
-        "**No third-party AI.** The assistant runs on my own server against this site's own text. Nothing you ask it is sent to OpenAI, Anthropic, Google or anyone else.",
+        ...(ASSISTANT_MODE === "grounded"
+          ? [
+              "**No third-party AI.** The assistant runs on my own server against this site's own text. Nothing you ask it is sent to OpenAI, Anthropic, Google or anyone else.",
+            ]
+          : []),
         "**No third-party fonts at runtime.** Typefaces are compiled into the site at build time, so your browser never requests one from Google's servers.",
         "**Nothing is sold.** Your details are never sold, rented or shared for anyone else's marketing, ever.",
         "**No dark patterns.** Declining is one click, in the same size and weight as accepting, and the site behaves identically afterwards.",
@@ -117,6 +149,13 @@ export const privacy: LegalDoc = {
         "**Resend** — delivers form submissions to my inbox as email.",
         "**My email provider** — where your message then lives, like any other email you send me.",
         "**Google** — receives the analytics and advertising measurement described above, and only that. Your name, email address and the contents of your message are never sent to Google.",
+        ...(ASSISTANT_MODE === "projecthub"
+          ? [
+              "**GitHub** — serves the chat widget's script to your browser.",
+              "**Google Cloud** — hosts the small server that answers chat questions.",
+              "**AI providers** (Groq, Cloudflare, GitHub Models, Google Gemini, xAI) — receive chat questions only, never anything from the two forms above.",
+            ]
+          : []),
       ],
     },
     {

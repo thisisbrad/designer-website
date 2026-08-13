@@ -1,0 +1,295 @@
+/**
+ * Scout, in this site's clothes.
+ *
+ * Scout ships its own <style> block, injected into <head> at runtime — which
+ * means it lands *after* Next's stylesheets and wins on cascade order. Every
+ * rule here is therefore written to beat it on specificity rather than
+ * position. Scout scopes its own container rules with `#bradley-chat`, so a
+ * single id ties and loses on order — the id is doubled to (2,0,0) instead.
+ * Variables use `:root:root` (0,2,0) for the same reason. No `!important`
+ * anywhere: specificity alone is enough, and it stays debuggable.
+ *
+ * Nothing is forked. Scout's markup, classes and behaviour are untouched, so
+ * upstream changes keep flowing — the cost is that a future release renaming a
+ * class silently drops that rule back to green. The variable block below is
+ * the load-bearing part and is far more stable than the element rules under it.
+ *
+ * Written against tokens, not literals, so it follows the light/dark toggle
+ * for free.
+ */
+
+/* ------------------------------------------------------------------ *
+ * 1. Palette — most of the rebrand happens here
+ *
+ * Scout drives its stylesheet from these eleven custom properties, so
+ * remapping them onto the site's tokens does the bulk of the work without
+ * touching a single one of its rules.
+ * ------------------------------------------------------------------ */
+
+:root:root {
+  --ph-bg: var(--color-surface);
+  --ph-panel: var(--color-surface-2);
+  --ph-panel-strong: var(--color-surface-2);
+  --ph-line: var(--color-line);
+  --ph-text: var(--color-content);
+  --ph-muted: var(--color-muted);
+
+  /* Both accents collapse onto the brand lime. Scout's second accent is a
+     cornflower blue used for links and AI flavour notes; two accent hues
+     would read as two brands sharing a panel. */
+  --ph-accent: var(--color-accent);
+  --ph-accent-2: var(--color-accent);
+
+  /* The visitor's own bubble: brand lime with dark text, the same pairing as
+     every primary button on the site. */
+  --ph-user: var(--color-accent-fill);
+  --ph-user-text: var(--color-on-accent);
+
+  --ph-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+/* ------------------------------------------------------------------ *
+ * 2. The panel itself
+ * ------------------------------------------------------------------ */
+
+#bradley-chat#bradley-chat {
+  /* Scout hardcodes "Aptos", Segoe UI. */
+  font-family: var(--font-body), system-ui, sans-serif;
+
+  /* Its own background is a green/blue double radial over a green-black
+     gradient. Replaced with the site's surface plus a single lime bloom in
+     the top corner, echoing the ambient glows used elsewhere on the page. */
+  background:
+    radial-gradient(
+      circle at 18% 0%,
+      color-mix(in srgb, var(--color-accent) 10%, transparent),
+      transparent 38%
+    ),
+    var(--color-surface-2);
+
+  border: 1px solid var(--color-line);
+  border-radius: 16px; /* rounded-2xl, as used by every card on the site */
+  backdrop-filter: blur(18px);
+}
+
+/* Scout hardcodes z-index: 2147483000 — effectively the maximum, which puts
+   it above every layer this site defines: the consent banner and preloader
+   (100), the skip-to-content link (110) and the nav (50). A chat bubble
+   covering a consent banner is not a style problem, it's a compliance one.
+   Brought onto the site's own scale, matching the in-repo assistant. */
+#bradley-chat#bradley-chat {
+  z-index: 90;
+}
+
+#bradley-chat#bradley-chat:not(.projecthub-minimized) {
+  z-index: 95;
+}
+
+/* The mobile menu is a full-screen overlay at z-40, so anything above it
+   floats over an open menu. Both assistants step aside while it is open —
+   Navbar sets this attribute alongside its scroll lock. */
+html[data-menu-open] #bradley-chat#bradley-chat {
+  display: none;
+}
+
+#bradley-chat#bradley-chat .projecthub-header {
+  /* Scout lifts the header with a white gradient; the site separates bands
+     with a hairline instead. */
+  background: transparent;
+  border-bottom: 1px solid var(--color-line);
+}
+
+#bradley-chat#bradley-chat .projecthub-kicker,
+#bradley-chat#bradley-chat .message-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  /* 0.12em, not the site's usual 0.2em: the kicker is a 36-character string
+     in a 259px slot and wider tracking truncates it. */
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Deliberately left as sentence case. It is a full sentence, and the site's
+   mono-uppercase treatment is for short labels. */
+#bradley-chat#bradley-chat .projecthub-subtitle {
+  font-family: var(--font-body), sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+#bradley-chat#bradley-chat .projecthub-title {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-content);
+}
+
+#bradley-chat#bradley-chat .projecthub-avatar {
+  border-radius: 999px; /* the site's portraits are circular throughout */
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  background: var(--color-surface-2);
+}
+
+#bradley-chat#bradley-chat .projecthub-status-dot {
+  background: var(--color-accent-fill);
+  border-color: var(--color-surface-2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+
+/* ------------------------------------------------------------------ *
+ * 3. Badges and messages
+ * ------------------------------------------------------------------ */
+
+#bradley-chat#bradley-chat .projecthub-free-badge {
+  /* Scout fills this with mint green, making "100% FREE" the loudest thing in
+     the panel. Outline chip instead — the site states facts quietly. */
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid var(--color-line);
+  box-shadow: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.12em;
+}
+
+#bradley-chat#bradley-chat .projecthub-free-badge::before {
+  background: var(--color-accent-fill);
+  box-shadow: none;
+}
+
+#bradley-chat#bradley-chat .bot-message {
+  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+  border: 1px solid var(--color-line);
+  color: var(--color-content);
+}
+
+#bradley-chat#bradley-chat .user-message {
+  background: var(--color-accent-fill);
+  color: var(--color-on-accent);
+  border: 0;
+}
+
+#bradley-chat#bradley-chat .user-message .message-label {
+  color: color-mix(in srgb, var(--color-on-accent) 65%, transparent);
+}
+
+#bradley-chat#bradley-chat .user-initial {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  color: var(--color-content);
+}
+
+/* Links: Scout's blue on lime-accented panels reads as a second brand. */
+#bradley-chat#bradley-chat .message a {
+  color: var(--color-accent);
+  border-bottom-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+#bradley-chat#bradley-chat .message a:hover,
+#bradley-chat#bradley-chat .message a:focus {
+  color: var(--color-content);
+  border-bottom-color: currentColor;
+}
+
+#bradley-chat#bradley-chat .ai-flavor {
+  border-color: color-mix(in srgb, var(--color-accent) 26%, transparent);
+  color: var(--color-muted);
+}
+
+/* The one unavoidable `!important` in this file.
+ *
+ * Scout builds two notices — the "runs on free tiers" badge and the
+ * dev-environment warning — as HTML strings with *inline* styles carrying its
+ * own green and amber. Inline styles outrank every external selector no matter
+ * how specific, so this is the only lever available. Scoped to spans that
+ * actually carry a style attribute inside a message, so it can't reach
+ * anything else. */
+#bradley-chat#bradley-chat .bot-message span[style] {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-accent) 28%, transparent) !important;
+  color: var(--color-muted) !important;
+}
+
+/* ------------------------------------------------------------------ *
+ * 4. Controls
+ * ------------------------------------------------------------------ */
+
+#bradley-chat#bradley-chat .projecthub-suggestions button,
+#bradley-chat#bradley-chat .suggestion-chip {
+  font-family: var(--font-body), sans-serif;
+  background: transparent;
+  border: 1px solid var(--color-line);
+  color: var(--color-muted);
+  border-radius: 999px;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+#bradley-chat#bradley-chat .projecthub-suggestions button:hover,
+#bradley-chat#bradley-chat .suggestion-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: transparent;
+}
+
+#bradley-chat#bradley-chat .composer-shell {
+  border: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-surface) 50%, transparent);
+  border-radius: 999px;
+}
+
+#bradley-chat#bradley-chat .composer-shell:focus-within {
+  border-color: var(--color-accent);
+}
+
+#bradley-chat#bradley-chat #chat-input {
+  font-family: var(--font-body), sans-serif;
+  /* Inter runs wider than the Aptos this was sized for; the placeholder is 61
+     characters and this is a one-row textarea, so it cannot be ellipsised. */
+  font-size: 14px;
+  color: var(--color-content);
+}
+
+#bradley-chat#bradley-chat #chat-input::placeholder {
+  color: color-mix(in srgb, var(--color-muted) 75%, transparent);
+}
+
+#bradley-chat#bradley-chat .send-button {
+  background: var(--color-accent-fill);
+  color: var(--color-on-accent);
+  border-radius: 999px;
+}
+
+#bradley-chat#bradley-chat .send-button:hover:not(:disabled) {
+  background: var(--color-content);
+  color: var(--color-surface);
+}
+
+#bradley-chat#bradley-chat .projecthub-icon-button {
+  color: var(--color-muted);
+  border-radius: 999px;
+}
+
+#bradley-chat#bradley-chat .projecthub-icon-button:hover {
+  color: var(--color-accent);
+  background: transparent;
+}
+
+#bradley-chat#bradley-chat .projecthub-settings-panel {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+}
+
+/* ------------------------------------------------------------------ *
+ * 5. Motion
+ *
+ * The rest of the site honours prefers-reduced-motion; Scout's entrance
+ * animation and pulsing badge do not.
+ * ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  #bradley-chat#bradley-chat,
+  #bradley-chat#bradley-chat * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

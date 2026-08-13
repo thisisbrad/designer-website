@@ -166,6 +166,7 @@ export default function Assistant() {
         onClick={toggle}
         aria-expanded={open}
         aria-controls="assistant-panel"
+        data-assistant-root
         data-cursor="hover"
         className={cn(
           "fixed right-4 bottom-4 z-[90] flex items-center gap-2.5 rounded-full border border-accent/30 bg-surface-2/95 py-3 pr-5 pl-4 font-mono text-[11px] tracking-[0.2em] text-content uppercase shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-md transition-all duration-300 hover:border-accent hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none md:right-6 md:bottom-6",
@@ -183,6 +184,7 @@ export default function Assistant() {
         <div
           id="assistant-panel"
           ref={panelRef}
+          data-assistant-root
           role="dialog"
           aria-modal="false"
           aria-labelledby="assistant-title"

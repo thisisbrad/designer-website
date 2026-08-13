@@ -4,7 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { THEME_INIT_SCRIPT } from "@/components/ThemeToggle";
 import Analytics from "@/components/analytics/Analytics";
-import Assistant from "@/components/assistant/Assistant";
+import AssistantMount from "@/components/assistant/AssistantMount";
 import ConsentBanner from "@/components/analytics/ConsentBanner";
 import { buildConsentBootstrap } from "@/lib/analytics/consent";
 import { GA_MEASUREMENT_ID, GOOGLE_ADS_ID } from "@/lib/analytics/config";
@@ -210,7 +210,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <SmoothScroll>{children}</SmoothScroll>
-        <Assistant />
+        <AssistantMount />
         <Analytics />
         <ConsentBanner />
       </body>
