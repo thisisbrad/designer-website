@@ -133,8 +133,8 @@ export default async function LocationServicePage({
         offers: {
           "@type": "Offer",
           url,
-          description: `Starting at ${service.startingAt}. Typical timeline ${service.timeline}.`,
-          priceCurrency: "USD",
+          // No price — see the note on the parent service page's Offer node.
+          description: `Typical timeline ${service.timeline}. Quoted per project after scoping.`,
           availability: "https://schema.org/InStock",
           seller: { "@id": `${SITE_URL}/#business` },
         },
@@ -267,7 +267,7 @@ export default async function LocationServicePage({
           <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-4">
             {[
               { term: "Serving", detail: `${location.city} & ${location.metroLabel}` },
-              { term: "Starting at", detail: service.startingAt },
+              { term: "Typical range", detail: service.priceRange },
               { term: "Typical timeline", detail: service.timeline },
               { term: "Languages", detail: "English & Spanish" },
             ].map((item) => (

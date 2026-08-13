@@ -98,8 +98,8 @@ function buildChunks(): Chunk[] {
       tag: "pricing",
       title: `${service.title} — cost and timeline`,
       url,
-      text: `${service.title} pricing cost price budget quote how much charge rate fee. ${service.keywords.join(" ")}. ${service.title} starts at ${service.startingAt}. How long does ${service.title} take to build and deliver, typical timeline turnaround: ${service.timeline}.`,
-      display: `${service.title} starts at ${service.startingAt}, and a typical project runs ${service.timeline}. That figure is an honest floor rather than a quote — real scope changes real cost, so you'd get a fixed written quote before any work starts.`,
+      text: `${service.title} pricing cost price budget quote how much charge rate fee. ${service.keywords.join(" ")}. ${service.title} typically runs ${service.priceRange}. How long does ${service.title} take to build and deliver, typical timeline turnaround: ${service.timeline}.`,
+      display: `${service.title} projects typically run ${service.priceRange}. Timeline: ${service.timeline}. That's a range rather than a quote — real scope changes real cost, so you'd get a fixed written quote before any work starts.`,
     });
 
     add({
@@ -162,7 +162,7 @@ function buildChunks(): Chunk[] {
     title: "All services",
     url: "/services",
     text: `Services offered, what you do, full list of services and what can be built: ${services
-      .map((s) => `${s.title} (${s.category}, from ${s.startingAt})`)
+      .map((s) => `${s.title} (${s.category}, ${s.priceRange})`)
       .join(", ")}.`,
     display: `There are ${services.length} services: ${services
       .map((s) => s.title)

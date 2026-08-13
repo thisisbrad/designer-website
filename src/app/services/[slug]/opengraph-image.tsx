@@ -20,7 +20,6 @@ export default async function Image({
 
   const category = service?.category ?? "Services";
   const headline = service?.headline ?? SITE_NAME;
-  const price = service ? `From ${service.startingAt}` : "";
 
   return new ImageResponse(
     (
@@ -129,7 +128,11 @@ export default async function Image({
               color: "#8d8d86",
             }}
           >
-            {price ? `${price} · ` : ""}Web · SEO · AI
+            {/* No price. A share card is the least controllable surface there
+                is — it travels into Slack threads and timelines with none of
+                the page's "a range, not a quote" framing attached, and it is
+                an image, so the number can't be corrected later. */}
+            Web · SEO · AI
           </div>
         </div>
       </div>

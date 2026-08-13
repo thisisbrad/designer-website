@@ -144,7 +144,7 @@ export default function ServicesIndex() {
                   {service.description}
                 </p>
                 <p className="relative mt-auto flex items-center justify-between gap-4 pt-8 font-mono text-[11px] tracking-[0.15em] text-muted uppercase">
-                  <span>From {service.startingAt}</span>
+                  <span>{service.priceRange}</span>
                   <span
                     aria-hidden
                     className="text-accent transition-transform duration-300 group-hover:translate-x-1"

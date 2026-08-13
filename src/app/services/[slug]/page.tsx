@@ -70,8 +70,6 @@ export default async function ServicePage({
     .map((postSlug) => getPost(postSlug))
     .filter((post) => post !== undefined);
 
-  /** "$1,500/mo" → "1500" — schema wants a bare number, the unit goes below. */
-  const startingPrice = service.startingAt.replace(/[^0-9]/g, "");
   const heroHeadline = getHeroHeadline(service.slug, service.headline);
 
   const jsonLd = {
@@ -96,20 +94,18 @@ export default async function ServicePage({
           serviceUrl: `${SITE_URL}/#contact`,
           availableLanguage: "English",
         },
+        /* No price, deliberately. This used to publish `price`, `minPrice`
+           and `priceCurrency`, which let Google surface an exact figure in a
+           result — stripped of the "a range, not a quote" framing that makes
+           it defensible, and sitting beside competitors who publish nothing.
+           The page still shows a range to anyone reading it; the machines
+           just don't get a number to quote back. Vagueness at the business
+           level is carried by `priceRange: "$$"` on the organisation node in
+           layout.tsx, which is what that property is for. */
         offers: {
           "@type": "Offer",
           url,
-          description: `Starting at ${service.startingAt}. Typical timeline ${service.timeline}.`,
-          priceCurrency: "USD",
-          price: startingPrice,
-          priceSpecification: {
-            "@type": "PriceSpecification",
-            priceCurrency: "USD",
-            minPrice: startingPrice,
-            // Retainers quote per month; project work is a one-off floor.
-            unitText: service.startingAt.includes("/mo") ? "MON" : undefined,
-            valueAddedTaxIncluded: false,
-          },
+          description: `Typical timeline ${service.timeline}. Quoted per project after scoping.`,
           availability: "https://schema.org/InStock",
           seller: { "@id": `${SITE_URL}/#business` },
         },
@@ -196,7 +192,7 @@ export default async function ServicePage({
             { label: service.title },
           ]}
           stats={[
-            { term: "Starting at", detail: service.startingAt },
+            { term: "Typical range", detail: service.priceRange },
             { term: "Typical timeline", detail: service.timeline },
             { term: "Engagement", detail: "Fixed scope, fixed quote" },
             { term: "Working with", detail: "You directly — no account layer" },
@@ -497,7 +493,7 @@ export default async function ServicePage({
                       {item.description}
                     </span>
                     <span className="mt-auto pt-6 font-mono text-[11px] tracking-[0.15em] text-muted uppercase">
-                      From {item.startingAt} →
+                      {item.priceRange} →
                     </span>
                   </Link>
                 </li>

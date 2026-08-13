@@ -386,7 +386,7 @@ export default function Contact() {
                     {service.title}
                   </span>
                   <span className="font-mono text-[11px] tracking-[0.15em] text-muted uppercase">
-                    {service.startingAt}
+                    {service.priceRange}
                   </span>
                 </Link>
               </li>

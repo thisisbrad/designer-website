@@ -249,9 +249,9 @@ export const terms: LegalDoc = {
       ],
     },
     {
-      heading: "Prices shown here are starting points",
+      heading: "Prices shown here are ranges",
       paragraphs: [
-        "The figures on the service pages are honest floors, not quotes. Real scope changes real cost. You get a fixed written quote before any work starts, and that quote is what binds — not a number you read on this website.",
+        "The figures on the service pages are typical ranges, not quotes. Where a project lands inside a range — or outside it — depends on scope, and scope is what we work out together. You get a fixed written quote before any work starts, and that quote is what binds, not a number you read on this website.",
       ],
     },
     {
