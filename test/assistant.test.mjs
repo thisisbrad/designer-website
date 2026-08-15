@@ -177,3 +177,42 @@ describe("damerauLevenshtein", () => {
     assert.equal(damerauLevenshtein("seo", "seo"), 0);
   });
 });
+
+/* ------------------------------------------------------------------ *
+ * PII scrubbing
+ *
+ * The assistant records the question a visitor typed, which is the only
+ * free-text field on the site that reaches analytics. People put things in
+ * chat boxes they would never put in a form, and Google's terms prohibit PII
+ * outright — so these cases are a compliance boundary, not a nicety.
+ * ------------------------------------------------------------------ */
+
+import { scrubPiiForTest } from "../src/lib/analytics/pii.ts";
+
+describe("PII scrubbing", () => {
+  const cases = [
+    ["email me at jane.doe@acme.co.uk please", "[email]"],
+    ["my number is 407-555-0134", "[number]"],
+    ["call +1 (407) 555 0134", "[number]"],
+    ["see https://acme.com/x?token=abc123", "[url]"],
+    ["card 4111 1111 1111 1111", "[number]"],
+  ];
+
+  for (const [input, expected] of cases) {
+    test(`redacts: ${input.slice(0, 32)}…`, () => {
+      const out = scrubPiiForTest(input);
+      assert.ok(out.includes(expected), `expected ${expected} in "${out}"`);
+      assert.ok(!/@[a-z]+\./i.test(out), `email survived: "${out}"`);
+    });
+  }
+
+  test("leaves an ordinary question completely alone", () => {
+    const q = "How much does a 5 page website cost in Orlando?";
+    assert.equal(scrubPiiForTest(q), q);
+  });
+
+  test("keeps the topic when redacting, so the question stays useful", () => {
+    const out = scrubPiiForTest("can you email me at bob@x.com about SEO pricing");
+    assert.ok(out.includes("SEO pricing"), out);
+  });
+});

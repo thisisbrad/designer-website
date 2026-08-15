@@ -30,6 +30,7 @@ import {
   type AdsConversionKey,
 } from "./config";
 import { getAttribution } from "./attribution";
+import { scrubPii } from "./pii";
 
 /** GA4 truncates string values at 100 characters; do it here so we know what was sent. */
 const MAX_VALUE_LENGTH = 100;
@@ -263,9 +264,8 @@ export function trackAssistantQuestion(
   answered: boolean
 ) {
   send("assistant_question", {
-    // Truncated to GA4's parameter limit; long questions are rare and the
-    // first 100 characters carry the topic.
-    question_text: question,
+    // Scrubbed of PII, then truncated by `send` to GA4's 100-char limit.
+    question_text: scrubPii(question),
     question_intent: intent,
     question_answered: answered,
   });
@@ -274,7 +274,7 @@ export function trackAssistantQuestion(
 /** The assistant could not answer — a content gap, recorded as one. */
 export function trackAssistantHandoff(question: string, intent: string) {
   send("assistant_handoff", {
-    question_text: question,
+    question_text: scrubPii(question),
     question_intent: intent,
   });
 }
