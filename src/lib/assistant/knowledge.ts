@@ -307,6 +307,20 @@ function buildChunks(): Chunk[] {
     display: `Email ${SITE_EMAIL} — every enquiry is read personally and answered ${availability.responseTime.toLowerCase()}. If you'd rather see the work first, the free 15-point audit is a short recorded video walking through what's holding a site back: no sales call, no mailing list, yours to keep whoever you build with.`,
   });
 
+  /* ---- Beacon itself ----
+     Keeps "beacon" in the corpus vocabulary; without this, typo correction
+     snaps the name to the nearest known word ("beach") and the meta intent
+     never sees it. */
+  add({
+    id: "meta:beacon",
+    tag: "faq",
+    title: "About Beacon",
+    url: "/services/ai-solutions",
+    text: `Q: Who is Beacon? What is Beacon, the assistant on this site? A: Beacon is this site's assistant — named for the lighthouse on the homepage, and built to be a guiding light rather than a know-it-all. It searches the site's own pages and quotes what they say, so it can't invent a price or promise a deadline. It's also a working demo of the AI assistants Brad builds for clients.`,
+    answer:
+      "Beacon is this site's assistant — named for the lighthouse on the homepage, and built to be a guiding light rather than a know-it-all. It searches the site's own pages and quotes what they say, so it can't invent a price or promise a deadline. It's also a working demo of the AI assistants Brad builds for clients.",
+  });
+
   return chunks;
 }
 

@@ -37,7 +37,7 @@ type Message = {
 
 const OPENING: Message = {
   role: "assistant",
-  text: "Ask me anything about the services here — cost, timelines, process, or which parts of Florida are covered. I answer from this site's own pages, so I'll tell you when something isn't on them.",
+  text: "I'm Beacon — think of me as the guiding light around here. Ask me anything about the services: cost, timelines, process, or which parts of Florida are covered. I answer from this site's own pages, so I'll tell you when something isn't on them.",
   followUps: [
     "What does a website cost?",
     "How long does a project take?",
@@ -177,7 +177,7 @@ export default function Assistant() {
           aria-hidden
           className="size-1.5 rounded-full bg-accent motion-safe:animate-pulse-dot"
         />
-        Ask a question
+        Ask Beacon
       </button>
 
       {open && (
@@ -197,10 +197,10 @@ export default function Assistant() {
                 className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.25em] text-accent uppercase"
               >
                 <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-                Ask about the work
+                Beacon
               </p>
               <p className="mt-1.5 text-[11px] text-muted">
-                Answers come from this site&apos;s pages
+                Your guiding light — answers from this site&apos;s pages
               </p>
             </div>
             <button
@@ -209,7 +209,7 @@ export default function Assistant() {
                 setOpen(false);
                 openerRef.current?.focus();
               }}
-              aria-label="Close assistant"
+              aria-label="Close Beacon"
               data-cursor="hover"
               className="-mr-2 rounded-full p-2 text-muted transition-colors hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
             >
@@ -322,7 +322,7 @@ export default function Assistant() {
             className="flex shrink-0 items-center gap-3 border-t border-line px-5 py-4"
           >
             <label htmlFor="assistant-input" className="sr-only">
-              Ask a question about the services
+              Ask Beacon a question about the services
             </label>
             <input
               ref={inputRef}

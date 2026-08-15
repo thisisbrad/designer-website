@@ -191,7 +191,7 @@ function toSources(hits: Scored<Chunk>[]): Source[] {
 
 const GREETING: AssistantReply = {
   answer:
-    "Hello. I can answer questions about the services here — what they cost, how long they take, how the process works, and which areas of Florida are covered. What would you like to know?",
+    "Hello — I'm Beacon. I can shed light on the services here: what they cost, how long they take, how the process works, and which areas of Florida are covered. What would you like to know?",
   sources: [],
   followUps: [
     "What does a website cost?",
@@ -204,7 +204,7 @@ const GREETING: AssistantReply = {
 
 const META: AssistantReply = {
   answer:
-    "I'm an assistant on Brad's site, and I'm deliberately a simple one: I search the pages here and quote what they say, rather than generating an answer. That means I can't invent a price or promise a deadline — if it isn't written on this site, I'll tell you so and point you to Brad. He reads every enquiry personally.",
+    "I'm Beacon — this site's assistant, named for the lighthouse on the homepage. I'm a guiding light, not a know-it-all: I search the pages here and quote what they say, rather than generating an answer. That means I can't invent a price or promise a deadline — if it isn't written on this site, I'll say so and light the way to Brad. He reads every enquiry personally.",
   sources: [{ title: "AI Solutions", url: "/services/ai-solutions" }],
   followUps: [
     "What can you help with?",
@@ -217,7 +217,7 @@ const META: AssistantReply = {
 
 const REFUSAL: AssistantReply = {
   answer:
-    "I can't help with that one. I'm limited to questions about the work and services described on this site.",
+    "I can't help with that one — it's outside my beam. I'm limited to questions about the work and services described on this site.",
   sources: [],
   followUps: ["What services are offered?", "What does a project cost?"],
   escalate: false,
@@ -250,7 +250,7 @@ const GUARANTEE: AssistantReply = {
 function handoff(intent: Intent, coverage = 0): AssistantReply {
   return {
     answer:
-      "I don't have that on the site, and I'd rather point you to Brad than guess at it. He replies to every enquiry personally, usually within 48 hours — or you can ask for the free audit and raise it there.",
+      "I don't have that on the site, and I'd rather light the way to Brad than guess at it. He replies to every enquiry personally, usually within 48 hours — or you can ask for the free audit and raise it there.",
     sources: [
       { title: "Contact", url: "/contact" },
       { title: "Free website audit", url: "/#audit" },

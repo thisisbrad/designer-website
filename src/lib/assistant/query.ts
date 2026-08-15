@@ -77,7 +77,7 @@ const INTENT_RULES: { intent: Intent; re: RegExp }[] = [
   },
   {
     intent: "meta",
-    re: /\b(are you (a )?(bot|ai|human|robot)|who am i (talking|speaking)|what are you|how do you work|chatgpt|claude|assistant)\b/i,
+    re: /\b(are you (a )?(bot|ai|human|robot)|who am i (talking|speaking)|(what|who) are you|(what is|who is|whats|whos) your name|how do you work|chatgpt|claude|assistant|beacon)\b/i,
   },
   {
     intent: "smalltalk",
@@ -276,7 +276,7 @@ export function classifyIntent(query: string): Intent {
 /** Words too common in this corpus to carry a follow-up's meaning forward. */
 const CONTEXT_NOISE = new Set([
   "about", "what", "how", "tell", "does", "would", "could", "should",
-  "website", "site", "beltowski", "studio", "brad", "there", "their",
+  "website", "site", "beltowski", "studio", "brad", "beacon", "there", "their",
   "please", "thanks", "really", "actually",
 ]);
 

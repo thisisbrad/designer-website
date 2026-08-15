@@ -39,9 +39,9 @@ const assistantSections: LegalSection[] =
     : ASSISTANT_MODE === "grounded"
       ? [
           {
-            heading: "The assistant in the corner",
+            heading: "Beacon, the assistant in the corner",
             paragraphs: [
-              "The “Ask a question” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and nothing you type into it leaves my own server — there is no third-party AI provider involved at any point.",
+              "The “Ask Beacon” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and nothing you type into it leaves my own server — there is no third-party AI provider involved at any point.",
               "How it works: your question is matched against the text of the pages on this site, and the closest passage is quoted back to you with a link to the page it came from. Every answer is text I wrote elsewhere on this site. It cannot compose a new answer, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
             ],
             list: [
