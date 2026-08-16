@@ -294,6 +294,15 @@ function buildFollowUps(hits: Scored<Chunk>[], intent: Intent): string[] {
  * Entry point
  * ------------------------------------------------------------------ */
 
+/**
+ * Buying signals that should end an answer with the audit offer, whatever
+ * the intent. Deliberately separate from intent classification: "can you
+ * build me a React frontend?" must still *retrieve* as a service question —
+ * this only decides that the answer deserves a capture form under it.
+ */
+const HIRE_SIGNALS =
+  /\b(i (need|want)|we (need|want)|can you (build|design|make|create|redesign|fix|improve)|looking for (a|an|someone)|interested in|get a quote|help (me|us|my|our)|my (business|company|site|website)|our (business|company|site|website))\b/i;
+
 export function answerQuestion(
   question: string,
   history: Turn[] = []
@@ -346,6 +355,11 @@ export function answerQuestion(
     matched: hits.slice(0, 3).map((h) => h.id),
   };
 
+  /* Commercial intent or a buying signal in the phrasing: either way the
+     visitor is close enough to hiring that the answer should end with the
+     audit offer rather than trail off. */
+  const buying = COMMERCIAL_INTENTS.has(intent) || HIRE_SIGNALS.test(trimmed);
+
   /* A question the site already answers in Brad's own words gets answered in
      those words. Paraphrasing here would only introduce drift. */
   if (top.answer && top.score >= WEAK_MATCH) {
@@ -353,7 +367,7 @@ export function answerQuestion(
       answer: top.answer,
       sources,
       followUps,
-      escalate: COMMERCIAL_INTENTS.has(intent),
+      escalate: buying,
       debug,
     };
   }
@@ -363,7 +377,7 @@ export function answerQuestion(
       answer: passage(top.display ?? top.text),
       sources,
       followUps,
-      escalate: COMMERCIAL_INTENTS.has(intent),
+      escalate: buying,
       debug,
     };
   }

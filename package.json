@@ -9,9 +9,7 @@
     "seo:check": "node scripts/seo-check.mjs",
     "assistant:eval": "node scripts/eval-assistant.mjs",
     "assistant:test": "node --experimental-strip-types --test test/assistant.test.mjs",
-    "test": "npm run assistant:test",
-    "scout:build": "node scripts/build-scout.mjs"
-  },
+    "test": "npm run assistant:test"  },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",

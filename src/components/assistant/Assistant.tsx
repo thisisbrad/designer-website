@@ -9,7 +9,11 @@ import {
   trackAssistantQuestion,
   trackAssistantSourceClick,
   trackCta,
+  trackFormError,
+  trackFormStart,
+  trackLead,
 } from "@/lib/analytics/events";
+import { attributionPayload } from "@/lib/analytics/attribution";
 import { cn, prefersReducedMotion } from "@/lib/utils";
 
 /**
@@ -37,11 +41,11 @@ type Message = {
 
 const OPENING: Message = {
   role: "assistant",
-  text: "I'm Beacon — think of me as the guiding light around here. Ask me anything about the services: cost, timelines, process, or which parts of Florida are covered. I answer from this site's own pages, so I'll tell you when something isn't on them.",
+  text: "I'm Beacon — think of me as the guiding light around here. Ask me anything about the services: cost, timelines, process, or which parts of Florida are covered. And when you're ready, I can set up Brad's free 15-point audit right here in the chat.",
   followUps: [
     "What does a website cost?",
     "How long does a project take?",
-    "Do you work with businesses in Orlando?",
+    "What's included in the free audit?",
   ],
 };
 
@@ -54,6 +58,10 @@ export default function Assistant() {
   const [messages, setMessages] = useState<Message[]>([OPENING]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [leadStatus, setLeadStatus] = useState<
+    "idle" | "sending" | "sent" | "error"
+  >("idle");
+  const leadFormStarted = useRef(false);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -154,6 +162,73 @@ export default function Assistant() {
     const next = !open;
     setOpen(next);
     if (next) trackAssistantOpen(pathname);
+  };
+
+  /* The in-chat audit form: same endpoint and payload as the homepage band,
+     with the visitor's last question carried as the goal so the enquiry
+     arrives with its own context. Distinct form_location so GA4 can compare
+     the two capture points. */
+  const onLeadFormFocus = () => {
+    if (leadFormStarted.current) return;
+    leadFormStarted.current = true;
+    trackFormStart("audit", "assistant");
+  };
+
+  const submitLead = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (leadStatus === "sending") return;
+
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    const lastQuestion =
+      [...messages].reverse().find((m) => m.role === "user")?.text ?? "";
+
+    setLeadStatus("sending");
+    try {
+      const res = await fetch("/api/audit-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...data,
+          goal: (lastQuestion
+            ? `Asked Beacon: ${lastQuestion}`
+            : "Asked Beacon for the free audit"
+          ).slice(0, 300),
+          attribution: attributionPayload(),
+        }),
+      });
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+
+      setLeadStatus("sent");
+      trackLead("audit", {
+        location: "assistant",
+        qualifier: lastQuestion.slice(0, 100),
+      });
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          text: "Done — your audit request is on its way to Brad. He records every one personally, so expect your video within 48 hours with no sales call attached. Anything else I can shed light on in the meantime?",
+        },
+      ]);
+    } catch (err) {
+      setLeadStatus("error");
+      trackFormError(
+        "audit",
+        "assistant",
+        err instanceof Error ? err.message : "unknown"
+      );
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          text: "That didn't go through — my fault, not yours. The audit form on the homepage is the reliable route, or email Brad directly from the contact page.",
+          sources: [
+            { title: "Free audit", url: "/#audit" },
+            { title: "Contact", url: "/contact" },
+          ],
+        },
+      ]);
+    }
   };
 
   return (
@@ -258,29 +333,94 @@ export default function Assistant() {
                       </ul>
                     )}
 
-                    {/* The conversion moment: the assistant just admitted it
-                        can't answer, which is exactly when a human should be
-                        offered rather than another suggestion. */}
-                    {message.escalate && (
-                      <Link
-                        href="/#audit"
-                        onClick={() => {
-                          trackCta({
-                            label: "Get a free audit",
-                            location: "assistant",
-                            destination: "/#audit",
-                          });
-                          setOpen(false);
-                        }}
-                        data-cursor="hover"
-                        className="mt-3 block rounded-xl border border-accent/30 bg-accent/[0.06] px-4 py-3 text-sm text-content transition-colors hover:border-accent"
-                      >
-                        Get a free 15-point audit →
-                        <span className="mt-1 block font-mono text-[10px] tracking-[0.15em] text-muted uppercase">
-                          48h · No sales call
-                        </span>
-                      </Link>
-                    )}
+                    {/* The conversion moment: a buying question or an honest
+                        "I don't know" — either way, capture the lead here
+                        instead of hoping the visitor finds the form later. */}
+                    {message.escalate &&
+                      leadStatus !== "sent" &&
+                      (i === messages.length - 1 ? (
+                        <form
+                          onSubmit={submitLead}
+                          onFocusCapture={onLeadFormFocus}
+                          className="mt-3 space-y-2.5 rounded-xl border border-accent/30 bg-accent/[0.06] p-4"
+                        >
+                          <p className="text-sm text-content">
+                            Want Brad&apos;s eyes on it? Free 15-point audit —
+                            recorded video, no sales call.
+                          </p>
+                          <label htmlFor="beacon-lead-name" className="sr-only">
+                            Your name
+                          </label>
+                          <input
+                            id="beacon-lead-name"
+                            name="name"
+                            required
+                            maxLength={300}
+                            autoComplete="name"
+                            placeholder="Name"
+                            className="w-full border-b border-line bg-transparent py-1.5 text-sm text-content transition-colors placeholder:text-muted/50 focus:border-accent focus:outline-none"
+                          />
+                          <label htmlFor="beacon-lead-email" className="sr-only">
+                            Email address
+                          </label>
+                          <input
+                            id="beacon-lead-email"
+                            name="email"
+                            type="email"
+                            required
+                            maxLength={300}
+                            autoComplete="email"
+                            placeholder="Email"
+                            className="w-full border-b border-line bg-transparent py-1.5 text-sm text-content transition-colors placeholder:text-muted/50 focus:border-accent focus:outline-none"
+                          />
+                          <label htmlFor="beacon-lead-site" className="sr-only">
+                            Your website address
+                          </label>
+                          <input
+                            id="beacon-lead-site"
+                            name="website"
+                            type="url"
+                            required
+                            maxLength={300}
+                            inputMode="url"
+                            autoComplete="url"
+                            placeholder="https://yourbusiness.com"
+                            className="w-full border-b border-line bg-transparent py-1.5 text-sm text-content transition-colors placeholder:text-muted/50 focus:border-accent focus:outline-none"
+                          />
+                          <button
+                            type="submit"
+                            disabled={leadStatus === "sending"}
+                            data-cursor="hover"
+                            className="mt-1 w-full rounded-full bg-accent-fill px-4 py-2.5 font-mono text-[10px] tracking-[0.2em] text-on-accent uppercase transition-colors hover:bg-content hover:text-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none disabled:opacity-40"
+                          >
+                            {leadStatus === "sending"
+                              ? "Sending…"
+                              : "Get my free audit"}
+                          </button>
+                          <p className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase">
+                            48h · No sales call · No mailing list
+                          </p>
+                        </form>
+                      ) : (
+                        <Link
+                          href="/#audit"
+                          onClick={() => {
+                            trackCta({
+                              label: "Get a free audit",
+                              location: "assistant",
+                              destination: "/#audit",
+                            });
+                            setOpen(false);
+                          }}
+                          data-cursor="hover"
+                          className="mt-3 block rounded-xl border border-accent/30 bg-accent/[0.06] px-4 py-3 text-sm text-content transition-colors hover:border-accent"
+                        >
+                          Get a free 15-point audit →
+                          <span className="mt-1 block font-mono text-[10px] tracking-[0.15em] text-muted uppercase">
+                            48h · No sales call
+                          </span>
+                        </Link>
+                      ))}
 
                     {!!message.followUps?.length && i === messages.length - 1 && (
                       <ul className="mt-3 flex flex-wrap gap-2">

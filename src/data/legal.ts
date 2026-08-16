@@ -36,38 +36,22 @@ export type LegalDoc = {
 const assistantSections: LegalSection[] =
   ASSISTANT_MODE === "off"
     ? []
-    : ASSISTANT_MODE === "grounded"
-      ? [
-          {
-            heading: "Beacon, the assistant in the corner",
-            paragraphs: [
-              "The “Ask Beacon” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and nothing you type into it leaves my own server — there is no third-party AI provider involved at any point.",
-              "How it works: your question is matched against the text of the pages on this site, and the closest passage is quoted back to you with a link to the page it came from. Every answer is text I wrote elsewhere on this site. It cannot compose a new answer, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
-            ],
-            list: [
-              "**What's sent** — the question you type and the previous few turns of the conversation, so follow-up questions make sense.",
-              "**What's stored** — nothing is written to disk. Questions are handled in memory and gone when the request finishes.",
-              "**What I see** — if analytics is on for you, the question text is recorded in Google Analytics so I can find out what this site fails to explain. That is the entire purpose, and it's why declining the banner also keeps your questions out of it.",
-              "**Please don't type anything sensitive.** It's a public form on a public website. Passwords, card numbers and personal details don't belong in it — and it can't do anything useful with them anyway.",
-            ],
-          },
-        ]
-      : [
-          {
-            heading: "The assistant in the corner",
-            paragraphs: [
-              "The chat widget is Scout. Its interface comes from an open-source project of mine — the code is public at github.com/BradleyMatera/ProjectHub — but the copy served here is built from this site's own content, and so are its answers.",
-              "Despite being a chat window, it does not use ChatGPT, Claude or any other language model. It searches the text of the pages on this site and quotes the closest passage back to you with a link to it. Every answer is text written elsewhere on this site, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
-            ],
-            list: [
-              "**Nothing leaves this server.** The widget script is served from this site, not a third party, and your questions go to this site's own endpoint. No AI provider is involved at any point.",
-              "**What's sent** — the question you type and the previous few turns, so follow-up questions make sense.",
-              "**What's stored** — nothing is written to disk. Questions are handled in memory and gone when the request finishes. If you give it a name, that stays in your own browser rather than a database, and a made-up one works exactly as well.",
-              "**What I see** — if analytics is on for you, the question text is recorded in Google Analytics so I can find out what this site fails to explain. That is the entire purpose, and declining the banner keeps your questions out of it too.",
-              "**Please don't type anything sensitive.** It's a public form on a public website. Passwords, card numbers and personal details don't belong in it — and it can't do anything useful with them anyway.",
-            ],
-          },
-        ];
+    : [
+        {
+          heading: "Beacon, the assistant in the corner",
+          paragraphs: [
+            "The “Ask Beacon” panel is a search tool wearing a chat interface. It does not use ChatGPT, Claude or any other language model, and your questions never leave my own server — there is no third-party AI provider involved at any point.",
+            "How it works: your question is matched against the text of the pages on this site, and the closest passage is quoted back to you with a link to the page it came from. Every answer is text I wrote elsewhere on this site. It cannot compose a new answer, which is exactly why it cannot invent a price or promise a deadline — if something isn't written here, it says so and points you at me.",
+          ],
+          list: [
+            "**What's sent** — the question you type and the previous few turns of the conversation, so follow-up questions make sense.",
+            "**What's stored** — nothing is written to disk. Questions are handled in memory and gone when the request finishes.",
+            "**The audit form inside the chat** works exactly like the one on the homepage: if you choose to fill it in, your name, email, site address and the question you'd just asked reach me as an enquiry email. Nothing is sent until you press the button, and the rest of the conversation stays where it was.",
+            "**What I see** — if analytics is on for you, the question text is recorded in Google Analytics so I can find out what this site fails to explain. That is the entire purpose, and it's why declining the banner also keeps your questions out of it.",
+            "**Please don't type anything sensitive.** It's a public form on a public website. Passwords, card numbers and personal details don't belong in it — and it can't do anything useful with them anyway.",
+          ],
+        },
+      ];
 
 export const privacy: LegalDoc = {
   slug: "privacy",
