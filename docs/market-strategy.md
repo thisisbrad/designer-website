@@ -122,6 +122,44 @@ every campaign starves below its data floor and nothing converges.
 
 ---
 
+## Drift check — August 17, 2026
+
+What's moved since this doc was compiled, and the corrections:
+
+**Growth markets are normalizing, not booming.** Polk permits fell 18% in
+H1 2026 and county supply hit 4.7 months (balanced market); Deltona inventory
+is up ~65% year-over-year with prices flat. The cold-search thesis still
+works — the *stock* of 2023–25 arrivals still needs services — but the *flow*
+is slowing, so it has a shelf life. Corrections: capture the arrival wave now
+rather than assuming it compounds; expect new-construction trades to get
+cautious with marketing budgets before storm/repair and homeowner services do;
+revisit the "fastest-growing" framing on the Polk and Deltona pages in ~6
+months if permits keep falling.
+
+**CPC inflation is real and accelerating.** Cross-industry CPC rose 12% in
+2025 — steepest since 2021 — with another 8–10% projected through Q4 2026.
+Treat every floor in the budget table as +10% by year-end. Bottom-funnel
+terms will inflate fastest as AI-era entrants concentrate bids there — which
+also means the cheap AI-solutions lane won't stay cheap; if we're entering it,
+enter now.
+
+**AI Overviews reshape content, not the map pack.** AIOs now appear on ~48%
+of all searches and cut organic CTR ~38% where they show — but only ~7% of
+*local* searches have them. So the core strategy (own the map pack and local
+fundamentals in under-served markets) is intact, and it's the blog and long-form
+informational content that loses clicks. Correction: optimize to be *cited* —
+AIOs pull GBP data in ~34% of local results, review summaries and FAQ schema.
+Every location page already ships FAQPage schema, which is exactly the right
+posture; double down on GBP activity and review velocity for clients and for
+this site.
+
+**Clock check:** Vero's seasonal content window is open right now — pages
+aimed at Nov–Apr seasonal residents need to be indexed by late summer, i.e.
+immediately. Storm season is mid-swing for every coastal market's emergency
+content.
+
+---
+
 ## Other Central Florida markets considered (bench)
 
 Evaluated August 2026, not built yet — candidates if a sixth market is added:
