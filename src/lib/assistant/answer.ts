@@ -17,6 +17,8 @@
 
 import { BM25Index, tokenize, type Scored } from "./bm25";
 import { knowledgeChunks, type Chunk, type ChunkTag } from "./knowledge";
+import { detectMarket } from "./market";
+import type { Location } from "../../data/locations";
 import {
   COMMERCIAL_INTENTS,
   understandQuery,
@@ -110,6 +112,16 @@ const INTENT_EXPANSION: Partial<Record<Intent, string>> = {
 const TITLE_BOOST_PER_TERM = 0.3;
 const MAX_TITLE_BOOST = 1.9;
 
+/**
+ * Market boost — the local-first thumb on the scale.
+ *
+ * When a question names a market (or any suburb of one), that market's own
+ * pages should answer it: "do you serve Winter Haven?" must land on the
+ * Lakeland pages, not whichever city chunk BM25 happens to prefer. Applied
+ * by URL because every market page's URL ends with its slug.
+ */
+const MARKET_BOOST = 1.4;
+
 /** Retrieved before boosting, so a boosted match can climb into the top 6. */
 const RETRIEVE_DEPTH = 24;
 const RESULT_DEPTH = 6;
@@ -117,7 +129,8 @@ const RESULT_DEPTH = 6;
 function rerank(
   hits: Scored<Chunk>[],
   intent: Intent,
-  queryTerms: string[]
+  queryTerms: string[],
+  marketSlug?: string
 ): Scored<Chunk>[] {
   const favoured = INTENT_TAG_AFFINITY[intent];
   const terms = new Set(queryTerms);
@@ -127,6 +140,7 @@ function rerank(
       let score = hit.score;
 
       if (favoured?.includes(hit.tag)) score *= AFFINITY_BOOST;
+      if (marketSlug && hit.url.endsWith(`/${marketSlug}`)) score *= MARKET_BOOST;
 
       const titleTerms = new Set(tokenize(hit.title));
       let matches = 0;
@@ -150,7 +164,14 @@ export type AssistantReply = {
   /** True when the visitor should be pointed at a human or the audit form. */
   escalate: boolean;
   /** Diagnostics — surfaced in dev, and how the retrieval eval reads results. */
-  debug: { intent: Intent; topScore: number; coverage: number; matched: string[] };
+  debug: {
+    intent: Intent;
+    topScore: number;
+    coverage: number;
+    matched: string[];
+    /** The market the question named, when it named one. */
+    market?: string;
+  };
 };
 
 /* Built once per process: the corpus is static between deploys. */
@@ -191,12 +212,12 @@ function toSources(hits: Scored<Chunk>[]): Source[] {
 
 const GREETING: AssistantReply = {
   answer:
-    "Hello — I'm Beacon. I can shed light on the services here: what they cost, how long they take, how the process works, and which areas of Florida are covered. What would you like to know?",
+    "Hello — I'm Beacon. I can shed light on the services here: what they cost, how long they take, and how they're run in your corner of Florida — tell me which city your business is in and I'll point you to the right pages. What would you like to know?",
   sources: [],
   followUps: [
+    "What areas of Florida do you cover?",
     "What does a website cost?",
-    "How long does a project take?",
-    "Do you work with businesses in Orlando?",
+    "What's included in the free audit?",
   ],
   escalate: false,
   debug: { intent: "smalltalk", topScore: 0, coverage: 1, matched: [] },
@@ -270,8 +291,19 @@ function handoff(intent: Intent, coverage = 0): AssistantReply {
  * ------------------------------------------------------------------ */
 
 /** Suggestions drawn from what was actually retrieved, so they lead somewhere. */
-function buildFollowUps(hits: Scored<Chunk>[], intent: Intent): string[] {
+function buildFollowUps(
+  hits: Scored<Chunk>[],
+  intent: Intent,
+  market?: Location
+): string[] {
   const suggestions: string[] = [];
+
+  /* Local-first: a visitor who named their town gets steered to their
+     market's pages, and one who didn't gets asked — the market pages are
+     where the site sells hardest. */
+  if (market && intent !== "location") {
+    suggestions.push(`How do you work with ${market.city} businesses?`);
+  }
 
   if (intent === "pricing") suggestions.push("How long would that take?");
   if (intent === "timeline") suggestions.push("What does that cost?");
@@ -281,7 +313,10 @@ function buildFollowUps(hits: Scored<Chunk>[], intent: Intent): string[] {
     if (hit.tag === "service" || hit.tag === "pricing") {
       suggestions.push(`What's included in ${hit.title.split(" — ")[0]}?`);
     } else if (hit.tag === "location") {
-      suggestions.push(`Do you work with businesses in ${hit.title.split(" in ").pop()}?`);
+      // Titles are "Lakeland, Florida" or "Web Design in Lakeland" — reduce
+      // both to the bare city so the Set below can dedupe them.
+      const city = hit.title.split(" in ").pop()?.split(",")[0];
+      suggestions.push(`Do you work with businesses in ${city}?`);
     }
   }
 
@@ -334,12 +369,20 @@ export function answerQuestion(
     ? `${understanding.rewritten} ${expansion}`
     : understanding.rewritten;
 
+  /* Detected from the corrected question, so "orlanod" still pins Orlando.
+     The rewritten query can carry a city forward from the previous turn,
+     which keeps follow-ups anchored to the visitor's market. */
+  const market =
+    detectMarket(understanding.normalized) ??
+    detectMarket(understanding.rewritten);
+
   const hits = rerank(
     index.search(retrievalQuery, RETRIEVE_DEPTH),
     intent,
     // Title matching uses what the visitor actually asked — the expansion
     // terms above appear in every pricing title and would boost them equally.
-    tokenize(understanding.rewritten)
+    tokenize(understanding.rewritten),
+    market?.slug
   );
   const top = hits[0];
 
@@ -347,12 +390,13 @@ export function answerQuestion(
     return handoff(intent, understanding.coverage);
 
   const sources = toSources(hits);
-  const followUps = buildFollowUps(hits, intent);
+  const followUps = buildFollowUps(hits, intent, market);
   const debug = {
     intent,
     coverage: Number(understanding.coverage.toFixed(2)),
     topScore: Number(top.score.toFixed(2)),
     matched: hits.slice(0, 3).map((h) => h.id),
+    market: market?.slug,
   };
 
   /* Commercial intent or a buying signal in the phrasing: either way the

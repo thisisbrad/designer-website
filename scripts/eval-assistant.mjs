@@ -38,6 +38,12 @@ const CASES = [
   { q: "can you help a company in Daytona Beach?", expect: "daytona" },
   { q: "do you serve Lakeland?", expect: "lakeland" },
   { q: "what areas of Florida do you cover?", expect: "florida" },
+  /* Suburb names must resolve to their market — the local-first behaviour.
+     Winter Haven and Heathrow appear only inside market chunks, so these
+     also exercise the market boost, not just BM25 luck. */
+  { q: "do you serve Winter Haven?", expect: "lakeland" },
+  { q: "my business is in Heathrow, can you help?", expect: "lake-mary" },
+  { q: "can you help a Palm Bay company?", expect: "melbourne" },
 
   // --- Services ---
   /* There is no Brand Systems service — the six built are web-design,

@@ -41,10 +41,10 @@ type Message = {
 
 const OPENING: Message = {
   role: "assistant",
-  text: "I'm Beacon — think of me as the guiding light around here. Ask me anything about the services: cost, timelines, process, or which parts of Florida are covered. And when you're ready, I can set up Brad's free 15-point audit right here in the chat.",
+  text: "I'm Beacon — think of me as the guiding light around here. Ask me anything about the services — cost, timelines, process — and tell me where your business is: from Orlando to the Space Coast, the answer often depends on your market. When you're ready, I can set up Brad's free 15-point audit right here in the chat.",
   followUps: [
+    "What areas of Florida do you cover?",
     "What does a website cost?",
-    "How long does a project take?",
     "What's included in the free audit?",
   ],
 };
