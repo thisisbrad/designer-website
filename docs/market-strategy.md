@@ -1,6 +1,6 @@
 # Target Markets & PPC Strategy
 
-Working reference for the five markets the site targets, what each is positioned
+Working reference for the six markets the site targets, what each is positioned
 around, and what it costs to compete in paid search. Compiled August 2026 from
 2026 Google Ads benchmark data — CPC figures marked *(est.)* should be verified
 in Google Keyword Planner before committing budget.
@@ -10,7 +10,7 @@ content lives in `src/data/locations.ts`.
 
 ---
 
-## The five markets
+## The six markets
 
 ### Orlando (Orange, Seminole, Osceola, Lake)
 - **Positioning:** tourist intent vs. resident intent split, bilingual done
@@ -66,6 +66,18 @@ content lives in `src/data/locations.ts`.
   coastal corridor. Event-week booking demand is the unique angle — rentals and
   hospitality campaigns timed to the county's event calendar.
 
+### Vero Beach / Sebastian (Indian River)
+- **Positioning:** the smallest market, with Lake Mary economics — barrier-island
+  wealth (John's Island, The Moorings) that vets before it calls, a seasonal
+  clock (Nov–Apr) that rewards content built in the off-season, and Sebastian's
+  growth as a cold-search market. Chains onto Brevard, extending the coastal
+  corridor south.
+- **PPC:** cheapest of all — ~$6–12/click *(est.)*, very low volume. Seasonal
+  terms spike Oct–Apr.
+- **Role in the plan:** low-volume/high-value organic play first; paid only on
+  tight high-intent terms. One island remodel or wealth-management client
+  carries the year.
+
 ---
 
 ## PPC budget math
@@ -84,6 +96,7 @@ Per-campaign monthly floors (one service, one market):
 | Melbourne | $1,000–1,500 | $1,200–2,000 | $500–1,000 |
 | Lakeland / Winter Haven | $1,000–1,500 | $1,200–2,000 | $500–1,000 |
 | Daytona / Deltona | $1,000–1,500 | $1,200–2,000 | $500–1,000 |
+| Vero Beach / Sebastian | $800–1,200 | $1,000–1,500 | $500–1,000 |
 
 Notes:
 - Each service is its own campaign with its own ads and landing page — budgets

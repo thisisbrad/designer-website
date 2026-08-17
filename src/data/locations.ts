@@ -177,6 +177,31 @@ export const locations: Location[] = [
     geo: { latitude: 29.2108, longitude: -81.0228 },
     radiusKm: 45,
   },
+  {
+    slug: "vero-beach",
+    city: "Vero Beach",
+    region: "Florida",
+    regionCode: "FL",
+    metroLabel: "Indian River County",
+    counties: ["Indian River County"],
+    areas: [
+      "Indian River Shores",
+      "John's Island",
+      "The Moorings",
+      "Central Beach",
+      "Orchid Island",
+      "Grand Harbor",
+      "South Vero",
+      "Sebastian",
+      "Roseland",
+      "Wabasso",
+      "Winter Beach",
+      "Gifford",
+      "Fellsmere",
+    ],
+    geo: { latitude: 27.6386, longitude: -80.3973 },
+    radiusKm: 35,
+  },
 ];
 
 export const locationServices: LocationService[] = [
@@ -1418,6 +1443,246 @@ export const locationServices: LocationService[] = [
     cta: {
       hook: "See what an assistant would handle for your Volusia business.",
       copy: "Send me your site and I'll map the enquiries an assistant could answer today — event-week bookings, storm triage, after-hours intake — and what should stay human. Free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "web-design",
+    location: "vero-beach",
+    metaTitle: "Vero Beach Web Design — Sites That Earn Trust",
+    metaDescription:
+      "Web design for Vero Beach, Sebastian and Indian River County — credibility-first sites for practices, trades and businesses serving careful coastal money.",
+    keywords: [
+      "Vero Beach web design",
+      "web design Vero Beach FL",
+      "Sebastian FL web design",
+      "Indian River County website designer",
+      "Treasure Coast web design",
+      "Indian River Shores web design",
+    ],
+    headline: "Vero Beach web design for money that checks before it calls",
+    subheadline:
+      "Custom sites for Indian River County — built for a market where the barrier island vets everything, the season runs November to April, and Sebastian's new arrivals search cold.",
+    context: [
+      "Vero is a small market with unusually careful money. The homeowner off John's Island or The Moorings hiring a contractor, the retiree choosing a specialist near Cleveland Clinic Indian River, the family relocating to Sebastian — these buyers verify before they call, and they've seen enough polish in their lives to read its absence as a warning. Here the website isn't marketing so much as the reference check you don't get to sit in on.",
+      "The county also runs on a clock most markets don't have. Season — November through April — is when the barrier island fills, the galleries and restaurants surge, and service businesses book out. A site that converts here has to work for the seasonal resident planning from Connecticut in October as well as the year-round local searching in July, and most Indian River sites were built for neither.",
+      "The opening is the same one I work along this whole coast: a web presence that hasn't kept up. Much of the county's page one is referral-era businesses with sites nobody has touched in years, while Sebastian grows and new residents search cold. Looking current, stating your service area plainly and proving your work — that's a lower bar here than in any metro, and the businesses that clear it stop competing on price.",
+    ],
+    factors: [
+      {
+        title: "Island money reads presentation as competence",
+        description:
+          "Buyers who commission at John's Island prices judge a vendor's site the way they judge their work: typography, photography and restraint are evidence. Sites for premium trades and practices get built to justify the quote before it's given.",
+      },
+      {
+        title: "The season is a design requirement",
+        description:
+          "Seasonal residents research from out of state before they arrive — availability, distance, credibility, answerable from Connecticut in October. Businesses that live on the season get designed for the planner first and the walk-in second.",
+      },
+      {
+        title: "Sebastian's growth is a cold-search market",
+        description:
+          "The north county adds residents who have no local network — they search, compare three tabs and call one. Sites for trades and practices get built to convert a stranger: coverage stated plainly, reviews up front, a phone number that works one-handed.",
+      },
+      {
+        title: "Coastal storms are part of the brief",
+        description:
+          "Indian River's barrier island and riverfront take direct hits. Roofers, restoration and marine trades get an emergency path plus the wind-mitigation and insurance content owners actually search after a named storm.",
+      },
+    ],
+    industries: [
+      "Premium home services — builders, remodels, pools, landscape",
+      "Medical, dental and specialist practices",
+      "Legal, financial and wealth management firms",
+      "Marine, boating and waterfront services",
+      "Galleries, restaurants and seasonal retail",
+      "Aviation and aerospace-adjacent B2B suppliers",
+    ],
+    faq: [
+      {
+        question: "Do you meet Vero Beach clients in person?",
+        answer:
+          "Yes — I'm Florida-based and happy to meet for the kickoff session anywhere in Indian River County, from Sebastian down to South Vero. After that the work runs better over shared screens and a staging link you can open on your own phone.",
+      },
+      {
+        question: "Our clients are mostly seasonal residents. Does that change the site?",
+        answer:
+          "Considerably. Seasonal buyers plan from out of state weeks before they arrive, so the site leads with what a planner needs — availability, location, proof — and holds up under the harder scrutiny that money applies from a distance. The rest of the year it sells to locals without the seasonal framing getting in the way.",
+      },
+      {
+        question: "Vero is a small market. Is a custom site worth it here?",
+        answer:
+          "Smaller volume, higher stakes per enquiry — that's exactly when each visit has to count. One retained wealth-management client or one island remodel pays for the site many times over, and in a market this size the credibility gap between you and the referral-era incumbents is the whole competition. [My audit checklist](/blog/website-audit-checklist) shows where you'd stand today.",
+      },
+      {
+        question: "My Sebastian business runs on referrals. Why invest now?",
+        answer:
+          "Because the north county's growth is exactly when referrals stop being enough. New arrivals have no network to ask — they search, compare three tabs and call one. A current site with reviews and a clear service area is how you become that call.",
+      },
+    ],
+    cta: {
+      hook: "See how your site reads to an Indian River buyer.",
+      copy: "I'll run my 15-point audit against the Vero and Sebastian competitors who actually outrank you, and send back the credibility and conversion gaps costing you work — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "seo-marketing",
+    location: "vero-beach",
+    metaTitle: "Vero Beach SEO — Local Search on the Treasure Coast",
+    metaDescription:
+      "SEO for Vero Beach, Sebastian and Indian River County — high-value local rankings and seasonal content built to peak when the season arrives.",
+    keywords: [
+      "Vero Beach SEO",
+      "SEO Vero Beach FL",
+      "Sebastian FL SEO",
+      "Indian River County SEO",
+      "Treasure Coast SEO company",
+      "Vero Beach local search",
+    ],
+    headline: "Vero Beach SEO where one ranking can carry the year",
+    subheadline:
+      "Local search for Indian River County — a small, high-value market where the searches are few, each one is worth real money, and the incumbents haven't done fundamentals in years.",
+    context: [
+      "Vero's search market is small and that's precisely the opportunity. \"Wealth management vero beach,\" \"remodeling contractor john's island,\" \"dermatologist vero\" — these are low-volume terms by metro standards, and each one carries a client worth thousands to six figures. The economics are Lake Mary's, not Orlando's: you don't need a thousand clicks a month, you need to be the answer for the forty that matter.",
+      "The county splits into two contests. Vero and its beachside resolve one set of map packs; Sebastian, fifteen miles north, resolves its own — and the businesses that win either are mostly running on reputation, stale reviews and sites nobody has crawled properly in years. Consistent fundamentals move rankings here faster than almost anywhere I work, and the positions you take now are cheap compared to what displacing you will cost the next agency's client.",
+      "Then there's the clock. Search demand in this county peaks with the season: seasonal residents start planning in October, arrive in November, and buy through April. Content and rankings built in the summer are what harvest that wave — which means the right time to start is always the off-season, when your competitors are coasting.",
+    ],
+    factors: [
+      {
+        title: "Low volume, high value changes the strategy",
+        description:
+          "Keyword targets get chosen by client value, not search volume. Owning forty high-intent Indian River searches beats renting four thousand generic Florida clicks — and costs a fraction as much to win.",
+      },
+      {
+        title: "Vero and Sebastian are separate contests",
+        description:
+          "Proximity splits the county's map packs at the fifteen miles between them. The work gets sequenced by where your buyers actually are — your own town first, the other only if you genuinely serve it, each with a real page.",
+      },
+      {
+        title: "Seasonal content is built in the off-season",
+        description:
+          "The demand wave starts planning in October. Pages aimed at seasonal residents — arriving, opening the house, finding services — get published and indexed by late summer, so you're ranking when the wave breaks instead of writing during it.",
+      },
+      {
+        title: "Stale incumbents reward fundamentals fast",
+        description:
+          "Much of the county's page one hasn't seen technical SEO this decade. Crawl fixes, review velocity and genuinely local content move rankings here in months, not years.",
+      },
+    ],
+    industries: [
+      "Legal, financial and wealth management practices",
+      "Medical, dental and specialist clinics",
+      "Premium home services and custom builders",
+      "Marine, charter and waterfront businesses",
+      "Real estate and luxury property teams",
+      "Seasonal hospitality, galleries and retail",
+    ],
+    faq: [
+      {
+        question: "Search volume in Vero looks tiny. Is SEO worth it?",
+        answer:
+          "That's the wrong metric here. A single \"estate attorney vero beach\" client can outvalue ten thousand generic clicks, and low volume also means low competition — the cost of owning these terms is a fraction of the same position in a metro. Small market, outsized economics.",
+      },
+      {
+        question: "Can I rank in both Vero and Sebastian?",
+        answer:
+          "In organic results, with real pages for each, yes. In the map pack, proximity decides — fifteen miles is enough that each town runs its own three-pack, and I'll be straight about which one your address lets you win. The mechanics are in [how local businesses win the map pack](/blog/local-seo-map-pack).",
+      },
+      {
+        question: "How long until results in this market?",
+        answer:
+          "Often the fastest on this coast. The incumbents are soft — technical fixes and review work can move things in two to three months. The seasonal niches have a longer arc: content built by late summer pays through the season, so the calendar matters as much as the effort.",
+      },
+      {
+        question: "Does the season really affect search that much?",
+        answer:
+          "In this county, yes. Demand from seasonal residents starts building in October and runs through April, and it behaves differently — planned from out of state, higher intent, less price-sensitive. Ranking for it is a summer project; chasing it in December is a year late.",
+      },
+    ],
+    cta: {
+      hook: "Find out which Indian River searches you can actually win.",
+      copy: "I'll audit your site and Google Business Profile against the Vero and Sebastian businesses outranking you, and send back the highest-value targets in priority order — free.",
+      button: "Get my free audit",
+    },
+  },
+  {
+    service: "ai-solutions",
+    location: "vero-beach",
+    metaTitle: "Vero Beach AI Solutions — Assistants That Book",
+    metaDescription:
+      "Custom AI assistants for Vero Beach and Indian River County — answering seasonal residents, booking practices after hours and triaging storm calls.",
+    keywords: [
+      "Vero Beach AI solutions",
+      "AI assistant Vero Beach FL",
+      "business automation Indian River County",
+      "AI chatbot Sebastian FL",
+      "AI booking for practices",
+      "Treasure Coast AI consultant",
+    ],
+    headline: "AI assistants for a county that calls from two time zones",
+    subheadline:
+      "Custom assistants for Indian River businesses — answering the October enquiry from Connecticut, booking the Vero patient who searched at 9pm, and holding the line when a storm clips the coast.",
+    context: [
+      "Indian River's enquiries don't keep local hours. The seasonal resident planning their return emails from the Northeast in October. The John's Island homeowner researches contractors between board calls. The new Sebastian family compares practices after the kids are in bed. In every case the business that answers in that moment — accurately, in a tone that matches its clientele — books the work, and the one that answers Tuesday learns it existed.",
+      "That's the gap an assistant closes, and in this market it has to close it politely. Vero's buyers expect concierge manners: an assistant that knows your services, your service area and your rules, answers only from facts you approved, and hands off to a human the moment a conversation deserves one. The failure mode is \"let me connect you\" — never a confident wrong answer, and never a tone that would embarrass the brand it speaks for.",
+      "The county's rhythms make the case stronger. Season multiplies enquiry volume for half the year; a named storm multiplies it overnight for roofers, restoration and marine trades; and the off-season is when practices quietly lose the patients who searched at night and booked whoever answered. An assistant doesn't staff up and down with the calendar — it simply answers, every time.",
+    ],
+    factors: [
+      {
+        title: "Out-of-state enquiries, answered on arrival time",
+        description:
+          "Seasonal residents plan from other time zones weeks ahead. The assistant answers accurately at any hour, applies your seasonal rules — availability, minimums, booking windows — and captures the enquiry your office would have met as a stale voicemail.",
+      },
+      {
+        title: "Concierge tone, hard boundaries",
+        description:
+          "Every assistant ships speaking your language with strict limits: answers only from your approved facts, no improvised pricing, immediate human handoff on anything sensitive. Polish and honesty aren't in tension — they're the same design.",
+      },
+      {
+        title: "Storm triage on an exposed coast",
+        description:
+          "When weather hits the barrier island, enquiries flood in at once. Emergencies escalate to a human with details captured; routine work gets scheduled; everything is logged with a transcript instead of dying on hold.",
+      },
+      {
+        title: "A calendar, not a conversation log",
+        description:
+          "Qualified enquiries end as appointments in your calendar or leads in your CRM with intake already done — the difference between a chat widget and a system that pays for itself.",
+      },
+    ],
+    industries: [
+      "Medical, dental and specialist practices",
+      "Premium home services and custom builders",
+      "Marine, charter and waterfront businesses",
+      "Legal, financial and advisory firms",
+      "Seasonal hospitality and property management",
+      "Trades serving Sebastian's growth",
+    ],
+    faq: [
+      {
+        question: "Will an AI assistant feel wrong for a high-end Vero clientele?",
+        answer:
+          "A generic one would. The ones I build run on your voice, your approved answers and strict boundaries — closer to a well-trained front desk than a widget. Careful clients experience it as responsiveness, and anything nuanced reaches a human with the context already gathered.",
+      },
+      {
+        question: "Can it handle seasonal residents planning from out of state?",
+        answer:
+          "That's the strongest local reason to build one. It answers at their hours, applies your seasonal availability and booking rules, and books directly into your calendar — see [AI assistants that book clients](/blog/ai-assistants-that-book-clients) for how the booking side works.",
+      },
+      {
+        question: "What happens when a storm hits the coast?",
+        answer:
+          "The assistant holds the line: genuine emergencies escalate immediately with details already captured, routine jobs get scheduled, and everything is logged with a transcript. You set those thresholds before launch, not during the flood.",
+      },
+      {
+        question: "Do you meet Indian River clients in person?",
+        answer:
+          "For the mapping session at the start, gladly — that one goes better in a room, and I'll drive to Vero or Sebastian for it. The build, testing and monthly tuning all run remotely.",
+      },
+    ],
+    cta: {
+      hook: "See what an assistant would handle for your Indian River business.",
+      copy: "Send me your site and I'll map the enquiries an assistant could answer today — the out-of-state planners, the after-hours bookings, the storm calls — and what should stay human. Free.",
       button: "Get my free audit",
     },
   },
