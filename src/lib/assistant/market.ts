@@ -13,6 +13,17 @@
 
 import { locations, type Location } from "../../data/locations";
 
+/* Names and questions must normalise identically, or a name that carries
+   punctuation — "John's Island" — can never match a punctuation-stripped
+   question. */
+function normalize(text: string): string {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /* Later-defined markets overwrite earlier claims to the same name: Orlando's
    county list includes Seminole and its areas include Sanford, but the
    Lake Mary market is the dedicated page for both. */
@@ -24,7 +35,7 @@ for (const location of locations) {
     ...location.counties,
     ...location.areas,
   ];
-  for (const raw of names) byName.set(raw.toLowerCase(), location);
+  for (const raw of names) byName.set(normalize(raw), location);
 }
 
 /* Longest names first so "daytona beach shores" resolves before "daytona". */
@@ -34,11 +45,7 @@ const NAMES = [...byName.entries()]
 
 /** The market a question names, if any. Matching is whole-word. */
 export function detectMarket(text: string): Location | undefined {
-  const haystack = ` ${String(text || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()} `;
+  const haystack = ` ${normalize(text)} `;
 
   for (const { name, location } of NAMES) {
     if (haystack.includes(` ${name} `)) return location;
