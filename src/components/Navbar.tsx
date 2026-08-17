@@ -35,9 +35,14 @@ export default function Navbar() {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     document.documentElement.style.overflow = "hidden";
+    // Published so fixed-position overlays can stand down. The mobile menu is
+    // a full-screen layer at z-40, so anything above it — either assistant,
+    // both of which sit at 90+ — would otherwise float over an open menu.
+    document.documentElement.dataset.menuOpen = "true";
     return () => {
       window.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = "";
+      delete document.documentElement.dataset.menuOpen;
     };
   }, [open]);
 

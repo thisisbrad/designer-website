@@ -20,9 +20,11 @@ const labelCls =
    of qualifying data this form collects. */
 const budgets = [
   "Not sure yet",
-  "$5k — $10k",
-  "$10k — $25k",
-  "$25k — $50k",
+  // Analytics & CRO and SEO both start below $5k, so the old lowest band
+  // ("$5k — $10k") left those enquiries with nothing that fitted them.
+  "Under $5k",
+  "$5k — $15k",
+  "$15k — $50k",
   "$50k+",
 ];
 

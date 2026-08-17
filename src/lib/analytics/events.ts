@@ -30,6 +30,7 @@ import {
   type AdsConversionKey,
 } from "./config";
 import { getAttribution } from "./attribution";
+import { scrubPii } from "./pii";
 
 /** GA4 truncates string values at 100 characters; do it here so we know what was sent. */
 const MAX_VALUE_LENGTH = 100;
@@ -241,4 +242,44 @@ export function trackOutboundClick(url: string, location: string) {
 /** Consent decisions, so the shape of the measurement gap is itself measurable. */
 export function trackConsentChoice(choice: "granted" | "denied") {
   send("consent_choice", { consent_state: choice });
+}
+
+/* ------------------------------------------------------------------ *
+ * Assistant
+ *
+ * The questions visitors ask are the most direct read on what the site
+ * fails to answer that exists. A question the assistant has to hand off is
+ * a page that needs writing — `assistant_handoff` is effectively a content
+ * backlog generating itself.
+ * ------------------------------------------------------------------ */
+
+export function trackAssistantOpen(location: string) {
+  send("assistant_open", { page_path: location });
+}
+
+/** Every question asked, with how retrieval classified and scored it. */
+export function trackAssistantQuestion(
+  question: string,
+  intent: string,
+  answered: boolean
+) {
+  send("assistant_question", {
+    // Scrubbed of PII, then truncated by `send` to GA4's 100-char limit.
+    question_text: scrubPii(question),
+    question_intent: intent,
+    question_answered: answered,
+  });
+}
+
+/** The assistant could not answer — a content gap, recorded as one. */
+export function trackAssistantHandoff(question: string, intent: string) {
+  send("assistant_handoff", {
+    question_text: scrubPii(question),
+    question_intent: intent,
+  });
+}
+
+/** A visitor following a cited source, i.e. the assistant driving a pageview. */
+export function trackAssistantSourceClick(url: string) {
+  send("assistant_source_click", { link_url: url });
 }

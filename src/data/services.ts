@@ -36,7 +36,20 @@ export type Service = {
   outcomes: ServiceOutcome[];
   whoFor: string[];
   timeline: string;
-  startingAt: string;
+  /**
+   * Typical project range, e.g. "$4.5k–$15k".
+   *
+   * A range rather than a single floor on purpose. A precise number becomes
+   * the anchor for every later scope conversation — "why is it more than
+   * $4,500?" instead of "what is this worth?" — and it was previously being
+   * published in Offer schema and burned into OG images, so search results and
+   * link previews carried the figure stripped of the "not a quote" framing
+   * that makes it defensible.
+   *
+   * The bottom of each range is the floor it replaced, so nothing already
+   * quoted to anyone became untrue. Edit here; every surface derives from it.
+   */
+  priceRange: string;
   faq: ServiceFaq[];
   /** Slugs of sibling services — the internal link graph. */
   related: string[];
@@ -148,7 +161,7 @@ export const services: Service[] = [
       "Anyone stuck on a page builder that has become slow and unmaintainable",
     ],
     timeline: "3–6 weeks",
-    startingAt: "$4,500",
+    priceRange: "$4.5k–$15k",
     faq: [
       {
         question: "Do you use WordPress, Webflow or Squarespace?",
@@ -281,7 +294,7 @@ export const services: Service[] = [
       "Teams that need a specialist alongside their backend developers",
     ],
     timeline: "2–8 weeks",
-    startingAt: "$5,000",
+    priceRange: "$5k–$20k",
     faq: [
       {
         question: "Can you build from a design my team already has?",
@@ -414,7 +427,7 @@ export const services: Service[] = [
       "Teams that need a design system before the interface fragments further",
     ],
     timeline: "3–8 weeks",
-    startingAt: "$6,000",
+    priceRange: "$6k–$18k",
     faq: [
       {
         question: "What's the difference between UI and UX here?",
@@ -548,7 +561,7 @@ export const services: Service[] = [
       "Anyone launching a new site who wants SEO built in rather than retrofitted",
     ],
     timeline: "Audit in 1 week, retainer ongoing",
-    startingAt: "$1,500/mo",
+    priceRange: "$1.5k–$4k/mo",
     faq: [
       {
         question: "How long does SEO take to work?",
@@ -690,7 +703,7 @@ export const services: Service[] = [
       "Anyone who tried an off-the-shelf chatbot and turned it off again",
     ],
     timeline: "2–5 weeks",
-    startingAt: "$3,500",
+    priceRange: "$3.5k–$15k",
     faq: [
       {
         question: "Will it make things up about my business?",
@@ -828,7 +841,7 @@ export const services: Service[] = [
       "Anyone who wants decisions settled by evidence instead of seniority",
     ],
     timeline: "Setup in 1–2 weeks, testing ongoing",
-    startingAt: "$1,200",
+    priceRange: "$1.2k–$6k",
     faq: [
       {
         question: "How much traffic do I need for A/B testing?",

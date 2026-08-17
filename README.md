@@ -182,6 +182,38 @@ The short version:
 > add a tag, embed or widget, update the privacy page in the same commit —
 > otherwise it becomes a false statement rather than a stale one.
 
+## Site assistant
+
+A grounded Q&A widget built on the retrieval engine from
+[ProjectHub](https://github.com/BradleyMatera/ProjectHub) (MIT), repointed at
+this site's own content. Full detail in
+[`docs/assistant.md`](docs/assistant.md).
+
+```bash
+npm run assistant:test    # 21 unit tests, no server needed
+npm run assistant:eval    # 32-question golden set (needs `npm run dev`)
+npm run scout:build       # rebuild public/scout.js from upstream ProjectHub
+```
+
+`NEXT_PUBLIC_ASSISTANT_MODE` picks the chat UI — `grounded` (default),
+`projecthub` (Scout's widget, self-hosted and restyled), or `off`. Both front
+ends answer from the same engine and the same content, so nothing about the
+answers changes with the choice.
+
+- **No LLM, no API key, no per-message cost.** Every answer is either written
+  by hand in `answer.ts` or quoted verbatim from a file in `src/data/`. It
+  cannot invent a price, which is the point — `/services/ai-solutions` sells an
+  assistant that "says 'let me get someone' instead of inventing", and this is
+  built to that spec.
+- **The knowledge base is derived, not synced.** `src/lib/assistant/knowledge.ts`
+  builds ~500 chunks from the same `services`, `locations`, `posts` and `legal`
+  modules the pages render from. Edit content, and the assistant updates with it.
+- **Thresholds are corpus-specific.** Adding pages shifts IDF for every term, so
+  re-run `assistant:eval` after any material content change.
+- **`assistant_handoff` is a content backlog.** It fires whenever the assistant
+  can't answer — every one is a question the site fails to answer. The eval
+  already found one: nothing on the site mentions deposits.
+
 ## Portrait assets
 
 `public/portrait-duotone.png` and `public/portrait-face.png` are generated

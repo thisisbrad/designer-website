@@ -57,7 +57,15 @@ export default function Cursor() {
   if (!enabled) return null;
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-[90]">
+    /* Topmost layer on the page, above every overlay.
+     *
+     * This sat at z-90, which was fine until anything else claimed 90+ — the
+     * assistant panel (95), the consent banner and preloader (100), the skip
+     * link (110). The cursor then rendered *behind* them, so moving onto the
+     * chat made the pointer vanish. A cursor is never occluded by content, and
+     * `pointer-events-none` means sitting on top costs nothing: it cannot
+     * intercept a click. Keep this the highest number in the codebase. */
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-[200]">
       <div ref={dotRef} className="absolute top-0 left-0">
         <div className="size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" />
       </div>
