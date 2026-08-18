@@ -36,7 +36,8 @@ type Message = {
   text: string;
   sources?: Source[];
   followUps?: string[];
-  escalate?: boolean;
+  /** Conversion UI this answer earned: inline form, compact link, or none. */
+  offer?: "form" | "link" | "none";
 };
 
 const OPENING: Message = {
@@ -62,6 +63,10 @@ export default function Assistant() {
     "idle" | "sending" | "sent" | "error"
   >("idle");
   const leadFormStarted = useRef(false);
+  /* Forms the visitor scrolled past without filling. After two, the offer
+     degrades to the compact link for the rest of the conversation — asking
+     a third time is how a bot stops being welcome. */
+  const [formIgnores, setFormIgnores] = useState(0);
 
   const panelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -101,6 +106,18 @@ export default function Assistant() {
 
       setInput("");
       setBusy(true);
+
+      // Asking another question while a capture form is on screen counts as
+      // declining it once.
+      const lastMessage = messages[messages.length - 1];
+      if (
+        lastMessage?.role === "assistant" &&
+        lastMessage.offer === "form" &&
+        leadStatus === "idle"
+      ) {
+        setFormIgnores((n) => n + 1);
+      }
+
       setMessages((prev) => [...prev, { role: "user", text }]);
 
       // Only completed exchanges are context; the question in flight is sent
@@ -133,13 +150,14 @@ export default function Assistant() {
             text: reply.answer,
             sources: reply.sources,
             followUps: reply.followUps,
-            escalate: reply.escalate,
+            offer: reply.offer,
           },
         ]);
 
         const intent = reply.debug?.intent ?? "unknown";
-        trackAssistantQuestion(text, intent, !reply.escalate);
-        if (reply.escalate) trackAssistantHandoff(text, intent);
+        const answered = reply.answered !== false;
+        trackAssistantQuestion(text, intent, answered);
+        if (!answered) trackAssistantHandoff(text, intent);
       } catch {
         setMessages((prev) => [
           ...prev,
@@ -147,7 +165,7 @@ export default function Assistant() {
             role: "assistant",
             text: "Something went wrong on my end. Brad reads every enquiry personally — the contact page is the reliable route.",
             sources: [{ title: "Contact", url: "/contact" }],
-            escalate: true,
+            offer: "link",
           },
         ]);
       } finally {
@@ -336,12 +354,15 @@ export default function Assistant() {
                       </ul>
                     )}
 
-                    {/* The conversion moment: a buying question or an honest
-                        "I don't know" — either way, capture the lead here
-                        instead of hoping the visitor finds the form later. */}
-                    {message.escalate &&
+                    {/* The conversion moment — but only when the answer earned
+                        it. Strong moments get the inline form (until it's been
+                        ignored twice); everything else gets the compact link. */}
+                    {message.offer &&
+                      message.offer !== "none" &&
                       leadStatus !== "sent" &&
-                      (i === messages.length - 1 ? (
+                      (message.offer === "form" &&
+                      i === messages.length - 1 &&
+                      formIgnores < 2 ? (
                         <form
                           onSubmit={submitLead}
                           onFocusCapture={onLeadFormFocus}

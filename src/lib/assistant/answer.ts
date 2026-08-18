@@ -157,12 +157,24 @@ function rerank(
 
 export type Source = { title: string; url: string };
 
+/**
+ * What conversion UI belongs under an answer. "form" is the inline audit
+ * capture and is reserved for genuinely strong moments — a handoff, an
+ * explicit ask to get started, a buying signal in the phrasing. "link" is
+ * the compact audit chip for ordinary commercial questions. Everything else
+ * gets "none": an informational answer that ends with a hard sell reads as
+ * a bot that wasn't listening.
+ */
+export type Offer = "form" | "link" | "none";
+
 export type AssistantReply = {
   answer: string;
   sources: Source[];
   followUps: string[];
-  /** True when the visitor should be pointed at a human or the audit form. */
-  escalate: boolean;
+  /** The conversion UI this answer has earned. */
+  offer: Offer;
+  /** False when the assistant admitted it couldn't answer from the site. */
+  answered: boolean;
   /** Diagnostics — surfaced in dev, and how the retrieval eval reads results. */
   debug: {
     intent: Intent;
@@ -219,7 +231,8 @@ const GREETING: AssistantReply = {
     "What does a website cost?",
     "What's included in the free audit?",
   ],
-  escalate: false,
+  offer: "none",
+  answered: true,
   debug: { intent: "smalltalk", topScore: 0, coverage: 1, matched: [] },
 };
 
@@ -232,7 +245,8 @@ const META: AssistantReply = {
     "How do I get a free audit?",
     "What does an AI assistant like this cost to build?",
   ],
-  escalate: false,
+  offer: "none",
+  answered: true,
   debug: { intent: "meta", topScore: 0, coverage: 1, matched: [] },
 };
 
@@ -241,7 +255,8 @@ const REFUSAL: AssistantReply = {
     "I can't help with that one — it's outside my beam. I'm limited to questions about the work and services described on this site.",
   sources: [],
   followUps: ["What services are offered?", "What does a project cost?"],
-  escalate: false,
+  offer: "none",
+  answered: true,
   debug: { intent: "safety", topScore: 0, coverage: 1, matched: [] },
 };
 
@@ -263,7 +278,8 @@ const GUARANTEE: AssistantReply = {
     "How long does SEO take to show results?",
     "What's included in the free audit?",
   ],
-  escalate: true,
+  offer: "link",
+  answered: true,
   debug: { intent: "guarantee", topScore: 0, coverage: 1, matched: [] },
 };
 
@@ -284,7 +300,8 @@ function coverageReply(coverage: number): AssistantReply {
       "What does a website cost?",
       "What's included in the free audit?",
     ],
-    escalate: true,
+    offer: "link",
+    answered: true,
     debug: {
       intent: "location",
       topScore: 0,
@@ -308,7 +325,8 @@ function handoff(intent: Intent, coverage = 0): AssistantReply {
       "What does a website cost?",
       "What's included in the free audit?",
     ],
-    escalate: true,
+    offer: "form",
+    answered: false,
     debug: { intent, topScore: 0, coverage, matched: [] },
   };
 }
@@ -431,10 +449,16 @@ export function answerQuestion(
     market: market?.slug,
   };
 
-  /* Commercial intent or a buying signal in the phrasing: either way the
-     visitor is close enough to hiring that the answer should end with the
-     audit offer rather than trail off. */
-  const buying = COMMERCIAL_INTENTS.has(intent) || HIRE_SIGNALS.test(trimmed);
+  /* The offer is tiered by how strong the moment is. An explicit ask to get
+     started or a buying signal in the phrasing earns the form; an ordinary
+     commercial question earns the compact link; anything informational ends
+     clean. */
+  const strong = intent === "contact" || HIRE_SIGNALS.test(trimmed);
+  const offer: Offer = strong
+    ? "form"
+    : COMMERCIAL_INTENTS.has(intent)
+      ? "link"
+      : "none";
 
   /* A question the site already answers in Brad's own words gets answered in
      those words. Paraphrasing here would only introduce drift. */
@@ -443,7 +467,8 @@ export function answerQuestion(
       answer: top.answer,
       sources,
       followUps,
-      escalate: buying,
+      offer,
+      answered: true,
       debug,
     };
   }
@@ -453,7 +478,8 @@ export function answerQuestion(
       answer: passage(top.display ?? top.text),
       sources,
       followUps,
-      escalate: buying,
+      offer,
+      answered: true,
       debug,
     };
   }
@@ -464,7 +490,8 @@ export function answerQuestion(
     answer: `I'm not certain that's exactly what you're asking, but the closest thing on the site says: ${passage(top.display ?? top.text, 240)}`,
     sources,
     followUps,
-    escalate: true,
+    offer: "link",
+    answered: false,
     debug,
   };
 }
