@@ -299,6 +299,9 @@ export default function Assistant() {
             // polite, not assertive: answers shouldn't interrupt a screen
             // reader mid-sentence, and the visitor knows one is coming.
             aria-live="polite"
+            // Lenis owns the page's wheel events; without this, scrolling
+            // over the chat scrolls the page behind it.
+            data-lenis-prevent
             className="flex-1 space-y-5 overflow-y-auto overscroll-contain px-5 py-5"
           >
             {messages.map((message, i) => (

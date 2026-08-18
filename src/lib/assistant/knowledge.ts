@@ -170,6 +170,24 @@ function buildChunks(): Chunk[] {
   });
 
   /* ---- Locations ---- */
+
+  // "What areas do you cover?" needs the whole roster — without this, the
+  // question lands on whichever single market chunk BM25 prefers that day.
+  // Question-shaped so it outranks the individual market chunks on exactly
+  // this phrasing, with a verbatim answer.
+  add({
+    id: "location:coverage",
+    tag: "location",
+    title: "Florida coverage",
+    url: "/services",
+    text: `Q: What areas of Florida do you cover? Which cities and areas do you serve? Where do you work? What parts of Florida are covered? What locations and markets do you serve? A: ${locations
+      .map((l) => l.city)
+      .join(", ")} — plus remote work anywhere.`,
+    answer: `${locations.length} Florida markets have dedicated pages: ${locations
+      .map((l) => l.city)
+      .join(", ")} — each covering its wider metro. The work itself runs remotely just as well, so anywhere in Florida or beyond works too.`,
+  });
+
   for (const location of locations) {
     add({
       id: `location:${location.slug}`,

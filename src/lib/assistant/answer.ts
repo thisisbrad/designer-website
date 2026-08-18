@@ -18,7 +18,7 @@
 import { BM25Index, tokenize, type Scored } from "./bm25";
 import { knowledgeChunks, type Chunk, type ChunkTag } from "./knowledge";
 import { detectMarket } from "./market";
-import type { Location } from "../../data/locations";
+import { locations, type Location } from "../../data/locations";
 import {
   COMMERCIAL_INTENTS,
   understandQuery,
@@ -267,6 +267,33 @@ const GUARANTEE: AssistantReply = {
   debug: { intent: "guarantee", topScore: 0, coverage: 1, matched: [] },
 };
 
+/**
+ * A location question that names no place gets the whole roster. Retrieval
+ * can't do this one: every market chunk is saturated with the same serving/
+ * area/county vocabulary, so "what areas do you cover?" would land on
+ * whichever single city BM25 prefers that day.
+ */
+function coverageReply(coverage: number): AssistantReply {
+  return {
+    answer: `${locations.length} Florida markets have dedicated pages: ${locations
+      .map((l) => l.city)
+      .join(", ")} — each covering its wider metro. The work runs remotely just as well, so anywhere in Florida or beyond works too. Which city is your business in?`,
+    sources: [{ title: "All services", url: "/services" }],
+    followUps: [
+      `Do you work with businesses in ${locations[0].city}?`,
+      "What does a website cost?",
+      "What's included in the free audit?",
+    ],
+    escalate: true,
+    debug: {
+      intent: "location",
+      topScore: 0,
+      coverage,
+      matched: ["canned:coverage"],
+    },
+  };
+}
+
 /** Said when retrieval finds nothing. Handing off is a valid answer. */
 function handoff(intent: Intent, coverage = 0): AssistantReply {
   return {
@@ -375,6 +402,11 @@ export function answerQuestion(
   const market =
     detectMarket(understanding.normalized) ??
     detectMarket(understanding.rewritten);
+
+  /* "Where do you work?" with no city named — the roster is the answer, and
+     asking which city they're in is the best possible follow-up. */
+  if (intent === "location" && !market)
+    return coverageReply(understanding.coverage);
 
   const hits = rerank(
     index.search(retrievalQuery, RETRIEVE_DEPTH),
