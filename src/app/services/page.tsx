@@ -3,6 +3,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MagneticButton from "@/components/MagneticButton";
+import ServiceAreas from "@/components/ServiceAreas";
 import { services } from "@/data/services";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { absoluteUrl } from "@/lib/seo";
@@ -190,6 +191,8 @@ export default function ServicesIndex() {
             </div>
           </div>
         </section>
+
+        <ServiceAreas />
       </main>
       <Footer />
     </>
