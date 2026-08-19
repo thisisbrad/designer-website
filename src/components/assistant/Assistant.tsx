@@ -84,6 +84,22 @@ export default function Assistant() {
     });
   }, [messages, open]);
 
+  /* Replay a click that landed before hydration. AssistantMount's inline
+     script flags the launcher when a too-early click hits it; honouring the
+     flag here means the visitor's first click always opens the panel, just
+     occasionally a beat late. */
+  useEffect(() => {
+    (window as Window & { __beaconReady?: boolean }).__beaconReady = true;
+    const opener = openerRef.current;
+    if (opener?.hasAttribute("data-pending-open")) {
+      opener.removeAttribute("data-pending-open");
+      setOpen(true);
+      trackAssistantOpen(pathname);
+    }
+    // Mount-only: a queued click should replay once, not on every navigation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   /* Escape closes and returns focus to the button that opened it. */
   useEffect(() => {
     if (!open) return;
@@ -260,6 +276,7 @@ export default function Assistant() {
         aria-expanded={open}
         aria-controls="assistant-panel"
         data-assistant-root
+        data-assistant-launcher
         data-cursor="hover"
         className={cn(
           "fixed right-4 bottom-4 z-[90] flex items-center gap-2.5 rounded-full border border-accent/30 bg-surface-2/95 py-3 pr-5 pl-4 font-mono text-[11px] tracking-[0.2em] text-content uppercase shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-md transition-all duration-300 hover:border-accent hover:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none md:right-6 md:bottom-6",
