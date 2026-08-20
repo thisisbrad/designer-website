@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { Fragment, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
-import { locations, locationServices, type Location } from "@/data/locations";
-import { services } from "@/data/services";
+import { locations, type Location } from "@/data/locations";
 import { useSectionReveal } from "@/hooks/useGSAPAnimations";
 import SectionHeading from "./SectionHeading";
 import {
@@ -18,7 +17,7 @@ import {
   MARKET_CODES,
   PLOT_ASPECT,
   SEAWARD,
-  fmtCoord,
+  kmToPlotWidth,
   pointOf,
   px,
   py,
@@ -26,32 +25,18 @@ import {
 } from "@/lib/regionMap";
 import { cn, prefersReducedMotion, useIsomorphicLayoutEffect } from "@/lib/utils";
 
-/* Engraved water lines march offshore and land bands inland, both fading
-   with distance from the shoreline. Offsets are in plot units. */
+/* Engraved water lines march offshore, fading with distance from the
+   shoreline. Offsets are in plot units. */
 const WATER_LINES = [
   { offset: 1.6, opacity: 0.2 },
-  { offset: 3.4, opacity: 0.15 },
-  { offset: 5.6, opacity: 0.11 },
-  { offset: 8.2, opacity: 0.07 },
-  { offset: 11.2, opacity: 0.04 },
+  { offset: 3.4, opacity: 0.13 },
+  { offset: 5.6, opacity: 0.08 },
+  { offset: 8.4, opacity: 0.05 },
+  { offset: 11.8, opacity: 0.03 },
 ];
-const LAND_BANDS = [
-  { offset: -2.4, opacity: 0.09 },
-  { offset: -5.2, opacity: 0.05 },
-];
-
-/* The service × market pairs that actually have a page. */
-const localPairs = new Set(
-  locationServices.map((item) => `${item.service}/${item.location}`)
-);
-const servicesFor = (locationSlug: string) =>
-  services.filter((s) => localPairs.has(`${s.slug}/${locationSlug}`));
-
-const AREAS_SHOWN = 6;
 
 const HOME = locations[0];
 const HOME_POINT = pointOf(HOME);
-const HOME_COORD = fmtCoord(HOME.geo.latitude, HOME.geo.longitude);
 
 export default function ServiceAreas() {
   const sectionRef = useSectionReveal<HTMLElement>();
@@ -61,22 +46,39 @@ export default function ServiceAreas() {
   const [hovered, setHovered] = useState<string | null>(null);
   const activeLoc = locations.find((l) => l.slug === active) ?? HOME;
 
-  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const mapRef = useRef<HTMLDivElement>(null);
   const crossVRef = useRef<HTMLSpanElement>(null);
   const crossHRef = useRef<HTMLSpanElement>(null);
   const ringRef = useRef<HTMLSpanElement>(null);
-  /* GSAP owns these spans' text after mount; their JSX children stay the
-     initial strings so React reconciliation never fights the tween. The whole
-     readout follows the crosshair — including on hover preview — so the
-     instrument never shows one market's code beside another's coordinates. */
-  const codeRef = useRef<HTMLSpanElement>(null);
-  const coordRef = useRef<HTMLSpanElement>(null);
-  const radiusRef = useRef<HTMLSpanElement>(null);
-  const coordState = useRef({
-    lat: HOME.geo.latitude,
-    lng: HOME.geo.longitude,
-  });
+  const pingRef = useRef<HTMLSpanElement>(null);
+  /* The intro timeline fires whenever the section scrolls in, so it reads
+     the active market from a ref rather than a stale closure. */
+  const activeLocRef = useRef(HOME);
   const firstRender = useRef(true);
+
+  /** One expanding ring, out to just past the market's service radius. */
+  const firePing = (loc: Location, delay = 0) => {
+    const ping = pingRef.current;
+    if (!ping || prefersReducedMotion()) return;
+    const { x, y } = pointOf(loc);
+    gsap.set(ping, {
+      left: `${x}%`,
+      top: `${y}%`,
+      height: `${ringSize(loc) * 1.2}%`,
+    });
+    gsap.fromTo(
+      ping,
+      { opacity: 0.7, scale: 0.15 },
+      {
+        opacity: 0,
+        scale: 1,
+        duration: 0.9,
+        ease: "power2.out",
+        delay,
+        overwrite: "auto",
+      }
+    );
+  };
 
   const moveTo = (loc: Location) => {
     const { x, y } = pointOf(loc);
@@ -96,63 +98,84 @@ export default function ServiceAreas() {
         ...opts,
       });
     }
-    if (codeRef.current) codeRef.current.textContent = MARKET_CODES[loc.slug];
-    if (radiusRef.current) {
-      radiusRef.current.textContent = `${loc.radiusKm} km radius`;
-    }
-    gsap.to(coordState.current, {
-      lat: loc.geo.latitude,
-      lng: loc.geo.longitude,
-      ...opts,
-      onUpdate: () => {
-        if (coordRef.current) {
-          coordRef.current.textContent = fmtCoord(
-            coordState.current.lat,
-            coordState.current.lng
-          );
-        }
-      },
-    });
   };
 
-  /* Selection drives the instrument and the panel entrance together. */
   useIsomorphicLayoutEffect(() => {
+    activeLocRef.current = activeLoc;
     if (firstRender.current) {
       firstRender.current = false;
       return;
     }
     moveTo(activeLoc);
-    if (prefersReducedMotion()) return;
-    const panel = sectionRef.current?.querySelector(
-      "[role='tabpanel']:not([hidden])"
-    );
-    if (!panel) return;
-    gsap.fromTo(
-      panel.querySelectorAll("[data-panel-item]"),
-      { y: 14, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", stagger: 0.05 }
-    );
+    /* Ping timed to the crosshair's arrival, not its departure. */
+    firePing(activeLoc, 0.65);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
-  const onTablistKeyDown = (e: React.KeyboardEvent) => {
-    const idx = locations.findIndex((l) => l.slug === active);
-    let next = -1;
-    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-      next = (idx + 1) % locations.length;
-    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-      next = (idx - 1 + locations.length) % locations.length;
-    } else if (e.key === "Home") {
-      next = 0;
-    } else if (e.key === "End") {
-      next = locations.length - 1;
-    }
-    if (next === -1) return;
-    e.preventDefault();
-    const slug = locations[next].slug;
-    setActive(slug);
-    tabRefs.current[slug]?.focus();
-  };
+  /* One-shot survey-plot intro: the coast engraves itself, water lining
+     and the I-4 corridor follow, the markers blink on, then the instrument
+     arms and pings its target. Reduced-motion users get the finished sheet. */
+  useIsomorphicLayoutEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    const mm = gsap.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const coast = map.querySelector<SVGPathElement>("[data-coast]");
+      const i4Mask = map.querySelector<SVGPathElement>("[data-i4-mask]");
+      if (!coast || !i4Mask) return;
+      const water = map.querySelectorAll("[data-water]");
+      const lettering = map.querySelectorAll("[data-lettering]");
+      const dots = map.querySelectorAll("[data-marker-dot]");
+      const labels = map.querySelectorAll("[data-marker-label]");
+      const instrument = [
+        crossVRef.current,
+        crossHRef.current,
+        ringRef.current,
+      ].filter(Boolean);
+      const coastLen = coast.getTotalLength();
+      const i4Len = i4Mask.getTotalLength();
+
+      gsap.set(coast, { strokeDasharray: coastLen, strokeDashoffset: coastLen });
+      gsap.set(i4Mask, { strokeDasharray: i4Len, strokeDashoffset: i4Len });
+      gsap.set([...water, ...lettering, ...labels, ...instrument], {
+        opacity: 0,
+      });
+      gsap.set(dots, { opacity: 0, scale: 0.2 });
+
+      gsap
+        .timeline({
+          scrollTrigger: { trigger: map, start: "top 75%", once: true },
+        })
+        .to(coast, { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" })
+        .to(
+          water,
+          { opacity: 1, duration: 0.6, stagger: 0.12, ease: "power1.out" },
+          "-=0.45"
+        )
+        .to(
+          i4Mask,
+          { strokeDashoffset: 0, duration: 0.9, ease: "power2.inOut" },
+          "-=0.7"
+        )
+        .to(lettering, { opacity: 1, duration: 0.5 }, "-=0.3")
+        .to(
+          dots,
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.35,
+            ease: "back.out(2.5)",
+            stagger: 0.09,
+          },
+          "-=0.55"
+        )
+        .to(labels, { opacity: 1, duration: 0.3, stagger: 0.09 }, "<0.06")
+        .to(instrument, { opacity: 1, duration: 0.5, ease: "power1.out" }, "-=0.2")
+        .call(() => firePing(activeLocRef.current), undefined, "-=0.1");
+    });
+    return () => mm.revert();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section
@@ -165,7 +188,7 @@ export default function ServiceAreas() {
         eyebrow="Service areas — Florida"
         id="service-areas-heading"
         title="Six markets, mapped honestly."
-        description="From the Atlantic coast inland along I-4 to Lakeland — a local page only exists where the market genuinely changes the work. Orlando's tourist split isn't the Space Coast's procurement check. Find your market, or work with me from anywhere."
+        description="From the Atlantic coast inland along I-4 to Lakeland — a local page only exists where the market genuinely changes the work. Find your market, or work with me from anywhere."
       />
 
       <div
@@ -177,36 +200,25 @@ export default function ServiceAreas() {
           className="pointer-events-none absolute -top-24 left-1/2 size-96 -translate-x-1/2 rounded-full bg-accent/[0.05] blur-[130px]"
         />
 
-        <div className="relative grid divide-y divide-line lg:grid-cols-[minmax(0,4fr)_minmax(0,4.5fr)_minmax(0,4.5fr)] lg:divide-x lg:divide-y-0">
+        <div className="relative grid divide-y divide-line lg:grid-cols-[minmax(0,1fr)_minmax(0,1.618fr)] lg:divide-x lg:divide-y-0">
           {/* ---------- Market selector ---------- */}
           <div
-            role="tablist"
             aria-label="Florida markets"
-            aria-orientation="vertical"
             className="flex flex-col p-6 md:p-8"
-            onKeyDown={onTablistKeyDown}
             onPointerLeave={() => moveTo(activeLoc)}
           >
             {locations.map((loc) => {
               const selected = loc.slug === active;
               const hot = selected || loc.slug === hovered;
-              const counties = loc.counties.length;
               return (
                 <button
                   key={loc.slug}
-                  ref={(el) => {
-                    tabRefs.current[loc.slug] = el;
-                  }}
-                  role="tab"
-                  id={`area-tab-${loc.slug}`}
+                  type="button"
                   aria-label={`${loc.city}, ${loc.region}`}
-                  aria-selected={selected}
-                  aria-controls={`area-panel-${loc.slug}`}
-                  tabIndex={selected ? 0 : -1}
+                  aria-pressed={selected}
                   data-cursor="hover"
                   className="group flex w-full items-baseline justify-between gap-4 border-b border-line px-1 py-4 text-left transition-colors first:border-t last:border-b-0 lg:last:border-b"
                   onClick={() => setActive(loc.slug)}
-                  onFocus={() => setActive(loc.slug)}
                   onPointerEnter={() => moveTo(loc)}
                 >
                   <span>
@@ -219,8 +231,7 @@ export default function ServiceAreas() {
                       {loc.city}
                     </span>
                     <span className="mt-1.5 block font-mono text-[10px] tracking-[0.2em] text-muted uppercase">
-                      {loc.metroLabel} · {counties}{" "}
-                      {counties > 1 ? "counties" : "county"}
+                      {loc.metroLabel}
                     </span>
                   </span>
                   <span
@@ -239,8 +250,9 @@ export default function ServiceAreas() {
 
           {/* ---------- Engraved survey sheet ---------- */}
           <div className="flex flex-col items-center justify-center p-6 md:p-8">
-            <div className="w-full max-w-[380px]">
+            <div className="w-full">
               <div
+                ref={mapRef}
                 role="img"
                 aria-label="Engraved map of six Florida markets: from the Atlantic coast at Daytona Beach, Melbourne and Vero Beach, inland along Interstate 4 to Lake Mary, Orlando and Lakeland."
                 className="relative w-full overflow-hidden rounded-xl border border-line bg-surface/60"
@@ -278,25 +290,35 @@ export default function ServiceAreas() {
                     />
                   ))}
 
-                  {/* Land bands radiating inland from the shore */}
-                  {LAND_BANDS.map(({ offset, opacity }) => (
-                    <path
-                      key={`land-${offset}`}
-                      d={COAST_PATH}
-                      fill="none"
-                      stroke="var(--color-content)"
-                      strokeOpacity={opacity}
-                      strokeWidth="1"
-                      strokeDasharray="2 3"
-                      strokeLinejoin="round"
-                      vectorEffect="non-scaling-stroke"
-                      transform={`translate(${(SEAWARD.x * offset).toFixed(2)} ${(SEAWARD.y * offset).toFixed(2)})`}
-                    />
-                  ))}
+                  {/* Drawing a dashed line with dashoffset would destroy its
+                      dash pattern, so the I-4 intro reveals it through a
+                      solid-stroke mask that draws instead. */}
+                  <defs>
+                    <mask
+                      id="i4-draw-mask"
+                      maskUnits="userSpaceOnUse"
+                      x="0"
+                      y="0"
+                      width="100"
+                      height="100"
+                    >
+                      <path
+                        data-i4-mask
+                        d={I4_PATH}
+                        fill="none"
+                        stroke="#fff"
+                        strokeWidth="5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </mask>
+                  </defs>
 
                   {/* The Atlantic shoreline — Cape Canaveral's point, with
                       the Ponce and Sebastian inlets as jogs */}
                   <path
+                    data-coast
                     d={COAST_PATH}
                     fill="none"
                     stroke="var(--color-content)"
@@ -310,6 +332,7 @@ export default function ServiceAreas() {
                   {WATER_LINES.map(({ offset, opacity }) => (
                     <path
                       key={`water-${offset}`}
+                      data-water
                       d={COAST_PATH}
                       fill="none"
                       stroke="var(--color-content)"
@@ -324,6 +347,7 @@ export default function ServiceAreas() {
                   {/* The I-4 corridor, Daytona through Orlando to Lakeland */}
                   <path
                     d={I4_PATH}
+                    mask="url(#i4-draw-mask)"
                     fill="none"
                     stroke="var(--color-muted)"
                     strokeOpacity="0.45"
@@ -334,28 +358,9 @@ export default function ServiceAreas() {
                   />
                 </svg>
 
-                {/* Degree labels */}
-                {LAT_LINES.map((lat) => (
-                  <span
-                    key={`lat-label-${lat}`}
-                    className="absolute left-1.5 -translate-y-1/2 font-mono text-[9px] text-muted/60"
-                    style={{ top: `${py(lat)}%` }}
-                  >
-                    {lat.toFixed(1)}°N
-                  </span>
-                ))}
-                {LNG_LINES.map((lng) => (
-                  <span
-                    key={`lng-label-${lng}`}
-                    className="absolute bottom-1 -translate-x-1/2 font-mono text-[9px] text-muted/60"
-                    style={{ left: `${px(lng)}%` }}
-                  >
-                    {Math.abs(lng).toFixed(1)}°W
-                  </span>
-                ))}
-
                 {/* Sheet lettering */}
                 <span
+                  data-lettering
                   className="absolute font-mono text-[8px] tracking-[0.4em] whitespace-nowrap text-muted/50 uppercase"
                   style={{
                     left: "84%",
@@ -366,11 +371,78 @@ export default function ServiceAreas() {
                   Atlantic Ocean
                 </span>
                 <span
+                  data-lettering
                   className="absolute -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-line bg-surface/80 px-1 py-px font-mono text-[8px] tracking-[0.2em] text-muted"
                   style={{ left: `${I4_LABEL.x}%`, top: `${I4_LABEL.y}%` }}
                 >
                   I-4
                 </span>
+
+                {/* Scale bar — 50 km measured on the sheet's own projection,
+                    filled 0–25, outlined 25–50, survey-sheet style */}
+                <div
+                  data-lettering
+                  aria-hidden
+                  className="absolute bottom-[4.5%] left-[3.5%]"
+                  style={{ width: `${kmToPlotWidth(50)}%` }}
+                >
+                  <div className="flex h-[3px]">
+                    <span className="flex-1 bg-content/40" />
+                    <span className="flex-1 border border-l-0 border-content/40" />
+                  </div>
+                  <div className="relative mt-1 h-3 font-mono text-[8px] tracking-[0.1em] text-muted/70">
+                    <span className="absolute left-0 -translate-x-1/2">0</span>
+                    <span className="absolute left-1/2 -translate-x-1/2">25</span>
+                    <span className="absolute left-full -translate-x-1/2 whitespace-nowrap">
+                      50 km
+                    </span>
+                  </div>
+                </div>
+
+                {/* Compass rose, drawn in the open Atlantic like the old
+                    charts did */}
+                <svg
+                  data-lettering
+                  aria-hidden
+                  viewBox="0 0 36 46"
+                  className="absolute right-[3.5%] bottom-[4.5%] w-[6.5%] min-w-9"
+                >
+                  <text
+                    x="18"
+                    y="8"
+                    textAnchor="middle"
+                    className="fill-muted font-mono"
+                    fontSize="7"
+                    letterSpacing="1.5"
+                  >
+                    N
+                  </text>
+                  <circle
+                    cx="18"
+                    cy="28"
+                    r="10"
+                    fill="none"
+                    stroke="var(--color-content)"
+                    strokeOpacity="0.3"
+                    strokeWidth="0.75"
+                  />
+                  <path
+                    d="M28 28 h3 M18 38 v3 M8 28 h-3"
+                    stroke="var(--color-content)"
+                    strokeOpacity="0.3"
+                    strokeWidth="0.75"
+                  />
+                  <path
+                    d="M18 12 L20.4 28 L18 34 L15.6 28 Z"
+                    fill="var(--color-content)"
+                    fillOpacity="0.35"
+                    stroke="var(--color-content)"
+                    strokeOpacity="0.5"
+                    strokeWidth="0.6"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="18" cy="28" r="1.1" fill="var(--color-accent)" />
+                </svg>
 
                 {/* Crosshair */}
                 <span
@@ -399,8 +471,21 @@ export default function ServiceAreas() {
                   <span className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent" />
                 </span>
 
+                {/* One-shot sonar ping fired when a selection lands */}
+                <span
+                  ref={pingRef}
+                  aria-hidden
+                  className="pointer-events-none absolute aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/60"
+                  style={{
+                    left: `${HOME_POINT.x}%`,
+                    top: `${HOME_POINT.y}%`,
+                    height: `${ringSize(HOME)}%`,
+                    opacity: 0,
+                  }}
+                />
+
                 {/* Market markers — hovering one highlights its name in the
-                    list; the tabs remain the canonical, keyboard-reachable
+                    list; the buttons remain the canonical, keyboard-reachable
                     control, so these stay out of the tab order. */}
                 {MARKERS.map((m) => {
                   const hot = m.loc.slug === active || m.loc.slug === hovered;
@@ -419,6 +504,7 @@ export default function ServiceAreas() {
                         onClick={() => setActive(m.loc.slug)}
                       >
                         <span
+                          data-marker-dot
                           className={cn(
                             "absolute top-1/2 left-1/2 size-[5px] -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-300",
                             hot ? "bg-accent" : "bg-content/50"
@@ -426,6 +512,7 @@ export default function ServiceAreas() {
                         />
                       </span>
                       <span
+                        data-marker-label
                         className={cn(
                           "pointer-events-none absolute -translate-y-1/2 font-mono text-[9px] tracking-[0.15em] whitespace-nowrap transition-colors duration-300",
                           hot ? "text-accent" : "text-muted"
@@ -448,97 +535,7 @@ export default function ServiceAreas() {
                   );
                 })}
               </div>
-
-              {/* Instrument readout */}
-              <p className="mt-4 flex items-baseline justify-between gap-4 font-mono text-[10px] tracking-[0.15em] text-muted uppercase">
-                <span ref={codeRef} className="text-accent">
-                  {MARKET_CODES[HOME.slug]}
-                </span>
-                <span ref={coordRef}>{HOME_COORD}</span>
-                <span ref={radiusRef}>{HOME.radiusKm} km radius</span>
-              </p>
             </div>
-          </div>
-
-          {/* ---------- Market detail panels ---------- */}
-          <div className="p-6 md:p-8">
-            {locations.map((loc) => {
-              const localServices = servicesFor(loc.slug);
-              const extraAreas = loc.areas.length - AREAS_SHOWN;
-              return (
-                <div
-                  key={loc.slug}
-                  role="tabpanel"
-                  id={`area-panel-${loc.slug}`}
-                  aria-labelledby={`area-tab-${loc.slug}`}
-                  tabIndex={0}
-                  hidden={loc.slug !== active}
-                >
-                  <p
-                    data-panel-item
-                    className="flex items-center gap-3 font-mono text-[11px] tracking-[0.25em] text-accent uppercase"
-                  >
-                    <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-                    Serving {loc.metroLabel}
-                  </p>
-                  <p
-                    data-panel-item
-                    className="mt-3 font-mono text-[10px] tracking-[0.2em] text-muted uppercase"
-                  >
-                    {loc.counties.map((c) => c.replace(" County", "")).join(" · ")}{" "}
-                    {loc.counties.length > 1 ? "Counties" : "County"}
-                  </p>
-
-                  <div data-panel-item className="mt-6">
-                    <p className="font-mono text-[10px] tracking-[0.2em] text-muted uppercase">
-                      Areas covered
-                    </p>
-                    <ul className="mt-3 flex flex-wrap gap-2">
-                      {loc.areas.slice(0, AREAS_SHOWN).map((area) => (
-                        <li
-                          key={area}
-                          className="rounded-full border border-line px-3 py-1 text-xs text-content/75"
-                        >
-                          {area}
-                        </li>
-                      ))}
-                      {extraAreas > 0 && (
-                        <li className="rounded-full border border-line px-3 py-1 text-xs text-muted">
-                          +{extraAreas} more
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-
-                  <div data-panel-item className="mt-8">
-                    <p className="font-mono text-[10px] tracking-[0.2em] text-muted uppercase">
-                      Local pages
-                    </p>
-                    <ul className="mt-2 flex flex-col divide-y divide-line border-b border-line">
-                      {localServices.map((service) => (
-                        <li key={service.slug}>
-                          <Link
-                            href={`/services/${service.slug}/${loc.slug}`}
-                            data-cursor="hover"
-                            className="group flex items-center justify-between gap-4 py-3.5"
-                          >
-                            <span className="font-display text-base font-medium tracking-tight transition-colors duration-300 group-hover:text-accent md:text-lg">
-                              {service.title} in {loc.city}
-                            </span>
-                            <span
-                              aria-hidden
-                              className="text-accent transition-transform duration-300 group-hover:translate-x-1"
-                            >
-                              →
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
 

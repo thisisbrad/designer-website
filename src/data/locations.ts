@@ -73,7 +73,7 @@ export const locations: Location[] = [
       "Clermont",
     ],
     geo: { latitude: 28.5384, longitude: -81.3789 },
-    radiusKm: 60,
+    radiusKm: 40,
   },
   {
     slug: "melbourne",
@@ -99,7 +99,7 @@ export const locations: Location[] = [
       "Titusville",
     ],
     geo: { latitude: 28.0836, longitude: -80.6081 },
-    radiusKm: 55,
+    radiusKm: 40,
   },
   {
     slug: "lake-mary",

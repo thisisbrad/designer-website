@@ -10,17 +10,22 @@ import { locations, type Location } from "@/data/locations";
  * latitude so distances read true.
  */
 
-/** Padding around the markets' bounding box, in degrees. */
-const PAD_DEG = 0.24;
+/** Padding around the markets' bounding box, in degrees. Longitude gets
+    extra room — open Atlantic to the east, I-4 running off toward Tampa to
+    the west — so the sheet reads landscape and fills a wide panel without
+    stretching the geography. */
+const PAD_LAT = 0.24;
+const PAD_LNG_W = 0.3;
+const PAD_LNG_E = 0.85;
 const KM_PER_DEG = 111.32;
 const GRID_STEP = 0.5;
 
 const lats = locations.map((l) => l.geo.latitude);
 const lngs = locations.map((l) => l.geo.longitude);
-const MIN_LAT = Math.min(...lats) - PAD_DEG;
-const MAX_LAT = Math.max(...lats) + PAD_DEG;
-const MIN_LNG = Math.min(...lngs) - PAD_DEG;
-const MAX_LNG = Math.max(...lngs) + PAD_DEG;
+const MIN_LAT = Math.min(...lats) - PAD_LAT;
+const MAX_LAT = Math.max(...lats) + PAD_LAT;
+const MIN_LNG = Math.min(...lngs) - PAD_LNG_W;
+const MAX_LNG = Math.max(...lngs) + PAD_LNG_E;
 const LAT_SPAN = MAX_LAT - MIN_LAT;
 const LNG_SPAN = MAX_LNG - MIN_LNG;
 
@@ -31,8 +36,13 @@ export const py = (lat: number) => ((MAX_LAT - lat) / LAT_SPAN) * 100;
 
 /* East–west degrees shrink with latitude; without this correction the
    sheet would stretch Florida sideways. */
-export const PLOT_ASPECT =
-  (LNG_SPAN * Math.cos(((MIN_LAT + MAX_LAT) / 2) * (Math.PI / 180))) / LAT_SPAN;
+const COS_MID_LAT = Math.cos(((MIN_LAT + MAX_LAT) / 2) * (Math.PI / 180));
+export const PLOT_ASPECT = (LNG_SPAN * COS_MID_LAT) / LAT_SPAN;
+
+/** Width of `km` measured east–west on the sheet, as % of plot width —
+    keeps the scale bar as honest as the radius rings. */
+export const kmToPlotWidth = (km: number) =>
+  (km / (LNG_SPAN * COS_MID_LAT * KM_PER_DEG)) * 100;
 
 export const pointOf = (loc: Location) => ({
   x: px(loc.geo.longitude),
